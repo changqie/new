@@ -16,7 +16,7 @@ const routes = [
   }
 ]
 
-const router = new VueRouter({
+const router = new Router({
   routes,
   mode: 'hash', // default: hash ,history
   scrollBehavior (to, from, savedPosition) {
