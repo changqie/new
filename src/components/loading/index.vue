@@ -2,7 +2,7 @@
 <template>
   <div class="loading-box" v-if="loading">
     <div class="loading-content">
-      <i class="i-icon icon-icon-loading spin-loading"></i>
+      <i class="i-icon el-icon-loading spin-loading"></i>
       <div class="loading-tips">
         <slot></slot>
       </div>
@@ -40,8 +40,12 @@ export default {
       transform: translate(-50%, -50%);
       color: #3391CE;
       text-align: center;
+      .spin-loading{
+        animation: rotating 2s linear infinite;
+      }
       .loading-tips{
         margin-top: 5px;
+        font-size: 12px;
       }
     }
   }
