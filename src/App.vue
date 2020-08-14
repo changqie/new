@@ -39,7 +39,7 @@ export default {
   #app {
     position: relative;
     min-width: 1280px;
-    height: 100vh;
+    height: 100%;
     overflow-x: auto;
     & > div{
       position: absolute;

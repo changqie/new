@@ -9,6 +9,8 @@ import 'element-ui/lib/theme-chalk/index.css'
 import store from './store'
 // 全局样式文件
 import '@/assets/styles/common.less'
+// 样式重置
+import '@/assets/styles/reset.css'
 // iconfont字体库
 import '@/assets/styles/iconfont.css'
 // axios
