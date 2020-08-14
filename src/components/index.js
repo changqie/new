@@ -4,8 +4,10 @@
  * */
 import Loading from './loading'
 
-const install = () => {
+const install = function (Vue) {
   Vue.component('loading', Loading)
 }
 
-export default install
+export default {
+  install
+}

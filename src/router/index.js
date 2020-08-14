@@ -1,18 +1,18 @@
 import Vue from 'vue'
 import Router from 'vue-router'
-import store from '../store'
+// import store from '../store'
 
 Vue.use(Router)
 
 const routes = [
   {
     path: '*',
-    redirect: '/'
+    redirect: '/login'
   },
   {
-    path: '/sign_in',
+    path: '/login',
     name: 'Login',
-    component: ''
+    component: () => import('@/pages/login')
   }
 ]
 

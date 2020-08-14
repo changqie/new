@@ -1,1 +1,34 @@
 /*liuyan  全局公共样式*/
+@import './style';
+@import './mixins';
+*{
+  margin: 0;
+  padding: 0;
+}
+@primary-color: @baseColor;
+/**
+ * @description: 主题定制mixins(注意:所有要作为主题的样式，都写在这个mixins里,然后根据主题给该方法传入自定义颜色)
+ * @author: chenxiaoxi
+ * @params:
+ *    1. @baseColor: 基础颜色(不可使用过渡和图片)
+ *    2. @bgColor: 背景色
+ * @date: 2018-09-01 17:23:58
+ */
+.my-theme (@baseColor: @baseColor, @bgColor: @bgColor) {
+
+}
+
+// 主题1
+.theme-one{
+  .my-theme();
+}
+#app{
+  &.theme-one {
+    background: url('~@/assets/images/2.19bg1.png') no-repeat;
+    background-size: cover;
+  }
+}
+// loading样式
+.spin-loading{
+  animation: ani-demo-spin 1s linear infinite;
+}

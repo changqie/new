@@ -8,9 +8,9 @@ import 'element-ui/lib/theme-chalk/index.css'
 // vuex
 import store from './store'
 // 全局样式文件
-import 'styles/common.less'
+import '@/assets/styles/common.less'
 // iconfont字体库
-import 'styles/iconfont.css'
+import '@/assets/styles/iconfont.css'
 // axios
 import axios from 'axios'
 import $axios from '@/common/axios'
