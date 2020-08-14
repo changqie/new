@@ -16,10 +16,13 @@ import axios from 'axios'
 import $axios from '@/common/axios'
 // 自定义全局组件
 import components from '@/components'
+// 自定义插件
+import common from '@/common'
 
 Vue.config.productionTip = false
 Vue.use(ElementUI)
 Vue.use(components)
+Vue.use(common)
 // 原生axios
 Vue.prototype.axios = axios
 // 封装后的axios
