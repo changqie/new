@@ -39,6 +39,13 @@ export default {
     }
   },
   methods: {
+    // 点击忘记密码事件
+    contactManager () {
+      this.$http.get('/forgetPassword', {}, {_this: this}, res => {
+        this.$Message.warning('请联系系统管理员，联系方式：' + res.data)
+      }, e => {
+      })
+    },
     // 点击登录按钮事件
     signin () {
       if (this.username === '') {
@@ -216,6 +223,7 @@ export default {
           })
         })
     },
+    // 获取用户信息
     getByUserInfoCode () {
       return new Promise((resolve, reject) => {
         this.$http.get('person/userInfo/getByUserInfoCode', {
@@ -236,12 +244,6 @@ export default {
         }, e => {
           reject(e)
         })
-      })
-    },
-    contactManager () {
-      this.$http.get('/forgetPassword', {}, {_this: this}, res => {
-        this.$Message.warning('请联系系统管理员，联系方式：' + res.data)
-      }, e => {
       })
     },
     /**
@@ -266,9 +268,6 @@ export default {
     ...mapActions(['setMenu'])
   },
   computed: {
-    lockIcon () {
-      return this.isRemember ? 'md-lock' : 'md-unlock'
-    }
   },
   mounted () {
     if (this.$store.state.laws_urm !== '') {
