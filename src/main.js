@@ -20,6 +20,8 @@ import $axios from '@/common/axios'
 import components from '@/components'
 // 自定义插件
 import common from '@/common'
+// 自定义按钮显示指令
+import btnPermission from '@/common/btnPermission' // eslint-disable-line
 
 Vue.config.productionTip = false
 Vue.use(ElementUI)

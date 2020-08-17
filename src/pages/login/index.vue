@@ -112,7 +112,7 @@ export default {
                       })
                       if (hasHomeMenu) {
                         this.setMenu(JSON.stringify(menuList)).then(res => {
-                          this.$router.push('/')
+                          this.$router.push('/home')
                         }, e => {
                           this.$message.warning('未获取到菜单')
                         })
@@ -152,7 +152,7 @@ export default {
                     })
                     if (hasHomeMenu) {
                       this.setMenu(JSON.stringify(menuList)).then(res => {
-                        this.$router.push('/')
+                        this.$router.push('/home')
                       }, e => {
                         this.$message.warning('未获取到菜单')
                       })
@@ -198,7 +198,7 @@ export default {
                   })
                   if (hasHomeMenu) {
                     this.setMenu(JSON.stringify(menuList)).then(res => {
-                      this.$router.push('/')
+                      this.$router.push('/home')
                     }, e => {
                       this.$message.warning('未获取到菜单')
                     })
