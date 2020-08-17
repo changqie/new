@@ -466,6 +466,7 @@ export default {
       this.$http.getMsgDynamicInfo('lawss/msgDynamicInfo/page', obj, {
         _this: this
       }, res => {
+        console.log(0)
         res.data.list.map((item) => {
           list.push(item)
         })

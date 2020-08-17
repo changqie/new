@@ -3,6 +3,7 @@
  * liuyan
 */
 import base64 from './base64'
+import dateFormat from './date'
 const install = function (Vue) {
   if (install.installed) return
   install.installed = true
@@ -11,6 +12,11 @@ const install = function (Vue) {
     $base64: {
       get () {
         return base64
+      }
+    },
+    $dateFormat: {
+      get () {
+        return dateFormat
       }
     }
   })
