@@ -61,16 +61,6 @@
                 </ul>
               </el-tab-pane>
             </el-tabs>
-<!--            <div class="title">-->
-<!--              <h3>标准动态</h3>-->
-<!--              <span @click="dynamicMore">MORE</span>-->
-<!--            </div>-->
-<!--            <ul>-->
-<!--              <li v-for="(item) in domesticDynamics" :key="item.id" :class="{'is-new' : item.newFlag}">-->
-<!--                <a @click="detailsDynamics(item)" :title="item.title" :class="{'newInformation' : item.newFlag}">{{ item.title }}</a>-->
-<!--                <span :class="{'newInformation' : item.newFlag}">{{ getDate(item.pubTime) }}</span>-->
-<!--              </li>-->
-<!--            </ul>-->
           </div>
         </div>
         <div class="right-wrapper">
@@ -132,7 +122,12 @@
           </div>
           <div class="bottom">
             <!-- 企业标准法规 -->
-              <router-link tag="dl" to="/newEnterpriseStandardDatabase" v-btn-permission="'3YVZP8R4TC'" class="abroad-standard main-item hover">
+            <router-link
+              tag="dl"
+              to="/newEnterpriseStandardDatabase"
+              v-btn-permission="'3YVZP8R4TC'"
+              class="abroad-standard main-item hover"
+            >
                 <div class="iconfont">&#xe721;</div>
                 <span>企业标准法规</span>
                 </router-link>
@@ -142,12 +137,6 @@
                 <dt class="iconfont">&#xe607;</dt>
                 <dd>流程中心</dd>
               </router-link>
-<!--              <dl v-btn-permission="'DDKSFGDQL4'" class="real-item-warning main-item hover" @click="toRoute('ImplementWarning')">-->
-<!--              &lt;!&ndash;<router-link tag="dl" to="/implementWarning" v-btn-permission="'DDKSFGDQL4'" class="real-item-warning main-item hover">&ndash;&gt;-->
-<!--                <dt class="iconfont">&#xe607;</dt>-->
-<!--                <dd>实施预警</dd>-->
-<!--              </dl>-->
-              <!--</router-link>-->
               <!-- 高级检索 -->
               <router-link tag="dl" to="/advancedSearch" class="advanced-search main-item hover">
                 <dt class="iconfont">&#xe63b;</dt>
@@ -155,42 +144,24 @@
               </router-link>
             </div>
           </div>
-        </div>
-      </div>
-      <div class="main-item-wrapper">
-        <!-- 资料中心 -->
-        <div class="left-wrapper main-item list-item data-center">
-          <div class="title">
-            <h3>资料中心</h3>
-            <span @click="dynamicInformation">MORE</span>
+          <!-- 待办任务 -->
+          <div class="main-item list-item to-do-list">
+            <div class="title">
+              <h3>待办流程</h3>
+              <span @click="taskMore">MORE</span>
+            </div>
+            <ul>
+              <li v-for="needTodo in todoList" :key="needTodo.id" @click="processHandling(needTodo)">
+                <a :title="'标准制修定流程' +  `（${needTodo.processRealName}  ${needTodo.processNum}  )` ">{{ '标准制修定流程' }}（{{needTodo.processRealName}}  {{ needTodo.processNum }}）</a>
+              </li>
+            </ul>
           </div>
-          <ul>
-            <li v-for="item in informationData" :key="item.id">
-              <div class="res-type-content">
-                <span class="type" :title="item.moduleName">{{ item.moduleName }}</span> &nbsp;|&nbsp;
-               <span><a :title="item.title"  @click="informationDetails(item)">{{ item.title }}</a></span>
-              </div>
-              <span class="time">{{ getDate(item.pubTime) }}</span>
-            </li>
-          </ul>
+          <el-dialog v-model="processModal" width="500" :mask-closable="false" footer-hide title="提示">
+            <div style="display: flex;justify-content: center;align-items: center">
+              计划号20201393-T-491任务距离交稿时间还有<h2 style="color: red;display: inline">3</h2>天，请及时对应！<el-button type="primary" size="small" @click="todoListClick">处理</el-button>
+            </div>
+          </el-dialog>
         </div>
-        <!-- 待办任务 -->
-        <div class="right-wrapper main-item list-item to-do-list">
-          <div class="title">
-            <h3>待办流程</h3>
-            <span @click="taskMore">MORE</span>
-          </div>
-          <ul>
-            <li v-for="needTodo in todoList" :key="needTodo.id" @click="processHandling(needTodo)">
-              <a :title="'标准制修定流程' +  `（${needTodo.processRealName}  ${needTodo.processNum}  )` ">{{ '标准制修定流程' }}（{{needTodo.processRealName}}  {{ needTodo.processNum }}）</a>
-            </li>
-          </ul>
-        </div>
-        <el-dialog v-model="processModal" width="500" :mask-closable="false" footer-hide title="提示">
-          <div style="display: flex;justify-content: center;align-items: center">
-            计划号20201393-T-491任务距离交稿时间还有<h2 style="color: red;display: inline">3</h2>天，请及时对应！<el-button type="primary" size="small" @click="todoListClick">处理</el-button>
-          </div>
-        </el-dialog>
       </div>
     </div>
     <footer class="home-footer">
@@ -264,23 +235,6 @@ export default {
     }
   },
   methods: {
-    todoListClick () {
-      this.$store.commit('setDetailMap', this.$route.path)
-      this.$router.push({ // eslint-disable-line
-        name: 'CeshiProcess',
-        params: {
-          state: this.todoList[0].stage,
-          id: this.todoList[0].id
-        }
-      })
-    },
-    // 跳页
-    toRoute (name) {
-      this.$store.commit('setDetailMap', this.$route.path)
-      this.$router.push({
-        path: name
-      })
-    },
     // 模糊搜索中下拉框数据改变
     selectKeyChange (keyvalue) {
       if (keyvalue === 'issueTime' || keyvalue === 'putTime') {
@@ -291,6 +245,7 @@ export default {
         this.selectValue = ''
       }
     },
+    // input框搜索事件
     searchCenteric () {
       let selevalue = ''
       if (this.selectValue === '') {
@@ -306,73 +261,7 @@ export default {
         }
       })
     },
-    isNew (pubTime) {
-      if (pubTime != null && pubTime !== '' && pubTime !== undefined) {
-        pubTime = pubTime.replace(new RegExp(/-/gm), '/')
-        return new Date().getTime() - new Date(pubTime).getTime() < 7 * 24 * 3600 * 1000
-      } else {
-        return ''
-      }
-    },
-    /**
-     * @description: 截取日期
-     * @author: chenxiaoxi
-     * @date: 2018/10/31 09:30:40
-     */
-    getDate (date) {
-      return date != null ? date.substring(0, date.indexOf(' ')) : ''
-    },
-    // 加载待办任务
-    queryProcess () {
-      this.$http.get('activiti/busTaskInfo/page', {
-        flag: '1'
-      }, {
-        _this: this
-      }, res => {
-        this.todoList = res.data.list
-        if (this.todoList.some(item => {
-          return item.stage === '2' || item.stage === '4'
-        })) {
-          this.processModal = true
-        }
-      }, e => {
-      })
-    },
-    // 待办子流程
-    queryBacklogProcessList (processId) {
-      this.$http.post('activiti/busProcess/getToDoTaskList',
-        {
-          processId: processId
-        },
-        {
-          // loading: 'loading.queryProcessLoading',
-          _this: this
-        }, res => {
-          this.backlogProcessList = res.data
-        }, e => {})
-    },
-    // 办理流程
-    handleProcess (process) {
-      this.setProcess(JSON.stringify(process))
-      this.$store.commit('setDetailMap', this.$route.path)
-      this.$router.push({
-        name: 'DoProcess',
-        params: {
-          processId: process.taskId
-        }
-      })
-    },
-    // 待办任务更多
-    taskMore () {
-      this.$store.commit('setDetailMap', this.$route.path)
-      this.$router.push({
-        name: 'processCenter',
-        params: {
-          type: '1'
-        }
-      })
-    },
-    // 动态信息更多
+    // 动态信息更多 （云端动态、本地动态）
     dynamicMore () {
       if (this.tabFlag === 'Cloud' || this.tabFlag === '') {
         this.$store.commit('setDetailMap', this.$route.path)
@@ -388,7 +277,7 @@ export default {
         })
       }
     },
-    // 标签状态
+    // tabs切换标签状态
     changeTabs (name) {
       this.tabFlag = name
     },
@@ -414,31 +303,50 @@ export default {
         })
       }
     },
-    // 资料中心更多
-    dynamicInformation () {
+    // 点击 代办流程 更多 按钮 事件
+    taskMore () {
       this.$store.commit('setDetailMap', this.$route.path)
       this.$router.push({
-        name: 'InformationCenter'
+        name: 'processCenter',
+        params: {
+          type: '1'
+        }
       })
     },
-    // 资料中心详情页
-    informationDetails (item) {
-      this.$http.get('lawss/msgDynamicInfo/showDetailsByRole', {
-        id: item.id
+    // 点击 代办流程 处理 事件
+    todoListClick () {
+      this.$store.commit('setDetailMap', this.$route.path)
+      this.$router.push({ // eslint-disable-line
+        name: 'CeshiProcess',
+        params: {
+          state: this.todoList[0].stage,
+          id: this.todoList[0].id
+        }
+      })
+    },
+    /**
+     * @description: 截取日期
+     * @author: chenxiaoxi
+     * @date: 2018/10/31 09:30:40
+     */
+    getDate (date) {
+      return date != null ? date.substring(0, date.indexOf(' ')) : ''
+    },
+
+    /**        以下是进入页面自动请求加载方法        **/
+
+    // 加载待办任务
+    queryProcess () {
+      this.$http.get('activiti/busTaskInfo/page', {
+        flag: '1'
       }, {
         _this: this
       }, res => {
-        if (res.data != null && res.data.length > 0) {
-          this.$store.commit('setDetailMap', this.$route.path)
-          this.$router.push({
-            name: 'DomesticDynamicsDetails',
-            params: {
-              id: item.id,
-              pageType: item.msgType
-            }
-          })
-        } else {
-          this.$Message.error('当前角色无权限查看此信息')
+        this.todoList = res.data.list
+        if (this.todoList.some(item => {
+          return item.stage === '2' || item.stage === '4'
+        })) {
+          this.processModal = true
         }
       }, e => {
       })
@@ -490,22 +398,6 @@ export default {
       })
     },
     /**
-     * @description: 获取资料中心
-     * @author: zhaochunfeng
-     * @date: 2018/10/18 17:33:30
-     */
-    getDataResource () {
-      let obj = {}
-      obj.msgType = 'RESOURCE'
-      obj.rowLimit = 8
-      this.$http.get('lawss/msgDynamicInfo/page', obj, {
-        _this: this
-      }, res => {
-        this.informationData = res.data.list
-      }, e => {
-      })
-    },
-    /**
      * @description: 获取累计登录人数
      * @author: chenxiaoxi
      * @date: 2018/10/30 09:21:00
@@ -517,6 +409,7 @@ export default {
         this.totalInline = res
       }, e => {})
     },
+    // 获取当前在线人数在线人数
     getOnlineCount () {
       this.$http.get('/onlineUser', {}, {_this: this}, res => {
         this.currentInline = res.data.userCount
@@ -619,7 +512,6 @@ export default {
   watch: {},
   mounted () {
     this.getDynamicInformation()
-    this.getDataResource()
     this.queryProcess()
     this.totalInLine()
     this.getOnlineCount()
@@ -671,7 +563,7 @@ export default {
       border-bottom: 1px solid #2D84B8;
       .main-item-wrapper{
         &:first-child{
-          height: 58%;
+          height: 100%;
           .left-wrapper{
             .flex();
             flex-direction: column;
@@ -982,6 +874,7 @@ export default {
             }
             .bottom{
               flex: 1;
+              margin-bottom: 10px;
               .flex();
               .abroad-standard{
                 flex: 0.96;
@@ -1063,10 +956,18 @@ export default {
                 }
               }
             }
+            .to-do-list{
+              flex: 1;
+              ul{
+                li{
+                  color: #FFF;
+                }
+              }
+            }
           }
         }
         &:last-child{
-          height: 39.92%;
+          height: 98%;
           margin: 10px 0;
         }
         .flex();
@@ -1149,7 +1050,7 @@ export default {
             ul{
               flex: auto;
               overflow-y: auto;
-              max-height: 24vh;
+              max-height: 50vh;
               li{
                 .flex();
                 margin-bottom: 5px;
@@ -1210,13 +1111,6 @@ export default {
                 .time{
                   padding: 0 5px;
                 }
-              }
-            }
-          }
-          &.to-do-list{
-            ul{
-              li{
-                color: #FFF;
               }
             }
           }
