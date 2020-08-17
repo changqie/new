@@ -38,7 +38,7 @@ export default {
 <style lang="less">
   #app {
     position: relative;
-    min-width: 1280px;
+    width: 100%;
     height: 100%;
     overflow-x: auto;
     & > div{
