@@ -466,7 +466,6 @@ export default {
       this.$http.getMsgDynamicInfo('lawss/msgDynamicInfo/page', obj, {
         _this: this
       }, res => {
-        console.log(0)
         res.data.list.map((item) => {
           list.push(item)
         })
@@ -751,7 +750,7 @@ export default {
                 font-weight: 600;
               }
               .el-tabs__active-bar {
-                padding: 0 16px;
+                width: 104px !important;
                 margin-left: -16px;
                 background-color: #F8B551;
               }
@@ -1177,6 +1176,7 @@ export default {
                 }
                 a{
                   flex: 1;
+                  padding: 3px 0;
                   color: #FFF;
                   .ellipsis();
                 }

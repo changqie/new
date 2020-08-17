@@ -24,9 +24,9 @@ export default {
   },
   getDynamicTotal: state => {
     if (state.dynamicTotal === '') {
-      return 0
+      return '0'
     } else {
-      return state.dynamicTotal
+      return String(state.dynamicTotal)
     }
   },
   getProcessForm: state => {
