@@ -13,6 +13,8 @@ import '@/assets/styles/common.less'
 import '@/assets/styles/reset.css'
 // iconfont字体库
 import '@/assets/styles/iconfont.css'
+// 左侧菜单样式
+import '@/assets/styles/navMenu.less'
 // axios
 import axios from 'axios'
 import $axios from '@/common/axios'

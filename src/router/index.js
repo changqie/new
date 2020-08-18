@@ -25,6 +25,36 @@ const routes = [
       title: '首页',
       menuId: 'G72J4WNFM8'
     }
+  },
+  // demo页
+  {
+    path: '/demo',
+    name: 'Demo',
+    redirect: () => {
+      return 'demoInfo'
+    },
+    component: () => import('@/pages/demo'),
+    meta: {
+      title: 'demo'
+    },
+    children: [
+      {
+        path: '/demoInfo',
+        name: 'DemoInfo',
+        component: () => import('@/pages/demo/demoInfo'),
+        meta: {
+          title: '国内法规'
+        }
+      },
+      {
+        path: '/demoTwo',
+        name: 'DemoTwo',
+        component: () => import('@/pages/demo/demoTwo'),
+        meta: {
+          title: '国外法规'
+        }
+      }
+    ]
   }
 ]
 

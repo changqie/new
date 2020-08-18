@@ -1,0 +1,41 @@
+// 左侧菜单样式
+.nav-menu{
+  .el-menu{
+    border: transparent;
+  }
+  .el-submenu__title{
+    i{
+      color: #ffffff;
+    }
+  }
+  ul > li{
+    font-size: 15px;
+    font-weight: 600;
+  }
+  .el-submenu__title, .el-menu-item{
+    &::before{
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      display: block;
+      width: 0;
+      height: 100%;
+      background: rgba(255,255,255,.35) !important;
+    }
+  }
+  // hover属性
+  .el-submenu__title:hover, .el-menu-item:hover{
+    background: transparent !important;
+    &::before{
+      transition: all linear .3s;
+      width: 100%;
+    }
+  }
+  // 选中菜单样式
+  .el-submenu{
+    .is-active{
+      background: rgba(255,255,255,.35) !important;
+    }
+  }
+}

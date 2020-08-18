@@ -171,6 +171,9 @@
           <span>当前在线人数 {{ currentInline }}</span>
           <span>累计在线人数 {{ totalInline }}</span>
         </div>
+        <div class="scorll-box">
+          <i class="el-icon-arrow-down" />
+        </div>
         <span class="copy-right">&copy; 中国汽车技术研究有限公司</span>
       </div>
       <!-- 友情链接 -->
@@ -495,6 +498,18 @@ export default {
         }
       }, e => {})
     },
+    // 鼠标滚轮事件
+    handleScroll (e) {
+      // 该语句可以用来判断滚轮是向上滑动还是向下
+      const direction = e.deltaY > 0 ? 'down' : 'up'
+      if (direction === 'down') {
+        console.log('鼠标滚轮向下滚动')
+        // this.$store.commit('setDetailMap', this.$route.path)
+        this.$router.push({
+          name: 'Demo'
+        })
+      }
+    },
     ...mapMutations(['setProcess', 'setDynamicTotal'])
   },
   components: {},
@@ -521,6 +536,13 @@ export default {
       this.queryForeignMsgByPage(data)
     })
     this.getLinkList()
+    /**
+     * 自定义鼠标滚轮事件
+     * chrome and ie
+     */
+    window.addEventListener('mousewheel', this.handleScroll, false)
+    // firefox
+    window.addEventListener('DOMMouseScroll', this.handleScroll, false)
   }
 }
 </script>
@@ -1122,25 +1144,6 @@ export default {
         margin-top: 2vh;
       }
     }
-/*    .footer{
-      color: #FFF;
-      .flex();
-      justify-content: space-between;
-      padding: 10px 0;
-      .online-total{
-        font-size: 14px;
-        span{
-          margin-right: 5px;
-        }
-        &:last-child{
-          margin-right: 0;
-        }
-      }
-      .copy-right{
-        font-size: 14px;
-        letter-spacing: 1px;
-      }
-    }*/
     .home-footer{
       color: #ffffff;
     /*  background: @homeSectionBgColor;*/
@@ -1154,7 +1157,6 @@ export default {
         display: -ms-flex;
         position: relative;
         bottom: 8px;
-        /*top: 20px;*/
         span{
           color: #FFF;
           display: inline-flex;
@@ -1203,6 +1205,9 @@ export default {
         &:last-child{
           margin-right: 0;
         }
+      }
+      .scorll-box{
+        font-size: 30px;
       }
       .copy-right{
         font-size: 14px;
