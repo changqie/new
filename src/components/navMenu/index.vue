@@ -12,23 +12,33 @@
       active-text-color="#ffffff"
       :router=true
     >
-      <el-submenu
-        v-for="(item, index) in navMenuList"
-        :key="index"
-        :index="item.path"
-      >
-        <template slot="title">
+      <template v-for="(item, index) in navMenuList">
+        <el-submenu
+          :key="index"
+          :index="item.path"
+          v-if="!item.isChildren"
+        >
+          <template slot="title">
+            <i class="el-icon-location"></i>
+            <span>{{ item.title }}</span>
+          </template>
+          <el-menu-item
+            v-for="(children, childrenIndex) in item.children"
+            :key="childrenIndex"
+            :index="children.path"
+          >
+            {{ children.title }}
+          </el-menu-item>
+        </el-submenu>
+        <el-menu-item
+          :key="index"
+          :index="item.path"
+          v-if="item.isChildren"
+        >
           <i class="el-icon-location"></i>
           <span>{{ item.title }}</span>
-        </template>
-        <el-menu-item
-          v-for="(children, childrenIndex) in item.children"
-          :key="childrenIndex"
-          :index="children.path"
-        >
-          {{ children.title }}
         </el-menu-item>
-      </el-submenu>
+      </template>
     </el-menu>
   </div>
 </template>
@@ -39,6 +49,11 @@ export default {
     return {
       defaultActive: null, // 当前激活菜单的 index
       navMenuList: [
+        {
+          title: '首页',
+          path: '/home',
+          isChildren: true // 判断没有子菜单
+        },
         {
           title: 'demo',
           path: '/demo',

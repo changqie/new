@@ -1,6 +1,6 @@
 import Vue from 'vue'
 import Router from 'vue-router'
-// import store from '../store'
+import store from '../store'
 
 Vue.use(Router)
 
@@ -35,6 +35,7 @@ const routes = [
     },
     component: () => import('@/pages/demo'),
     meta: {
+      requireAuth: true,
       title: 'demo'
     },
     children: [
@@ -43,6 +44,7 @@ const routes = [
         name: 'DemoInfo',
         component: () => import('@/pages/demo/demoInfo'),
         meta: {
+          requireAuth: true,
           title: '国内法规'
         }
       },
@@ -51,6 +53,7 @@ const routes = [
         name: 'DemoTwo',
         component: () => import('@/pages/demo/demoTwo'),
         meta: {
+          requireAuth: true,
           title: '国外法规'
         }
       }
@@ -68,6 +71,14 @@ const router = new Router({
       return {x: 0, y: 0}
     }
   }
+})
+
+router.beforeEach((to, from, next) => {
+  let toName = to.name
+  let token = store.state.token
+  console.log(toName)
+  console.log(token)
+  next()
 })
 
 export default router

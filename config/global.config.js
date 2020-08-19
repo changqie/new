@@ -5,8 +5,8 @@
  */
 // 开发环境配置
 // const devIp = 'localhost'
-const devIp = '192.168.10.140'
-const devInterfacePORT = '8899'
+const devIp = '39.98.140.126'
+const devInterfacePORT = '10000'
 // 云端端口号
 const DEV_CLOUD_RES_INTERFACE_PORT = '7777'
 const simpleFilePath = 'att/attFile/upload'
