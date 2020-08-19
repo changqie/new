@@ -78,6 +78,8 @@ export default {
     justify-content: space-between;
     padding: 0 20px;
     height: 50px;
+    background: #ffffff;
+    border-bottom: 1px solid #e5e5e5;
     .header-right{
       .el-dropdown{
         .user-box{

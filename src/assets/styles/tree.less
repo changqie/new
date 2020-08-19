@@ -1,0 +1,42 @@
+/*tree组件 父组件内样式 liuyan*/
+.tree-closed {
+  width: 20px !important;
+}
+.tree-content{
+  display: flex;
+  position: relative;
+  width: 180px;
+  .tree {
+    position: absolute;
+    left: 0;
+    width: 90%;
+    height: 100%;
+    border-right: 1px solid #EDEDED;
+    overflow-x: auto;
+  }
+  .tree-collapse{
+    position: absolute;
+    right: 0;
+    .flex();
+    align-items: center;
+    justify-content: center;
+    width: 15px;
+    height: 100%;
+    background: #EEE;
+    cursor: pointer;
+    & > i{
+      font-size: 16px;
+      font-weight: 600;
+    }
+    &:hover{
+      cursor: pointer;
+      background: @baseColor;
+      color: #FFF;
+    }
+  }
+}
+/*tree组件 右侧内容模块样式*/
+.tree-right-content{
+  flex: 1;
+  padding: 15px 10px;
+}

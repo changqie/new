@@ -5,6 +5,8 @@ import App from './App'
 import router from './router'
 import ElementUI from 'element-ui'
 import 'element-ui/lib/theme-chalk/index.css'
+// jQuery
+import $ from 'jquery'
 // vuex
 import store from './store'
 // 全局样式文件
@@ -24,9 +26,11 @@ import common from '@/common'
 import btnPermission from '@/common/btnPermission' // eslint-disable-line
 
 Vue.config.productionTip = false
+// jquery
+Vue.prototype.$ = $
 Vue.use(ElementUI)
-Vue.use(components)
 Vue.use(common)
+Vue.use(components)
 // 原生axios
 Vue.prototype.axios = axios
 // 封装后的axios

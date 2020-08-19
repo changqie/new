@@ -543,6 +543,10 @@ export default {
     window.addEventListener('mousewheel', this.handleScroll, false)
     // firefox
     window.addEventListener('DOMMouseScroll', this.handleScroll, false)
+  },
+  destroyed () {
+    window.removeEventListener('mousewheel', this.handleScroll, false)
+    window.removeEventListener('DOMMouseScroll', this.handleScroll, false)
   }
 }
 </script>

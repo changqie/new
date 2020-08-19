@@ -3,6 +3,8 @@
 @import './mixins';
 // 左侧菜单样式
 @import './navMenu';
+// tree组件父组件内样式
+@import './tree';
 *{
   margin: 0;
   padding: 0;
@@ -39,6 +41,15 @@
     .container-box{
       height: calc(~'100% - 50px');
       background: #F3F3F3;
+      & > div{
+        position: relative;
+        display: flex;
+        padding: 0;
+        width: 100%;
+        height: 100%;
+        background: #FFF;
+        overflow: hidden;
+      }
     }
   }
 }

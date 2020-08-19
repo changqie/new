@@ -22,11 +22,5 @@ export default {
 </script>
 <style lang="less" scoped>
   .demo{
-    .sub-container{
-      .com-header{
-        height: 50px;
-        background: #fff;
-      }
-    }
   }
 </style>
