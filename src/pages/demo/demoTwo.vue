@@ -1,4 +1,4 @@
-/* DemoTwo liuyan*/
+<!-- DemoTwo liuyan -->
 <template>
   <div class="demo-two v-class">
     DemoTwo 页

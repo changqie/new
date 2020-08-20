@@ -1,7 +1,8 @@
-/*header头部 面包屑、退出*/
+<!-- header头部 面包屑、退出 -->
 <template>
   <div class="com-header">
     <div class="header-left">
+      <!--面包屑-->
       <el-breadcrumb separator="/">
         <el-breadcrumb-item
           v-for="(item, index) in routerList"
@@ -11,6 +12,7 @@
         </el-breadcrumb-item>
       </el-breadcrumb>
     </div>
+    <!-- header头部 右侧内容 当前登录人和退出-->
     <div class="header-right">
       <el-dropdown
         trigger="click"
@@ -37,12 +39,19 @@ export default {
     }
   },
   created () {
+    // 渲染面包屑数组
     this.routerList = this.$route.matched
   },
   computed: {
     // 获取用户头像
     userAvator () {
       return this.$store.getters.userInfo.avator || require('@/assets/images/avator_default.png')
+    }
+  },
+  watch: {
+    // 监听路由 重新渲染面包屑
+    $route () {
+      this.routerList = this.$route.matched
     }
   },
   methods: {

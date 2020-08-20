@@ -1,4 +1,4 @@
-/* demoinfo页 liuyan*/
+<!-- demoinfo页 liuyan -->
 <template>
   <div class="demo-info v-class">
     <div class="tree-content" :class="{'tree-closed' : sideClose}">
@@ -30,7 +30,7 @@
       </div>
     </div>
     <div class="tree-right-content">
-      demoInfo 页
+      {{ $t('m.statuteBank') }}
     </div>
   </div>
 </template>

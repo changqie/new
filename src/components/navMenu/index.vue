@@ -1,4 +1,4 @@
-/* 左侧导航菜单 liuyan */
+<!--左侧导航菜单 liuyan -->
 <template>
   <div class="nav-menu v-class">
     <div class="logo">

@@ -1,4 +1,4 @@
-/*demo页面 liuyan */
+<!-- demo页面 liuyan -->
 <template>
   <div class="demo v-class main">
     <nav-menu></nav-menu>
