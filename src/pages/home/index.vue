@@ -102,22 +102,11 @@
                   </el-dropdown>
                 </div>
               </router-link>
-              <div class="buss-standard-dynamic-information-wrapper">
-                <!-- 本地工具 -->
-                <router-link tag="dl" to="/analyticalTools" v-btn-permission="'3YVZP8R4TC'" class="buss-standard main-item hover">
-                  <dt class="iconfont">&#xe803;</dt>
-                  <dd>本地工具</dd>
-                </router-link>
-<!--                <router-link tag="dl" to="/enterpriseStandardDatabase" v-btn-permission="'3YVZP8R4TC'" class="buss-standard main-item hover">-->
-<!--                  <dt class="iconfont">&#xe803;</dt>-->
-<!--                  <dd>企业标准</dd>-->
-<!--                </router-link>-->
-                <!-- 动态&资料 -->
-                <router-link tag="dl" to="/localProductDatabase" v-btn-permission="'TQXSCYSHLW'" class="dynamic-information main-item hover">
-                  <dt class="iconfont">&#xe63c;</dt>
-                  <dd style="font-size: 16px">本地产品/项目库</dd>
-                </router-link>
-              </div>
+              <!-- 本地工具 -->
+              <router-link tag="dl" to="/analyticalTools" v-btn-permission="'3YVZP8R4TC'" class="local-standard main-item hover">
+                <div class="iconfont">&#xe803;</div>
+                <span>本地工具</span>
+              </router-link>
             </div>
           </div>
           <div class="bottom">
@@ -708,17 +697,17 @@ export default {
                   }
                 }
               }
-              .stander-top{
+              .stander-top, .top-main-item-wrapper{
                 flex: 1;
                 .flex();
                 flex-direction: column;
                 justify-content: end;
                 height: 100%;
                 .local-standard{
-                  flex: 1;
                   margin-right: 10px;
                   flex-direction: row;
                   align-items: center;
+                  height: 90px;
                   color: #FFF;
                   &:hover{
                     div{
@@ -762,6 +751,9 @@ export default {
                 flex-direction: column;
                 justify-content: end;
                 line-height: 1;
+                .local-standard{
+                  margin-right: 0;
+                }
                 .user-info-panel{
                   margin-bottom: 10px;
                   flex: 1;
@@ -864,10 +856,6 @@ export default {
                   .main-item{
                     flex: 1;
                     .flex();
-                    flex-direction: column;
-                    &:first-child{
-                      margin-right: 10px;
-                    }
                     &:hover{
                       dt{
                         font-size: 36px;
