@@ -302,7 +302,7 @@ export default {
         top: 5.8vh;
         left: 9vw;
         width: 480px;
-        height: 50px;
+        height: 7.3vh;
         background: url("~@/assets/images/eCuang_logo.png") no-repeat center;
         background-position: center left;
       }
@@ -433,7 +433,7 @@ export default {
         top: 5.8vh;
         left: 9.3vw;
         width: 25vw;
-        height: 5.3vh;
+        height: 7.3vh;
         background: url("~@/assets/images/eCuang_logo.png") no-repeat center;
         background-size: 100%;
       }

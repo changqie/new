@@ -432,7 +432,7 @@ export default {
         top: 5.8vh;
         left: 9.3vw;
         width: 25vw;
-        height: 5.3vh;
+        height: 8.3vh;
         background: url("~@/assets/images/mdlaw_logo.png") no-repeat center;
         background-size: 100%;
       }
@@ -528,7 +528,7 @@ export default {
             .login-form-submit{
               position: relative;
               margin-top: 2.2vh;
-              height: 5.5vh;
+              height: 8.3vh;
               line-height: 5.5vh;
               color: #FFF;
               font-size: 20px;
