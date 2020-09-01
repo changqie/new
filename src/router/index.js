@@ -9,11 +9,41 @@ const routes = [
     path: '*',
     redirect: '/login'
   },
-  // 登录页
+  // 长城登录页
   {
     path: '/login',
     name: 'Login',
     component: () => import('@/pages/login')
+  },
+  // 蜂巢能源
+  {
+    path: '/beeEnergyLogin',
+    name: 'beeEnergyLogin',
+    component: () => import('@/pages/login/otherCompany/beeEnergyLogin')
+  },
+  // 蜂巢易创
+  {
+    path: '/beeEChungLogin',
+    name: 'beeEChungLogin',
+    component: () => import('@/pages/login/otherCompany/beeEChungLogin')
+  },
+  // 曼德法规网
+  {
+    path: '/mdLawLogin',
+    name: 'mdLawLogin',
+    component: () => import('@/pages/login/otherCompany/mdLawLogin')
+  },
+  // 诺博
+  {
+  path: '/nuoBLogin',
+  name: 'nuoBLogin',
+  component: () => import('@/pages/login/otherCompany/nuoBLogin')
+  },
+  // 生技
+  {
+  path: '/sTLogin',
+  name: 'sTLogin',
+  component: () => import('@/pages/login/otherCompany/sTLogin')
   },
   // 首页
   {
