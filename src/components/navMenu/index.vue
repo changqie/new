@@ -70,11 +70,11 @@ export default {
         },
         {
           title: '标准法规库',
-          path: '/demo2',
+          path: '/regulatoryRepository',
           children: [
             {
               title: '动态&资料',
-              path: '/demo2One'
+              path: '/dynamicInformation'
             },
             {
               title: '国内外标准法规',

@@ -67,6 +67,31 @@ const routes = [
       requireAuth: true,
       title: '流程中心'
     }
+  },
+  // 标准法规库
+  {
+    path: '/regulatoryRepository',
+    name: 'RegulatoryRepository',
+    redirect: () => {
+      return 'dynamicInformation'
+    },
+    component: () => import('@/pages/regulatoryRepository'),
+    meta: {
+      requireAuth: true,
+      title: '标准法规库'
+    },
+    children: [
+      // 动态&资料
+      {
+        path: '/dynamicInformation',
+        name: 'DynamicInformation',
+        component: () => import('@/pages/regulatoryRepository/dynamicInformation'),
+        meta: {
+          requireAuth: true,
+          title: '动态&资料'
+        }
+      }
+    ]
   }
 ]
 
