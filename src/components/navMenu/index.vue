@@ -9,7 +9,7 @@
       :default-active="defaultActive"
       background-color="transparent"
       text-color="#ffffff"
-      active-text-color="#ffffff"
+      active-text-color="#ffd04b"
       :router=true
     >
       <template v-for="(item, index) in navMenuList">
@@ -36,7 +36,7 @@
           v-if="item.isChildren"
         >
           <i class="el-icon-location"></i>
-          <span>{{ item.title }}</span>
+          <span slot="title">{{ item.title }}</span>
         </el-menu-item>
       </template>
     </el-menu>
@@ -65,22 +65,56 @@ export default {
             {
               title: '国外法规',
               path: '/demoTwo'
-            },
-            {
-              title: 'demoThree',
-              path: '/demoThree'
             }
           ]
         },
         {
-          title: 'demo2',
+          title: '标准法规库',
           path: '/demo2',
           children: [
             {
-              title: 'demo2One',
+              title: '动态&资料',
+              path: '/demo2One'
+            },
+            {
+              title: '国内外标准法规',
+              path: '/demo2One'
+            },
+            {
+              title: '国内政策',
+              path: '/demo2One'
+            },
+            {
+              title: '国外政策',
+              path: '/demo2One'
+            },
+            {
+              title: '标准制修订管理',
+              path: '/demo2One'
+            },
+            {
+              title: '标准法规清单',
+              path: '/demo2One'
+            },
+            {
+              title: '试验项目库',
+              path: '/demo2One'
+            },
+            {
+              title: '本地产品/项目库',
               path: '/demo2One'
             }
           ]
+        },
+        {
+          title: '流程中心',
+          path: '/demoThree3',
+          isChildren: true // 判断没有子菜单
+        },
+        {
+          title: '数据报表',
+          path: '/',
+          isChildren: true // 判断没有子菜单
         }
       ]
     }
