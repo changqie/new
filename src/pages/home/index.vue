@@ -3,7 +3,7 @@
   <div class="home_v3 v-class">
     <div class="header">
       <div class="logo"></div>
-      <span class="time">{{ currentTime }}</span>
+      <!-- <span class="time">{{ currentTime }}</span> -->
     </div>
     <div class="home_v3_main">
       <div class="main-item-wrapper">
