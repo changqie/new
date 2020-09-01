@@ -35,15 +35,15 @@ const routes = [
   },
   // 诺博
   {
-  path: '/nuoBLogin',
-  name: 'nuoBLogin',
-  component: () => import('@/pages/login/otherCompany/nuoBLogin')
+    path: '/nuoBLogin',
+    name: 'nuoBLogin',
+    component: () => import('@/pages/login/otherCompany/nuoBLogin')
   },
   // 生技
   {
-  path: '/sTLogin',
-  name: 'sTLogin',
-  component: () => import('@/pages/login/otherCompany/sTLogin')
+    path: '/sTLogin',
+    name: 'sTLogin',
+    component: () => import('@/pages/login/otherCompany/sTLogin')
   },
   // 首页
   {

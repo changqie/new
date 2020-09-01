@@ -24,8 +24,6 @@
     </div>
   </div>
 </template>
-
-
 <script>
 import { mapMutations, mapActions } from 'vuex'
 export default {
