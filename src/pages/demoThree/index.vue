@@ -1,15 +1,7 @@
 <!-- demo页面 liuyan -->
 <template>
-  <div class="demo v-class main">
-    <nav-menu></nav-menu>
-    <div class="sub-container">
-      <com-header></com-header>
-      <div class="container-box">
-        <div>
-          000000000000
-        </div>
-      </div>
-    </div>
+  <div class="demo v-class">
+    0000
   </div>
 </template>
 <script>

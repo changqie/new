@@ -119,7 +119,7 @@ export default {
       ]
     }
   },
-  mounted () {
+  created () {
     // 获取当前页的path，赋值没左侧菜单，并展开
     this.defaultActive = this.$route.path
   }

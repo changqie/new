@@ -1,6 +1,15 @@
 <template>
   <div id="app">
-    <router-view/>
+    <router-view v-if="!isBoolean"/>
+    <div class="content-box" v-if="isBoolean">
+      <nav-menu></nav-menu>
+      <div class="sub-container">
+        <com-header></com-header>
+        <div class="container-box">
+          <router-view />
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -8,6 +17,11 @@
 import { mapGetters } from 'vuex'
 export default {
   name: 'App',
+  data () {
+    return {
+      isBoolean: false
+    }
+  },
   methods: {
     /**
      * @description: 主题设置
@@ -27,6 +41,14 @@ export default {
     getTheme (val) {
       // 主题修改
       this.setTheme(val)
+    },
+    // 监听路由 控制isBoolean
+    $route () {
+      if (this.$route.name !== 'Login' && this.$route.name !== 'Home') {
+        this.isBoolean = true
+      } else {
+        this.isBoolean = false
+      }
     }
   },
   mounted () {
@@ -46,6 +68,16 @@ export default {
       left: 0;
       width: 100%;
       height: 100%;
+    }
+    .content-box{
+      display: flex;
+      .sub-container{
+        flex: 1;
+        .container-box{
+          height: calc(~'100% - 50px');
+          background: #F3F3F3;
+        }
+      }
     }
   }
 </style>

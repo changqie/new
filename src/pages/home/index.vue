@@ -3,7 +3,7 @@
   <div class="home_v3 v-class">
     <div class="header">
       <div class="logo"></div>
-      <!-- <span class="time">{{ currentTime }}</span> -->
+      <span class="time">{{ currentTime }}</span>
     </div>
     <div class="home_v3_main">
       <div class="main-item-wrapper">
@@ -495,7 +495,7 @@ export default {
         console.log('鼠标滚轮向下滚动')
         // this.$store.commit('setDetailMap', this.$route.path)
         this.$router.push({
-          name: 'Demo'
+          name: 'DemoThree3'
         })
       }
     },

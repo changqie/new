@@ -129,5 +129,9 @@ export default {
 </script>
 <style lang="less" scoped>
   .demo-info{
+    position: relative;
+    display: flex;
+    height: 100%;
+    background: #ffffff;
   }
 </style>
