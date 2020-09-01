@@ -62,24 +62,11 @@ const routes = [
   {
     path: '/demoThree3',
     name: 'DemoThree3',
-    redirect: () => {
-      return 'demoThree'
-    },
     component: () => import('@/pages/demoThree'),
     meta: {
-      requireAuth: true
-    },
-    children: [
-      {
-        path: '/demoThree',
-        name: 'DemoThree',
-        component: () => import('@/pages/demoThree/demoThree'),
-        meta: {
-          requireAuth: true,
-          title: '流程中心'
-        }
-      }
-    ]
+      requireAuth: true,
+      title: '流程中心'
+    }
   }
 ]
 

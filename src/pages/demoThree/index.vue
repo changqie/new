@@ -5,7 +5,9 @@
     <div class="sub-container">
       <com-header></com-header>
       <div class="container-box">
-        <router-view />
+        <div>
+          000000000000
+        </div>
       </div>
     </div>
   </div>
