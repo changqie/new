@@ -88,6 +88,15 @@ const routes = [
         }
       }
     ]
+  },
+  {
+    path: '/demoThree3',
+    name: 'DemoThree3',
+    component: () => import('@/pages/demoThree'),
+    meta: {
+      requireAuth: true,
+      title: '流程中心'
+    }
   }
 ]
 
