@@ -1,0 +1,32 @@
+// 设置输入框高度
+.el-input__inner{
+  height: 30px !important;
+  line-height: 30px !important;
+  width: 165px;
+  // @media all and (-ms-high-contrast: none), (-ms-high-contrast: active) {
+  //   // ie下样式偏差1px
+  //   line-height: 27px !important;
+  // }
+}
+//查询按钮, 新建按钮， 确定按钮
+.el-button--primary.searchAngNewBtn{
+  height: 34px;
+  padding: 0 15px;
+  color: #fff;
+  background-color: #3391CE;
+  border-color: #3391CE;
+  &.is-disabled {
+    background-color: #b0d3ed !important;
+    border-color: #bcd1e0 !important;
+  }
+}
+.el-button--primary.searchAngNewBtn:hover{
+  padding: 0 15px;
+  background-color: #3391CE;
+  border-color: #3391CE;
+}
+.el-button--primary.searchAngNewBtn:focus{
+  padding: 0 15px;
+  background-color: #3391CE;
+  border-color: #3391CE;
+}

@@ -102,7 +102,7 @@ export default {
             },
             {
               title: '本地产品/项目库',
-              path: '/demo2One'
+              path: '/localProductsOrProjectLibrary'
             }
           ]
         },

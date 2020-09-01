@@ -90,6 +90,16 @@ const routes = [
           requireAuth: true,
           title: '动态&资料'
         }
+      },
+      // 本地产品/项目库
+      {
+        path: '/localProductsOrProjectLibrary',
+        name: 'localProductsOrProjectLibrary',
+        component: () => import('@/pages/regulatoryRepository/localProductsOrProjectLibrary'),
+        meta: {
+          requireAuth: true,
+          title: '本地产品/项目库'
+        }
       }
     ]
   }
