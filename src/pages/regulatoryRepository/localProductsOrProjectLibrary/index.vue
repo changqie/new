@@ -111,17 +111,25 @@
         </el-table-column>
         <el-table-column
           width="130"
-          prop="address"
+          prop="creationTime"
           label="创建日期"
           align="center">
-          <template slot-scope="scope">{{ scope.row.date }}</template>
+          <template slot-scope="scope">{{ (scope.row.creationTime).split(' ')[0] }}</template>
         </el-table-column>
         <el-table-column label="操作" align="center">
           <template slot-scope="scope">
             <el-button
+              class="opera-btn" 
               size="mini"
+              type="primary"
+              @click="handlePreview(scope.$index, scope.row)">查看</el-button>
+            <el-button
+              class="opera-btn"
+              size="mini"
+              type="warning"
               @click="handleEdit(scope.$index, scope.row)">编辑</el-button>
             <el-button
+              class="opera-btn"
               size="mini"
               type="danger"
               @click="handleDelete(scope.$index, scope.row)">删除</el-button>
@@ -185,6 +193,18 @@ export default {
     handleSelectionChange () {
 
     },
+    // 查看
+    handlePreview (index, row) {
+
+    },
+    // 编辑
+    handleEdit (index, row) {
+
+    },
+    // 删除
+    handleDelete (index, row) {
+
+    },
     // 分页点击后方法
     pageChange (page) {
       this.localProTableSearch.page = page
@@ -198,6 +218,7 @@ export default {
     }
   },
   mounted () {
+    // 加载分页列表
     this.getLocalProductTable()
   }
 }
@@ -205,6 +226,8 @@ export default {
 
 <style lang="less" scoped>
   .local-products-or-project-library {
+    position: relative;
+    height: 100%;
     padding: 15px;
     background: #fff;
     .search-area {
