@@ -1,16 +1,16 @@
 // 设置输入框高度
 .el-input__inner{
-  height: 30px !important;
-  line-height: 30px !important;
+  height: 32px !important;
+  line-height: 32px !important;
   width: 165px;
   // @media all and (-ms-high-contrast: none), (-ms-high-contrast: active) {
   //   // ie下样式偏差1px
   //   line-height: 27px !important;
   // }
 }
-//查询按钮, 新建按钮， 确定按钮
+//设置查询按钮
 .el-button--primary.searchAngNewBtn{
-  height: 34px;
+  height: 32px;
   padding: 0 15px;
   color: #fff;
   background-color: #3391CE;
@@ -29,4 +29,83 @@
   padding: 0 15px;
   background-color: #3391CE;
   border-color: #3391CE;
+}
+//设置新增，导出等按钮
+.el-button.el-button--primary.el-button--mini {
+  padding: 4px 18px 6px;
+  color: #fff;
+  background-color: #3391CE;
+  border-color: #3391CE;
+  &.is-disabled {
+    background-color: #b0d3ed !important;
+    border-color: #bcd1e0 !important;
+  }
+}
+.el-button.el-button--primary.el-button--mini:hover{
+  padding: 4px 18px 6px;
+  background-color: #3391CE;
+  border-color: #3391CE;
+}
+.el-button.el-button--primary.el-button--mini:focus{
+  padding: 4px 18px 6px;
+  background-color: #3391CE;
+  border-color: #3391CE;
+}
+.el-button.el-button--danger.el-button--mini {
+  padding: 4px 18px 6px;
+  color: #fff;
+}
+.el-button.el-button--danger.el-button--mini:hover{
+  padding: 4px 18px 6px;
+}
+.el-button.el-button--danger.el-button--mini:focus{
+  padding: 4px 18px 6px;
+}
+//设置form-item
+.el-form--inline .el-form-item.serch-form-item {
+  margin-bottom:  10px;
+  margin-right: 6px;
+}
+.el-form--inline .el-form-item.serch-form-item.btn-box {
+  margin-bottom:  10px;
+  margin-right: 2px;
+}
+// 设置form-item-lable
+.serch-form-item .el-form-item__label{
+  position: relative;
+  top: 1px;
+  padding: 0 7px;
+  // width: 80px;
+  height: 32px;
+  line-height: 32px;
+  font-size: 12px;
+  border: 1px solid #DDD;
+  border-top-left-radius: 4px;
+  border-bottom-left-radius: 4px;
+  border-right: none;
+  background: #F4F8FB;
+  text-align: center;
+}
+.serch-form-item .el-form-item__content {
+
+
+
+
+
+
+
+
+  line-height: 32px;
+  position: relative;
+  font-size: 14px;
+  .el-input__inner{
+    border-radius: 0 4px 4px 0;
+  }
+}
+// 设置新增等按钮区域样式
+.action-bar{
+  padding: 10px 0;
+  .el-button+.el-button{
+    margin-left: 2px;
+  }
 }
