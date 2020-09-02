@@ -1,7 +1,7 @@
 <!-- 分页 -->
 <template>
   <div class="pagination">
-    <Divider />
+    <el-divider />
     <div class="pagination-slot">
       <slot>
         <el-pagination
@@ -11,7 +11,7 @@
           :page-size="pageSize"
           @current-change="pageChange"
           @size-change="pageSizeChange"
-          layout="prev, pager, next, sizes, jumper, total"
+          layout="total, prev, pager, next, sizes, jumper"
         />
       </slot>
     </div>
@@ -80,7 +80,8 @@ export default {
       return this.userInfo.configContent === '' || this.userInfo.configContent === undefined || this.userInfo.configContent === null ? 10 : parseInt(this.userInfo.configContent)
     }
   },
-  mounted () {}
+  mounted () {
+  }
 }
 </script>
 
@@ -90,9 +91,6 @@ export default {
     position: absolute;
     bottom: 0;
     left: 0;
-    .ivu-divider-horizontal {
-      margin: 0;
-    }
     .pagination-slot {
       width: 100%;
       height: 56px;
