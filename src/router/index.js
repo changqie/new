@@ -112,7 +112,152 @@ const routes = [
         }
       }
     ]
-  }
+  },
+  // 配置管理
+  {
+    path: '/config',
+    name: 'Config',
+    redirect: () => {
+      return getRedirectPath('95KGANGWCV') || '/regulationsManage'
+    },
+    component: () => import('@/pages/config'),
+    meta: {
+      title: '配置',
+      menuId: '95KGANGWCV'
+    },
+    children: [
+      {
+        path: '/regulationsManage',
+        name: 'RegulationsManage',
+        component: () => import('@/pages/config/pages/regulationsManage/index'),
+        meta: {
+          requireAuth: true,
+          title: '法规属性',
+          menuId: 'C5VHBSYRMA'
+        }
+      },
+      {
+        path: '/informationCenterConfig',
+        name: 'informationCenterConfig',
+        component: () => import('@/pages/config/pages/informationCenterConfig/index'),
+        meta: {
+          requireAuth: true,
+          title: '资料中心',
+          menuId: '6V2QZ9STRZ'
+        }
+      },
+      {
+        path: '/mechanismManage',
+        name: 'MechanismManage',
+        component: () => import('@/pages/config/pages/mechanismManage/index'),
+        meta: {
+          requireAuth: true,
+          title: '机构管理',
+          menuId: '7MWCQK6NNH'
+        }
+      },
+      {
+        path: '/roleManage',
+        name: 'RoleManage',
+        component: () => import('@/pages/config/pages/roleManage/index'),
+        meta: {
+          requireAuth: true,
+          title: '角色管理',
+          menuId: 'NVU76EMB7N'
+        }
+      },
+      {
+        path: '/userManage',
+        name: 'UserManage',
+        component: () => import('@/pages/config/pages/userManage/index'),
+        meta: {
+          requireAuth: true,
+          title: '用户管理',
+          menuId: 'YRJUEVJVUJ'
+        }
+      },
+      {
+        path: '/dynamicInformationManage',
+        name: 'DynamicInformationManage',
+        component: () => import('@/pages/config/pages/dynamicInformationManage/index'),
+        meta: {
+          requireAuth: true,
+          title: '动态信息',
+          menuId: '3C87BSHJUF'
+        }
+      },
+      {
+        path: '/dynamicInformationManage/dynamicInfomationPage/:id?',
+        name: 'dynamicInfo',
+        component: () => import('@/pages/config/pages/regulationsManage/index'),
+        meta: {
+          requireAuth: true,
+          title: '动态信息维护',
+          parentPath: '/dynamicInformationManage'
+        }
+      },
+      {
+        path: '/domesticDynamicsDetails/:id/:pageType',
+        name: 'DomesticDynamicsDetails',
+        component: () => import('@/pages/config/pages/regulationsManage/index'),
+        meta: {
+          requireAuth: true,
+          title: '国内动态详情',
+          parentPath: '/dynamicInformationManage',
+          menuId: 'RSCA2MWTBN'
+        }
+      },
+      {
+        path: '/warningTimeSetting',
+        name: 'WarningTimeSetting',
+        component: () => import('@/pages/config/pages/warningTimeSetting/index'),
+        meta: {
+          requireAuth: true,
+          title: '预警时间',
+          menuId: 'H2KC6P3PPM'
+        }
+      },
+      {
+        path: '/opinionFeedback',
+        name: 'OpinionFeedback',
+        component: () => import('@/pages/config/pages/opinionFeedback/index'),
+        meta: {
+          requireAuth: true,
+          title: '意见反馈',
+          menuId: '3A6A562XGQ'
+        }
+      },
+      {
+        path: '/convertDocView',
+        name: 'ConvertDocView',
+        component: () => import('@/pages/config/pages/convertDocView/index'),
+        meta: {
+          requireAuth: true,
+          title: '文档转换监控',
+          menuId: '3F52K25546'
+        }
+      },
+      {
+        path: '/permissionMenuManage',
+        name: 'PermissionMenuManage',
+        component: () => import('@/pages/config/pages/permissionMenuManage/index'),
+        meta: {
+          requireAuth: false,
+          title: '权限管理'
+        }
+      },
+      {
+        path: '/linkManage',
+        name: 'LinkManage',
+        component: () => import('@/pages/config/pages/linkManage/index'),
+        meta: {
+          requireAuth: true,
+          title: '友情链接管理',
+          menuId: 'NODIHFDHFL'
+        }
+      }
+    ]
+  },
 ]
 
 const router = new Router({

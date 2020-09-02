@@ -115,7 +115,53 @@ export default {
           title: '数据报表',
           path: '/',
           isChildren: true // 判断没有子菜单
-        }
+        },
+        {
+          title: '配置管理',
+          path: '/config',
+          children: [
+            {
+              title: '标准法规属性管理',
+              path: '/regulationsManage'
+            },
+            {
+              title: '资料中心模块配置',
+              path: '/informationCenterConfig'
+            },
+            {
+              title: '机构管理',
+              path: '/MechanismManage'
+            },
+            {
+              title: '角色管理',
+              path: '/roleManage'
+            },
+            {
+              title: '用户管理',
+              path: '/userManage'
+            },
+            {
+              title: '动态信息管理',
+              path: '/dynamicInformationManage'
+            },
+            {
+              title: '预警时间设置',
+              path: '/warningTimeSetting'
+            },
+            {
+              title: '意见反馈',
+              path: '/opinionFeedback'
+            },
+            {
+              title: '文档转换监控',
+              path: '/convertDocView'
+            },
+            {
+              title: '友情链接管理',
+              path: '/permissionMenuManage'
+            }
+          ]
+        },
       ]
     }
   },
