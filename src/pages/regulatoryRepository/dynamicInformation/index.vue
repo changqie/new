@@ -20,14 +20,12 @@
           <h5>本地动态搜索</h5>
           <div class="dynamic-search-line"></div>
           <div class="dynamic-search-center">
-            <el-form ref="dynamic" :modal="dynamic" :rules="dynamicFormRules" class="label-input-form">
+            <el-form ref="dynamic" :model="dynamic" :rules="dynamicFormRules" class="dynamic-label-input-form">
               <el-form-item label="关键字" prop="keyWord" class="form-content-top1px">
                 <el-input
                   v-model="dynamic.keyWord"
-                  clearable
                   placeholder="请输入查找关键字"
                   :maxlength="100"
-                  @keyup.enter.native="queryDynamicInformation"
                 />
               </el-form-item>
               <el-form-item label="开始日期" prop="openData">
@@ -36,7 +34,6 @@
                   type="date"
                   :editable="false"
                   placeholder="请选择开始时间"
-                  @keyup.enter.native="queryDynamicInformation"
                 ></el-date-picker>
               </el-form-item>
               <el-form-item label="结束日期" prop="closeData">
@@ -45,11 +42,10 @@
                   type="date"
                   :editable="false"
                   placeholder="请选择结束时间"
-                  @keyup.enter.native="queryDynamicInformation"
                 ></el-date-picker>
               </el-form-item>
             </el-form>
-            <el-button class="search-btn" type="primary" @click="queryDynamicInformation">查询</el-button>
+            <el-button class="search-btn" type="primary" @click="queryDynamicInformation('dynamic')">查询</el-button>
           </div>
         </div>
       </div>
@@ -539,11 +535,12 @@ export default {
      * @author: chenxiaoxi
      * @date: 2018/10/19 15:15:30
      */
-    queryDynamicInformation () {
-      this.$refs['dynamic'].validate((valid) => {
+    queryDynamicInformation (formName) {
+      this.$refs[formName].validate((valid) => {
         if (valid) {
+          console.log('0000')
           this.$router.push({
-            path: '/queryDynamicInformation',
+            name: 'QueryDynamicInformation',
             query: {
               keywords: this.dynamic.keyWord,
               startTime: this.dynamic.openData !== '' ? this.dateFormat(this.dynamic.openData) : '',
@@ -551,7 +548,7 @@ export default {
             }
           })
         } else {
-          this.$Message.error('请检查表单是否填写正确')
+          this.$message.error('请检查表单是否填写正确')
         }
       })
     },
@@ -737,7 +734,7 @@ export default {
             user-select: none;
             font-weight: 600;
           }
-          .label-input-form{
+          .dynamic-label-input-form{
             .el-form-item{
               margin-bottom: 5px;
             }

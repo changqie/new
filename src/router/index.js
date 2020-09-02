@@ -91,6 +91,16 @@ const routes = [
           title: '动态&资料'
         }
       },
+      // 本地动态搜索
+      {
+        path: '/queryDynamicInformation/:keywords?/:startTime?/:endTime?',
+        name: 'QueryDynamicInformation',
+        component: () => import('@/pages/regulatoryRepository/dynamicInformation/pages/QueryDynamicInformation'),
+        meta: {
+          requireAuth: true,
+          title: '本地动态搜索'
+        }
+      },
       // 本地产品/项目库
       {
         path: '/localProductsOrProjectLibrary',
