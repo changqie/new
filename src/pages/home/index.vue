@@ -41,8 +41,7 @@
             <div class="title"><span class="more" @click="dynamicMore">MORE</span></div>
             <el-tabs
               value="Cloud"
-              :animated="false"
-              @on-click="changeTabs"
+              @tab-click="changeTabs"
             >
               <el-tab-pane label="云端动态" name="Cloud">
                 <ul>
@@ -270,8 +269,8 @@ export default {
       }
     },
     // tabs切换标签状态
-    changeTabs (name) {
-      this.tabFlag = name
+    changeTabs (tabs) {
+      this.tabFlag = tabs.name
     },
     // 动态信息详情页
     detailsDynamics (item, flag) {
