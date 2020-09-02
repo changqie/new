@@ -237,17 +237,6 @@ export default {
       width: 100%;
       height: calc(~'100% - 115px')!important;
       overflow-y: auto;
-      // .action-bar{
-      //   width: 100%;
-      //   .flex();
-      //   align-items: center;
-      //   padding: 0 0 10px 0;
-      //   .un-select();
-      //   .ivu-btn{
-      //     margin-right: 5px;
-      //     padding: 2px 18px;
-      //   }
-      // }
     }
   }
 </style>
