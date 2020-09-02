@@ -129,6 +129,11 @@
         </el-table-column>
       </el-table>
     </div>
+    <pagination
+      :page="localProTableSearch.page"
+      :total="total"
+      @pageChange="pageChange"
+      @pageSizeChange="pageSizeChange"></pagination>
   </div>
 </template>
 
@@ -156,14 +161,44 @@ export default {
     clearAllSearch () {
 
     },
-    // 分页查询
+    // 条件分页查询
     getLocalProductTableBtn () {
-
+      this.localProTableSearch.page = 1
+      this.getLocalProductTable()
+    },
+    // 查询本地产品
+    getLocalProductTable () {
+      this.SarExportSearchEo = this.localProTableSearch
+      this.$http.get('lawss/sarProductInfo/getProductInfoPage', this.localProTableSearch, {
+        _this: this, loading: 'loading'
+      }, res => {
+        this.localProTableList = res.data.list
+        this.total = res.data.count
+        // if ((this.localProTableList.length === 0 || this.localProTableList === []) && this.localProTableSearch.page !== 1) {
+        //   this.pageChange(1)
+        // }
+      }, e => {
+      })
+      this.$refs.selection.selectAll(false)
     },
     // 列表多选变化
     handleSelectionChange () {
 
+    },
+    // 分页点击后方法
+    pageChange (page) {
+      this.localProTableSearch.page = page
+      this.getLocalProductTable()
+    },
+    // 分页每页显示数改变后方法
+    pageSizeChange (pageSize) {
+      this.localProTableSearch.pageSize = pageSize
+      this.getLocalProductTable()
+      // 此处需要调用接口，修改个人配置
     }
+  },
+  mounted () {
+    this.getLocalProductTable()
   }
 }
 </script>
