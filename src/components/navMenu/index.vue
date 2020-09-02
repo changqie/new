@@ -77,7 +77,11 @@ export default {
               path: '/dynamicInformation'
             },
             {
-              title: '国内外标准法规',
+              title: '国内标准法规',
+              path: '/domesticStandardsAndRegulations'
+            },
+            {
+              title: '国外标准法规',
               path: '/demo2One'
             },
             {

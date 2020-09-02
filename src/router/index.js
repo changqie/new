@@ -91,6 +91,16 @@ const routes = [
           title: '动态&资料'
         }
       },
+      // 国内标准法规
+      {
+        path: '/domesticStandardsAndRegulations',
+        name: 'domesticStandardsAndRegulations',
+        component: () => import('@/pages/regulatoryRepository/domesticStandardsAndRegulations/index'),
+        meta: {
+          requireAuth: true,
+          title: '国内标准法规'
+        }
+      },
       // 本地动态搜索
       {
         path: '/queryDynamicInformation/:keywords?/:startTime?/:endTime?',
