@@ -30,16 +30,16 @@
       <has-no-data pClass="substance" :tips="substanceTips" v-if="substance.length === 0"></has-no-data>
       <!-- 相关动态 -->
       <div class="substance" v-else>
-        <dl v-for="(sub, index) in substance" :key="index" @click="informationDetails(sub)">
-          <dt>
-            <Icon type="md-paper"  size="18"/>
+        <div v-for="(sub, index) in substance" :key="index" @click="informationDetails(sub)">
+          <div class="substance-title">
+            <i class="el-icon-document-copy"/>
             <span :title="sub.title">{{ sub.title }}</span>
-          </dt>
-          <dd>
+          </div>
+          <div class="substance-date">
             <p>{{ sub.contentTxt }}</p>
             <span v-if="sub.pubTime != null && sub.pubTime !== ''">{{ $dateFormat(new Date(sub.pubTime), 'yyyy-MM-dd') }}</span>
-          </dd>
-        </dl>
+          </div>
+        </div>
         <loading :loading="loading">正在查找相关动态...</loading>
       </div>
       <pagination :total="total" @pageChange="pageChange" @pageSizeChange="pageSizeChange"></pagination>
@@ -175,7 +175,6 @@ export default {
     }
   },
   mounted () {
-    console.log('11111')
     this.dynamic.keyWord = this.$route.query.keywords
     this.dynamic.openData = this.$route.query.startTime
     this.dynamic.closeData = this.$route.query.endTime
@@ -196,9 +195,10 @@ export default {
     .query-dynamic-information-left{
       .flex();
       justify-content: center;
-      width: 320px;
+      margin-right: 10px;
+      width: 280px;
       .dynamic-search{
-        width: 300px;
+        width: 280px;
         .dynamic-search-header{
           .flex();
           padding-bottom: 5px;
@@ -248,44 +248,29 @@ export default {
       border: 1px solid #DDD;
       border-radius: 5px;
       .substance{
+        position: relative;
         width: 100%;
         height: calc(~'100% - 57px');
-        position: relative;
-        padding: 10px 20px;
+        padding: 10px 5px;
+        font-size: 14px;
         overflow-y: auto;
-        dl{
-          width: 100%;
-          display: flex;
-          padding: 10px 5px;
-          dt{
-            flex: 1;
-            font-size: 16px;
-            max-width: 90%;
-            .ellipsis();
-          }
-          dd{
-            /*width: 100%;*/
-            overflow: hidden;
-            text-indent: 20px;
-            .flex();
-            &>p{
-              width: calc(~'100% - 180px');
+        & > div{
+          .flex();
+          justify-content: space-between;
+          .substance-title {
+            display: flex;
+            padding: 10px 5px;
+            max-width: 80%;
+            & > span{
+              display: inline-block;
+              width: 100%;
               .ellipsis();
             }
-            &>span{
-              width: 150px;
-              .flex();
-              justify-content: flex-end;
-            }
           }
-          &:hover{
+          .substance-title:hover{
             cursor: pointer;
-            dt{
-              span {
-                text-decoration: underline;
-                color: @baseColor;
-              }
-            }
+            text-decoration: underline;
+            color: @baseColor;
           }
         }
       }
