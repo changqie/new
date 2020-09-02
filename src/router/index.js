@@ -95,7 +95,7 @@ const routes = [
       {
         path: '/localProductsOrProjectLibrary',
         name: 'localProductsOrProjectLibrary',
-        component: () => import('@/pages/regulatoryRepository/localProductsOrProjectLibrary'),
+        component: () => import('@/pages/regulatoryRepository/localProductsOrProjectLibrary/index'),
         meta: {
           requireAuth: true,
           title: '本地产品/项目库'
