@@ -85,7 +85,7 @@ const routes = [
       {
         path: '/dynamicInformation',
         name: 'DynamicInformation',
-        component: () => import('@/pages/regulatoryRepository/dynamicInformation'),
+        component: () => import('@/pages/regulatoryRepository/dynamicInformation/index'),
         meta: {
           requireAuth: true,
           title: '动态&资料'
