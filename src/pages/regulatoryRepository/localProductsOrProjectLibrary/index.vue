@@ -1,6 +1,6 @@
 <!--本地产品/项目库 -->
 <template>
-  <div class="local-products-or-project-library" v-class>
+  <div class="local-products-or-project-library v-class">
     <div class="search-area">
       <el-form :inline="true" :model="localProTableSearch" class="label-input-form">
         <el-form-item label="产品/项目代号" class="serch-form-item">
