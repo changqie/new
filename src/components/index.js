@@ -10,6 +10,7 @@ import Pagination from './pagination' // table表格分页组件
 import AdcBackTop from './backTop' // 回到顶部组件
 import HasNoData from './hasNoData' // 暂无数据组件
 import DeptTree from './deptTree' // 组织机构树
+import TableToolsBar from './tableToolsBar' // 表格工具栏
 
 const install = function (Vue) {
   Vue.component('loading', Loading)
@@ -20,6 +21,7 @@ const install = function (Vue) {
   Vue.component('adcBackTop', AdcBackTop)
   Vue.component('hasNoData', HasNoData)
   Vue.component('deptTree', DeptTree)
+  Vue.component('tableToolsBar', TableToolsBar)
 }
 
 export default {

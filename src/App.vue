@@ -75,8 +75,9 @@ export default {
       .sub-container{
         flex: 1;
         .container-box{
+          position: relative;
           height: calc(~'100% - 50px');
-          background: #F3F3F3;
+          background: #FFFFFF;
         }
       }
     }

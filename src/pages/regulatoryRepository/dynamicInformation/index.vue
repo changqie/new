@@ -363,7 +363,7 @@ export default {
               id = getStandId
               routename = 'OtherStandardDetails'
             } else {
-              this.$Message.warning('无权访问')
+              this.$message.warning('无权访问')
             }
           } else if (getStandType === 'INLAND_LAWS' || getStandType === 'FOREIGN_LAWS') {
             if (this.$hasPermission('A2HDHMEA6W')) {
@@ -371,7 +371,7 @@ export default {
               id = getStandId
               routename = 'OtherLawsDetails'
             } else {
-              this.$Message.warning('无权访问')
+              this.$message.warning('无权访问')
             }
           } else if (getStandType === 'BUSSIONESS_STAND') {
             if (this.$hasPermission('YJUHC32R7G')) {
@@ -379,7 +379,7 @@ export default {
               id = getStandId
               routename = 'OtherBussStandardDetails'
             } else {
-              this.$Message.warning('无权访问')
+              this.$message.warning('无权访问')
             }
           }
           if (routename !== '') {
@@ -393,7 +393,7 @@ export default {
             window.open(routeUrl.href, '_blank')
           }
         } else {
-          this.$Message.error(res.message)
+          this.$message.error(res.message)
         }
       }, e => {
       })
@@ -491,10 +491,10 @@ export default {
             }
           })
         } else {
-          this.$Message.error('当前角色无权限查看此信息')
+          this.$message.error('当前角色无权限查看此信息')
         }
       } else {
-        this.$Message.error('当前角色无权限查看此信息')
+        this.$message.error('当前角色无权限查看此信息')
       }
     },
     queryProductionVehicleByPage () {
@@ -538,7 +538,6 @@ export default {
     queryDynamicInformation (formName) {
       this.$refs[formName].validate((valid) => {
         if (valid) {
-          console.log('0000')
           this.$router.push({
             name: 'QueryDynamicInformation',
             query: {

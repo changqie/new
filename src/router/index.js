@@ -120,6 +120,15 @@ const routes = [
           title: '本地动态详情'
         }
       },
+      {
+        path: '/domesticDynamics',
+        name: 'DomesticDynamics',
+        component: () => import('@/pages/regulatoryRepository/dynamicInformation/pages/components/DomesticDynamics'),
+        meta: {
+          requireAuth: true,
+          title: '国内动态'
+        }
+      },
       // 本地产品/项目库
       {
         path: '/localProductsOrProjectLibrary',
