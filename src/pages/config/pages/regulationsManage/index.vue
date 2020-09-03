@@ -1,23 +1,12 @@
 <!-- 资料中心模块配置 -->
 <template>
-  <div class="regulatory-repository v-class">
-    <div>
-      <el-tabs type="border-card" v-model="rMActiveName" @tab-click="handleClick">
-        <el-tab-pane label="标准/文件性质" name="StandardClassification">
-          <StandardClassification></StandardClassification>
-        </el-tab-pane>
-        <el-tab-pane label="标准类别" name="StandardCategory">配置管理</el-tab-pane>
-        <el-tab-pane label="国家/地区" name="NationalArea">角色管理</el-tab-pane>
-        <el-tab-pane label="适用车型" name="ProductCategory">定时任务补偿</el-tab-pane>
-        <el-tab-pane label="适用认证" name="AuthenticationType">用户管理</el-tab-pane>
-        <el-tab-pane label="所属专业领域" name="Category">配置管理</el-tab-pane>
-        <el-tab-pane label="能源种类" name="EnergyTypes">配置管理</el-tab-pane>
-        <el-tab-pane label="采标程度" name="DegreeStandard">角色管理</el-tab-pane>
-        <el-tab-pane label="标准/文件状态" name="FileState">定时任务补偿</el-tab-pane>
-        <el-tab-pane label="企标大类" name="EnterpriseCategory">用户管理</el-tab-pane>
-        <el-tab-pane label="企业标准类别" name="EnterpriseStandardCategory">配置管理</el-tab-pane>
-      </el-tabs>
-    </div>
+  <div class="regulatory-repository">
+    <panel-header :tabs="tabsList" @activated="showComponent" :active="active"></panel-header>
+    <panel-content>
+      <transition enter-active-class="" leave-active-class="">
+        <components :is="active"></components>
+      </transition>
+    </panel-content>
   </div>
 </template>
 <script>
@@ -49,14 +38,50 @@ export default {
   },
   data () {
     return {
-      rMActiveName: 'StandardClassification'
+            active: 'StandardClassification',
+      tabsList: [ {
+        title: '标准/文件性质',
+        name: 'StandardClassification'
+      }, {
+        title: '标准类别',
+        name: 'StandardCategory'
+      }, {
+        title: '国家/地区',
+        name: 'NationalArea'
+      }, {
+        // title: '产品类别',
+        title: '适用车型',
+        name: 'ProductCategory'
+      }, {
+        // title: '认证类型',
+        title: '适用认证',
+        name: 'AuthenticationType'
+      }, {
+        title: '所属专业领域',
+        name: 'Category'
+      }, {
+        title: '能源种类',
+        name: 'EnergyTypes'
+      }, {
+        title: '采标程度',
+        name: 'DegreeStandard'
+      }, {
+        title: '标准/文件状态',
+        name: 'FileState'
+      }, {
+        // title: '企业大类',
+        title: '企标大类',
+        name: 'EnterpriseCategory'
+      }, {
+        title: '企业标准类别',
+        name: 'EnterpriseStandardCategory'
+      }]
     }
   },
   methods: {
     // tabs 切换事件
-    handleClick (tab, event) {
-      // 获取到当前是哪个tab激活
-      console.log('tab', tab.name)
+    showComponent (name) {
+      this.active = name
     }
   }
 }
