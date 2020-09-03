@@ -4,6 +4,8 @@
 */
 import base64 from './base64'
 import dateFormat from './date'
+// 表单验证
+import verify from './verify'
 const install = function (Vue) {
   if (install.installed) return
   install.installed = true
@@ -17,6 +19,11 @@ const install = function (Vue) {
     $dateFormat: {
       get () {
         return dateFormat
+      }
+    },
+    verify: {
+      get () {
+        return verify
       }
     }
   })
