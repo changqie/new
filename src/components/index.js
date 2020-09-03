@@ -11,6 +11,8 @@ import AdcBackTop from './backTop' // 回到顶部组件
 import HasNoData from './hasNoData' // 暂无数据组件
 import DeptTree from './deptTree' // 组织机构树
 import TableToolsBar from './tableToolsBar' // 表格工具栏
+import PanelHeader from './panel/PanelHeader' // tabs
+import PanelContent from './panel/PanelContent' // tabs 内容
 
 const install = function (Vue) {
   Vue.component('loading', Loading)
@@ -22,6 +24,8 @@ const install = function (Vue) {
   Vue.component('hasNoData', HasNoData)
   Vue.component('deptTree', DeptTree)
   Vue.component('tableToolsBar', TableToolsBar)
+  Vue.component('PanelHeader', PanelHeader)
+  Vue.component('PanelContent', PanelContent)
 }
 
 export default {

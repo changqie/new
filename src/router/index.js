@@ -59,15 +59,6 @@ const routes = [
       }
     ]
   },
-  {
-    path: '/demoThree3',
-    name: 'DemoThree3',
-    component: () => import('@/pages/demoThree'),
-    meta: {
-      requireAuth: true,
-      title: '流程中心'
-    }
-  },
   // 标准法规库
   {
     path: '/regulatoryRepository',
@@ -127,6 +118,28 @@ const routes = [
         meta: {
           requireAuth: true,
           title: '国内动态'
+        }
+      },
+      {
+        path: '/internationalDynamics',
+        name: 'InternationalDynamics',
+        component: () => import('@/pages/regulatoryRepository/dynamicInformation/pages/components/InternationalDynamics'),
+        meta: {
+          requireAuth: true,
+          title: '国外动态',
+          parentPath: '/dynamicInformation',
+          menuId: 'CHZFKH6J89'
+        }
+      },
+      {
+        path: '/informationCenter/:id?',
+        name: 'InformationCenter',
+        component: () => import('@/pages/regulatoryRepository/dynamicInformation/pages/components/InformationCenter'),
+        meta: {
+          requireAuth: true,
+          title: '资料中心',
+          parentPath: '/dynamicInformation',
+          menuId: 'MYVMD8FFJ8'
         }
       },
       // 本地产品/项目库

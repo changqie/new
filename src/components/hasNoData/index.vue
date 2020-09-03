@@ -54,7 +54,7 @@ export default {
       span {
         font-size: 14px;
         font-weight: normal;
-        margin-top: -10px;
+        margin-top: 5px;
         color: #AAA;
       }
     }
