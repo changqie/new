@@ -111,6 +111,15 @@ const routes = [
           title: '本地动态搜索'
         }
       },
+      {
+        path: '/dynamicInformationDetails/:id',
+        name: 'DynamicInformationDetails',
+        component: () => import('@/pages/regulatoryRepository/dynamicInformation/pages/DynamicInformationDetails'),
+        meta: {
+          requireAuth: true,
+          title: '本地动态详情'
+        }
+      },
       // 本地产品/项目库
       {
         path: '/localProductsOrProjectLibrary',

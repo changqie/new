@@ -9,6 +9,7 @@ import LawsTree from './lawsTree' // tree组件
 import Pagination from './pagination' // table表格分页组件
 import AdcBackTop from './backTop' // 回到顶部组件
 import HasNoData from './hasNoData' // 暂无数据组件
+import DeptTree from './deptTree' // 组织机构树
 
 const install = function (Vue) {
   Vue.component('loading', Loading)
@@ -18,6 +19,7 @@ const install = function (Vue) {
   Vue.component('pagination', Pagination)
   Vue.component('adcBackTop', AdcBackTop)
   Vue.component('hasNoData', HasNoData)
+  Vue.component('deptTree', DeptTree)
 }
 
 export default {
