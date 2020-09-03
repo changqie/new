@@ -111,16 +111,6 @@ export default {
           ]
         },
         {
-          title: '流程中心',
-          path: '/demoThree3',
-          isChildren: true // 判断没有子菜单
-        },
-        {
-          title: '数据报表',
-          path: '/',
-          isChildren: true // 判断没有子菜单
-        },
-        {
           title: '配置管理',
           path: '/config',
           children: [

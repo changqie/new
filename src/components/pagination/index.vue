@@ -97,6 +97,9 @@ export default {
       line-height: 56px;
       padding: 0 15px;
       box-sizing: border-box;
+      .el-pagination{
+        padding: 0;
+      }
     }
   }
 </style>
