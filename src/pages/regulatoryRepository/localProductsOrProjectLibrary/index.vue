@@ -119,7 +119,7 @@
         <el-table-column label="操作" align="center">
           <template slot-scope="scope">
             <el-button
-              class="opera-btn" 
+              class="opera-btn"
               size="mini"
               type="primary"
               @click="handlePreview(scope.$index, scope.row)">查看</el-button>

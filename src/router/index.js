@@ -128,7 +128,8 @@ const routes = [
     path: '/config',
     name: 'Config',
     redirect: () => {
-      return getRedirectPath('95KGANGWCV') || '/regulationsManage'
+      return '/regulationsManage'
+      // return getRedirectPath('95KGANGWCV') || '/regulationsManage'
     },
     component: () => import('@/pages/config'),
     meta: {
@@ -267,7 +268,7 @@ const routes = [
         }
       }
     ]
-  },
+  }
 ]
 
 const router = new Router({
