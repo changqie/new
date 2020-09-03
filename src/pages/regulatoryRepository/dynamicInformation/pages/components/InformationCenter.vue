@@ -77,5 +77,6 @@ export default {
 
 <style lang="less">
  #informationCenter{
+   height: 100%;
  }
 </style>
