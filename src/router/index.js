@@ -59,15 +59,6 @@ const routes = [
       }
     ]
   },
-  {
-    path: '/demoThree3',
-    name: 'DemoThree3',
-    component: () => import('@/pages/demoThree'),
-    meta: {
-      requireAuth: true,
-      title: '流程中心'
-    }
-  },
   // 标准法规库
   {
     path: '/regulatoryRepository',
@@ -111,6 +102,46 @@ const routes = [
           title: '本地动态搜索'
         }
       },
+      {
+        path: '/dynamicInformationDetails/:id',
+        name: 'DynamicInformationDetails',
+        component: () => import('@/pages/regulatoryRepository/dynamicInformation/pages/DynamicInformationDetails'),
+        meta: {
+          requireAuth: true,
+          title: '本地动态详情'
+        }
+      },
+      {
+        path: '/domesticDynamics',
+        name: 'DomesticDynamics',
+        component: () => import('@/pages/regulatoryRepository/dynamicInformation/pages/components/DomesticDynamics'),
+        meta: {
+          requireAuth: true,
+          title: '国内动态'
+        }
+      },
+      {
+        path: '/internationalDynamics',
+        name: 'InternationalDynamics',
+        component: () => import('@/pages/regulatoryRepository/dynamicInformation/pages/components/InternationalDynamics'),
+        meta: {
+          requireAuth: true,
+          title: '国外动态',
+          parentPath: '/dynamicInformation',
+          menuId: 'CHZFKH6J89'
+        }
+      },
+      {
+        path: '/informationCenter/:id?',
+        name: 'InformationCenter',
+        component: () => import('@/pages/regulatoryRepository/dynamicInformation/pages/components/InformationCenter'),
+        meta: {
+          requireAuth: true,
+          title: '资料中心',
+          parentPath: '/dynamicInformation',
+          menuId: 'MYVMD8FFJ8'
+        }
+      },
       // 本地产品/项目库
       {
         path: '/localProductsOrProjectLibrary',
@@ -128,7 +159,8 @@ const routes = [
     path: '/config',
     name: 'Config',
     redirect: () => {
-      return getRedirectPath('95KGANGWCV') || '/regulationsManage'
+      return '/regulationsManage'
+      // return getRedirectPath('95KGANGWCV') || '/regulationsManage'
     },
     component: () => import('@/pages/config'),
     meta: {
@@ -267,7 +299,7 @@ const routes = [
         }
       }
     ]
-  },
+  }
 ]
 
 const router = new Router({

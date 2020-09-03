@@ -32,6 +32,17 @@
   background-color: #3391CE;
   border-color: #3391CE;
 }
+.el-button--danger.searchAngNewBtn{
+  height: 32px;
+  padding: 0 15px;
+  color: #fff;
+}
+.el-button--danger.searchAngNewBtn:hover{
+  padding: 0 15px;
+}
+.el-button--danger.searchAngNewBtn:focus{
+  padding: 0 15px;
+}
 //设置新增，导出等按钮
 .el-button.el-button--primary.el-button--mini {
   padding: 4px 18px 6px;
@@ -141,6 +152,9 @@
   font-size: 14px;
   .el-input__inner{
     border-radius: 0 4px 4px 0;
+    font-size: 12px;
+    color: #515a6e;
+    font-family: Helvetica, 'Hiragino Sans GB', 'Microsoft Yahei', '\5FAE\8F6F\96C5\9ED1', Arial, sans-serif !important;
   }
 }
 // 设置新增等按钮区域样式
@@ -149,4 +163,19 @@
   .el-button+.el-button{
     margin-left: 2px;
   }
+}
+// 设置tabs激活状态颜色
+.el-tabs--border-card>.el-tabs__header .el-tabs__item.is-active {
+  color: #3391CE;
+  background-color: #FFF;
+  border-right-color: #DCDFE6;
+  border-left-color: #DCDFE6;
+}
+// 设置tabs hover颜色
+.el-tabs--border-card>.el-tabs__header .el-tabs__item:not(.is-disabled):hover {
+  color: #3391CE;
+}
+// 设置页面查询区域下的下划线
+.search-area {
+  border-bottom: 1px solid #e8eaec;
 }

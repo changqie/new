@@ -62,20 +62,22 @@ export default {
     position: relative;
     width: 100%;
     height: 100%;
+    overflow-y: auto;
     & > div{
       position: absolute;
       top: 0;
       left: 0;
       width: 100%;
-      height: 100%;
+      min-height: 100%;
     }
     .content-box{
       display: flex;
       .sub-container{
         flex: 1;
         .container-box{
+          position: relative;
           height: calc(~'100% - 50px');
-          background: #F3F3F3;
+          background: #FFFFFF;
         }
       }
     }

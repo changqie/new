@@ -230,15 +230,6 @@ export default {
           user-select: none;
           font-weight: 600;
         }
-        .ivu-form-item{
-          margin-bottom: 5px;
-          .ivu-form-item-content{
-            width: calc(~'100% - 80px');
-            .ivu-date-picker{
-              width: 100%;
-            }
-          }
-        }
       }
     }
     .query-dynamic-information-right{
@@ -263,6 +254,7 @@ export default {
             max-width: 80%;
             & > span{
               display: inline-block;
+              margin-left: 3px;
               width: 100%;
               .ellipsis();
             }
