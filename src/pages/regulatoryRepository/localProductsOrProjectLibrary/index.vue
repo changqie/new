@@ -230,9 +230,6 @@ export default {
     height: 100%;
     padding: 15px;
     background: #fff;
-    .search-area {
-      border-bottom: 1px solid #e8eaec;
-    }
     .content{
       width: 100%;
       height: calc(~'100% - 115px')!important;
