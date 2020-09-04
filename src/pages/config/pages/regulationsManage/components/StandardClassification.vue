@@ -62,14 +62,14 @@
         <el-table-column
           prop="dicTypeName"
           label="选项"
-          width="130"
+          width="400"
           align="center"
           >
         </el-table-column>
         <el-table-column
           prop="describes"
           label="描述"
-          width="130"
+          width="400"
           align="center">
         </el-table-column>
         <el-table-column label="操作" align="center">
@@ -235,7 +235,9 @@ export default {
       describes1: '',
       standCode1: '',
       // 判断是新增or 编辑 or 查看
-      oprState: ''
+      oprState: '',
+      // 多选时接收选中行数据
+      selectNum: [],
     }
   },
   methods: {
@@ -305,7 +307,7 @@ export default {
             }, res => {
               if (res.ok) {
                 this.closeModal()
-                this.dialogState = false
+                // this.dialogState = false
               } else {
                 this.dialogState = true
               }
@@ -318,18 +320,65 @@ export default {
     },
     // 新增弹窗关闭
     closeModal (formName) {
-      this.$refs[formName].resetFields();
+      // this.$refs[formName].resetFields();
       this.classModelAdd = {}
       this.selectClass()
       this.dialogState = false
     },
     // 删除
     classBatchDel () {
-
+      if (this.selectNum === '' || this.selectNum.length === 0) {
+        this.$confirm('请选择一条数据进行删除?', '提示', {
+          confirmButtonText: '确定',
+          // cancelButtonText: '取消',
+          type: 'warning'
+        })
+      }else (
+            this.$confirm('确认删除该这些数据?', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+          let delIds = []
+          let delTypeCodes = []
+          for (let i = 0; i < this.selectNum.length; i++) {
+            delIds.push(this.selectNum[i].id)
+            delTypeCodes.push(this.selectNum[i].dicTypeCode)
+          }
+          delIds = delIds.join(',')
+          delTypeCodes = delTypeCodes.join(',')
+          let data = {}
+          data.ids = delIds
+          data.dicTypeCodes = delTypeCodes
+          this.$http.delete('sys/dictype/deleteArr', data, {
+              _this: this
+            }, res => {
+              if(res.ok) {
+                this.selectClass()
+                this.$message({
+                type: 'success',
+                message: '删除成功!'
+                });
+              }else{               
+              }
+            })
+        }).catch(() => {
+          // this.$message({
+          //   type: 'info',
+          //   message: '已取消删除'
+          // });          
+        })
+      )
+      // } else { 
+        // const url = 'sys/dictype/deleteArr'
+        // this.confirm('确认删除该这些数据', delIds, delTypeCodes, url)
+      // }
     },
     // 多选
-    handleSelectionChange () {
-
+    handleSelectionChange (val) {
+      this.val = val
+      this.selectNum = val 
+      console.log('this.selectNum', this.selectNum)
     },
     pageChange (page) {
       this.page = page
