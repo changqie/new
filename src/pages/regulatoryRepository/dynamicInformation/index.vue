@@ -657,8 +657,6 @@ export default {
     padding: 25px;
     width: 100%;
     height: 100%;
-    background: #ffffff;
-    overflow-y: auto;
     .dynamic-header{
       height: 300px;
       background: @homeSectionBgColor;

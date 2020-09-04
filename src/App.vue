@@ -76,8 +76,9 @@ export default {
         flex: 1;
         .container-box{
           position: relative;
-          height: calc(~'100% - 50px');
+          height: calc(~'100vh - 50px');
           background: #FFFFFF;
+          overflow-y: auto;
         }
       }
     }

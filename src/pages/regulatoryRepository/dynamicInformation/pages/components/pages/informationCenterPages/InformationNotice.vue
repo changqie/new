@@ -4,17 +4,25 @@
    <table-tools-bar>
      <div slot="left">
        <div class="back" title="返回" @click="back">
-         <Icon type="md-arrow-round-back"></Icon>
+         <i class="el-icon-back"></i>
        </div>
        <span style="font-size: 18px;font-weight: bold">{{moduleName}}</span>
      </div>
      <div slot="right">
-       <Form :model="informationCenter" inline class="label-input-form">
-         <FormItem label="搜索" prop="internationalName">
-           <Input v-model="informationCenter.informationNotice" clearable placeholder="请输入搜索内容" @keyup.enter.native="queryMsgByPageBtn"/>
-         </FormItem>
-         <Button type="primary" @click="queryMsgByPageBtn" icon="ios-search" title="搜索"></Button>
-       </Form>
+       <el-form :model="informationCenter" inline class="label-input-form">
+         <el-form-item label="搜索" prop="internationalName" class="serch-form-item">
+           <el-input v-model="informationCenter.informationNotice" clearable placeholder="请输入搜索内容"/>
+         </el-form-item>
+         <el-form-item class="serch-form-item">
+           <el-button
+             class="searchAngNewBtn"
+             type="primary"
+             @click="queryMsgByPageBtn"
+             icon="el-icon-search"
+             title="搜索"
+           ></el-button>
+         </el-form-item>
+       </el-form>
      </div>
    </table-tools-bar>
    <div class="content">
@@ -23,7 +31,7 @@
          <ul >
            <li class="title">
              <i v-show="isNew (item.pubTime)" class="i">new</i>
-             <Icon type="md-arrow-dropright" />
+             <i class="el-icon-caret-right" />
              <span class="domestic-dynamic-title" :title="item.title">{{ item.title }}</span>
 <!--               <div class="time">{{ $dateFormat(new Date(item.pubTime), 'yyyy-MM-dd') }}</div>-->
              <span class="time">{{ getDate(item.pubTime) }}</span>
@@ -168,6 +176,7 @@ export default {
   @import '~@/assets/styles/mixins';
    #informationNotice{
      padding: 0.2rem 0.3rem;
+     height: 100%;
      .content{
        width: 100%;
        height: calc(~'100% - 120px');

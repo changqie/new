@@ -168,7 +168,7 @@ export default {
 <style lang="less" scoped>
   @import '~@/assets/styles/mixins';
   .nav-menu{
-    width: 205px;
+    min-width: 205px;
     height: 100%;
     .logo{
       text-align: center;

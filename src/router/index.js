@@ -102,6 +102,7 @@ const routes = [
           title: '本地动态搜索'
         }
       },
+      // 本地动态详情
       {
         path: '/dynamicInformationDetails/:id',
         name: 'DynamicInformationDetails',
@@ -111,6 +112,7 @@ const routes = [
           title: '本地动态详情'
         }
       },
+      // 国内动态
       {
         path: '/domesticDynamics',
         name: 'DomesticDynamics',
@@ -120,6 +122,7 @@ const routes = [
           title: '国内动态'
         }
       },
+      // 国外动态
       {
         path: '/internationalDynamics',
         name: 'InternationalDynamics',
@@ -131,6 +134,7 @@ const routes = [
           menuId: 'CHZFKH6J89'
         }
       },
+      // 资料中心
       {
         path: '/informationCenter/:id?',
         name: 'InformationCenter',
@@ -140,6 +144,18 @@ const routes = [
           title: '资料中心',
           parentPath: '/dynamicInformation',
           menuId: 'MYVMD8FFJ8'
+        }
+      },
+      // 实施预警
+      {
+        path: '/implementWarning',
+        name: 'ImplementWarning',
+        component: () => import('@/pages/regulatoryRepository/dynamicInformation/pages/components/ImplementWarning'),
+        meta: {
+          requireAuth: true,
+          title: '实施预警',
+          parentPath: '/dynamicInformation',
+          menuId: 'DDKSFGDQL4'
         }
       },
       // 本地产品/项目库
