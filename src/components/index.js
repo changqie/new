@@ -14,6 +14,7 @@ import DeptTree from './deptTree' // 组织机构树
 import TableToolsBar from './tableToolsBar' // 表格工具栏
 import PanelHeader from './panel/PanelHeader' // tabs
 import PanelContent from './panel/PanelContent' // tabs 内容
+import searchMultipleSelect from './searchMultipleSelect' // 下拉带搜索框-多选组件
 
 const install = function (Vue) {
   Vue.component('loading', Loading)
@@ -28,6 +29,7 @@ const install = function (Vue) {
   Vue.component('tableToolsBar', TableToolsBar)
   Vue.component('PanelHeader', PanelHeader)
   Vue.component('PanelContent', PanelContent)
+  Vue.component('searchMultipleSelect', searchMultipleSelect)
 }
 
 export default {

@@ -17,7 +17,7 @@
       <slot name="left"></slot>
       <slot name="right"></slot>
     </div>
-    <el-divider />
+    <!--<el-divider />-->
   </div>
 </template>
 
