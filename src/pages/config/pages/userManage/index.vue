@@ -67,107 +67,280 @@
     </table-tools-bar>
     <div class="content">
       <loading :loading="loading">数据获取中</loading>
-      <div style="margin-bottom: 10px" class="syncUser">
+      <div class="action-bar syncUser">
         <div>
-          <el-button type="primary" title="新增" @click="openAddUserModal" v-btn-permission="'KFKJFQ97LC'">新增</el-button>
-          <el-button type="error" title="批量删除" @click="batchUserDel" v-btn-permission="'Q2G9W2GCVU'">批量删除</el-button>
+          <el-button type="primary" size="mini" title="新增" @click="openAddUserModal" v-btn-permission="'KFKJFQ97LC'">新增</el-button>
+          <el-button type="danger" size="mini" title="批量删除" @click="batchUserDel" v-btn-permission="'Q2G9W2GCVU'">批量删除</el-button>
           <!--          <Button type="primary" title="同步信息" @click="syncUserInfo" >同步信息</Button>-->
         </div>
         <div>
           <span>同步时间:{{syncInfo}}</span>
         </div>
       </div>
-      <Table :columns="userColumns" :height="tableHeight" :data="userList" border ref="selection" @on-selection-change="handleRowChange" ></Table>
+      <el-table
+        :data="userList"
+        tooltip-effect="dark"
+        style="width: 100%"
+        :height="tableHeight"
+        border
+        :header-cell-style="{background: '#f8f8f9', color: '#515a6e'}"
+        @selection-change="handleRowChange">
+        <el-table-column
+          type="selection"
+          width="55"
+          align="center">
+        </el-table-column>
+        <el-table-column
+          prop="userType"
+          label="类型"
+          align="center">
+          <template slot-scope="scope">
+            <div v-if="scope.row.userType === 'GQYJY'">研究院</div>
+            <div v-if="scope.row.userType === 'GQJT'">集团</div>
+            <div v-if="scope.row.userType === 'OTHER'">其他</div>
+          </template>
+        </el-table-column>
+        <el-table-column
+          prop="uname"
+          label="人员姓名"
+          align="center">
+        </el-table-column>
+        <el-table-column
+          prop="account"
+          label="系统账号"
+          align="center">
+        </el-table-column>
+        <el-table-column
+          prop="roleNameList"
+          label="角色"
+          align="center">
+          <template slot-scope="scope">
+            <div>{{ scope.row.roleNameList.join(',') }}</div>
+          </template>
+        </el-table-column>
+        <el-table-column
+          prop="orgName"
+          label="所属部门"
+          align="center">
+        </el-table-column>
+        <el-table-column
+          prop="disableFlag"
+          label="状态"
+          align="center">
+          <template slot-scope="scope">
+            <div v-if="scope.row.disableFlag === 0">正常</div>
+            <div v-else>禁用</div>
+          </template>
+        </el-table-column>
+        <el-table-column label="操作" align="center" width="180">
+          <template slot-scope="scope">
+            <el-button
+              class="opera-btn"
+              size="mini"
+              type="primary"
+              @click="showUser(scope.$index, scope.row)">查看</el-button>
+            <el-button
+              class="opera-btn"
+              size="mini"
+              type="warning"
+              @click="userEdit(scope.$index, scope.row)">编辑</el-button>
+            <el-button
+              class="opera-btn"
+              size="mini"
+              type="danger"
+              @click="userDel(scope.$index, scope.row)">删除</el-button>
+          </template>
+        </el-table-column>
+      </el-table>
+      <pagination :page="pageNo" :total="total" @pageChange="pageChange" @pageSizeChange="pageSizeChange"></pagination>
     </div>
     <div>
-      <pagination :page="pageNo" :total="total" @pageChange="pageChange" @pageSizeChange="pageSizeChange"></pagination>
       <!-- 新增抽屉-->
-      <el-drawer :title="userTitle" :mask-closable="false" v-model="showUserModal"  width="1000"  :styles="styles" @on-close="closeDrawer">
+      <el-drawer
+        :title="userTitle"
+        :wrapperClosable="false"
+        :visible.sync="showUserModal"
+        :destroy-on-close="true"
+        size="1000px"
+        custom-class="demo-drawer"
+        @close="closeDrawer"
+      >
         <loading :loading="drawerLoading">正在保存</loading>
-        <div>
-          <Form ref="userVO" :model="userVO" :rules="userVOFormRules" label-position="right" class="label-input-form">
+        <div class="demo-drawer__content">
+          <el-form
+            ref="userVO"
+            :model="userVO"
+            :rules="userVOFormRules"
+            label-position="right"
+            class="label-input-form"
+            auto-complete="new-password"
+            inline
+          >
             <input v-model="userVO.usid" v-show="false">
-            <el-row>
-              <el-col span="12">
-                <el-row>
-                  <el-col>
-                    <FormItem label="用户类型" prop="userType" class="laws-info-item">
-                      <!--<Select v-model="userVO.userType" :disabled="usersType === 3">-->
-                      <!--<Option v-for="item in search.userTypeOptions" :value="item.value" :key="item.value">{{ item.label }}</Option>-->
-                      <!--</Select>-->
-                      <search-select
-                        v-model="userVO.userType"
-                        :disabled="usersType === 3"
-                        :options="search.userTypeOptions" />
-                    </FormItem>
-                  </el-col>
-                  <el-col>
-                    <FormItem label="人员姓名" prop="uname">
-                      <Input  v-model="userVO.uname"  :disabled="usersType === 3" placeholder="请输入人员姓名"/>
-                    </FormItem>
-                  </el-col>
-                  <el-col>
-                    <FormItem  label="系统账号" prop="account">
-                      <Input :disabled="createType" v-model="userVO.account" placeholder="请输入系统账号"/>
-                    </FormItem>
-                  </el-col>
-                  <el-col>
-                    <FormItem  label="人员编号" prop="workNum">
-                      <Input :disabled="createType" v-model.trim="userVO.workNum" placeholder="请输入人员编号"/>
-                    </FormItem>
-                  </el-col>
-                  <el-col>
-                    <FormItem v-if="showPWD" label="用户密码" prop="password" class="top1px">
-                      <Input type="password" v-model="userVO.password" :disabled="usersType === 3" placeholder="请输入用户密码"/>
-                    </FormItem>
-                  </el-col>
-                  <el-col>
-                    <FormItem v-if="showPWD" label="再次输入密码" prop="passwordCheck">
-                      <Input type="password" v-model="userVO.passwordCheck" :disabled="usersType === 3" placeholder="请再次输入密码"/>
-                    </FormItem>
-                  </el-col>
-                  <el-col>
-                    <FormItem label="角色" prop="roleId" class="laws-info-item">
-                      <search-multiple-select v-model="userVO.roleIdList" :multiple= "true" :options="search.roleOptions" placeholder="请选择角色"/>
-                      <!--                      <search-select v-model="userVO.roleId" :multiple= "true" :disabled="usersType === 3"  :options="search.roleOptions" placeholder="请选择角色"/>-->
-                      <!--                      <Select v-model="userVO.roleIdList" multiple>-->
-                      <!--                        <Option v-for="item in search.roleOptions" :value="item.value" :key="item.value">{{ item.label }}</Option>-->
-                      <!--                      </Select>-->
-                    </FormItem>
-                  </el-col>
-                  <el-col>
-                    <FormItem label="手机号码" prop="mobilePhone" class="laws-info-item">
-                      <Input v-model="userVO.mobilePhone"  :disabled="usersType === 3" placeholder="请输入手机号"/>
-                    </FormItem>
-                  </el-col>
-                  <el-col>
-                    <FormItem label="办公电话" prop="officePhone" class="laws-info-item">
-                      <Input v-model="userVO.officePhone" :disabled="usersType === 3" placeholder="请输入办公室电话"/>
-                    </FormItem>
-                  </el-col>
-                  <el-col>
-                    <FormItem label="电子邮件" prop="email" class="laws-info-item">
-                      <Input v-model="userVO.email"  :disabled="usersType === 3" placeholder="请输入电子邮箱"/>
-                    </FormItem>
-                  </el-col>
-                  <el-col>
-                    <FormItem label="用户状态" prop="disableFlag" class="laws-info-item">
-                      <!--<search-select v-model="userVO.disableFlag" placeholder="请选择状态" :disabled="usersType === 3" :options="search.disableFlagOptions" />-->
-                      <Select v-model="userVO.disableFlag" placeholder="请选择状态" clearable>
-                        <Option v-for="item in search.disableFlagOptions" :value="item.value" :key="item.value">{{ item.label }}</Option>
-                      </Select>
-                    </FormItem>
-                  </el-col>
-                </el-row>
+            <el-row span="12">
+              <el-col :span="12">
+                <el-form-item
+                  label="用户类型"
+                  prop="userType"
+                  class="add-form-item"
+                >
+                  <search-select
+                    v-model="userVO.userType"
+                    :disabled="usersType === 3"
+                    :options="search.userTypeOptions" />
+                </el-form-item>
               </el-col>
-              <el-col span="12" >
+              <el-col :span="12">
+                <el-form-item
+                  label="人员姓名"
+                  prop="uname"
+                  class="add-form-item"
+                >
+                  <el-input
+                    v-model="userVO.uname"
+                    :disabled="usersType === 3"
+                    placeholder="请输入人员姓名"/>
+                </el-form-item>
+              </el-col>
+              <el-col :span="12">
+                <el-form-item
+                  label="系统账号"
+                  prop="account"
+                  class="add-form-item"
+                >
+                  <el-input
+                    :disabled="createType"
+                    v-model="userVO.account"
+                    placeholder="请输入系统账号"/>
+                </el-form-item>
+              </el-col>
+              <el-col :span="12">
+                <el-form-item
+                  label="人员编号"
+                  prop="workNum"
+                  class="add-form-item"
+                >
+                  <el-input
+                    :disabled="createType"
+                    v-model.trim="userVO.workNum"
+                    placeholder="请输入人员编号"/>
+                </el-form-item>
+              </el-col>
+              <el-col :span="12">
+                <el-form-item
+                  v-if="showPWD"
+                  label="用户密码"
+                  prop="password"
+                  class="add-form-item"
+                >
+                  <el-input
+                    type="password"
+                    auto-complete="new-password"
+                    v-model="userVO.password"
+                    :disabled="usersType === 3"
+                    placeholder="请输入用户密码"/>
+                </el-form-item>
+              </el-col>
+              <el-col :span="12">
+                <el-form-item
+                  v-if="showPWD"
+                  label="再次输入密码"
+                  prop="passwordCheck"
+                  class="add-form-item"
+                >
+                  <el-input
+                    type="password"
+                    auto-complete="new-password"
+                    v-model="userVO.passwordCheck"
+                    :disabled="usersType === 3"
+                    placeholder="请再次输入密码"/>
+                </el-form-item>
+              </el-col>
+              <el-col :span="12">
+                <el-form-item
+                  label="角色"
+                  prop="roleId"
+                  class="add-form-item"
+                >
+                  <search-multiple-select v-model="userVO.roleIdList" :multiple= "true" :options="search.roleOptions" placeholder="请选择角色"/>
+                  <!--                      <search-select v-model="userVO.roleId" :multiple= "true" :disabled="usersType === 3"  :options="search.roleOptions" placeholder="请选择角色"/>-->
+                  <!--                      <Select v-model="userVO.roleIdList" multiple>-->
+                  <!--                        <Option v-for="item in search.roleOptions" :value="item.value" :key="item.value">{{ item.label }}</Option>-->
+                  <!--                      </Select>-->
+                </el-form-item>
+              </el-col>
+              <el-col :span="12">
+                <el-form-item
+                  label="手机号码"
+                  prop="mobilePhone"
+                  class="add-form-item"
+                >
+                  <el-input
+                    v-model="userVO.mobilePhone"
+                    :disabled="usersType === 3"
+                    placeholder="请输入手机号"/>
+                </el-form-item>
+              </el-col>
+              <el-col :span="12">
+                <el-form-item
+                  label="办公电话"
+                  prop="officePhone"
+                  class="add-form-item"
+                >
+                  <el-input
+                    v-model="userVO.officePhone"
+                    :disabled="usersType === 3"
+                    placeholder="请输入办公室电话"/>
+                </el-form-item>
+              </el-col>
+              <el-col :span="12">
+                <el-form-item
+                  label="电子邮件"
+                  prop="email"
+                  class="add-form-item"
+                >
+                  <el-input
+                    v-model="userVO.email"
+                    :disabled="usersType === 3"
+                    placeholder="请输入电子邮箱"/>
+                </el-form-item>
+              </el-col>
+              <el-col :span="12">
+                <el-form-item
+                  label="用户状态"
+                  prop="disableFlag"
+                  class="add-form-item"
+                >
+                  <!--<search-select v-model="userVO.disableFlag" placeholder="请选择状态" :disabled="usersType === 3" :options="search.disableFlagOptions" />-->
+                  <el-select v-model="userVO.disableFlag" placeholder="请选择状态" clearable>
+                    <el-option v-for="item in search.disableFlagOptions" :value="item.value" :key="item.value">{{ item.label }}</el-option>
+                  </el-select>
+                </el-form-item>
+              </el-col>
+              <el-col :span="12">
                 <!-- 此处获取组织机构架构图 -->
-                <FormItem label="所属部门" prop="orgName">
-                  <Input v-model="userVO.orgName" v-show="false" />
-                  <Input v-model="userVO.orgId" v-show="false" />
-                  <Poptip placement="bottom" popper-class="user-dept-popper" @on-popper-show="selectDeptNode">
-                    <Input v-model="userVO.orgName" placeholder="请选择部门" readonly clearable id="deptBtn" />
-                    <div class="api" slot="content">
+                <el-form-item
+                  label="所属部门"
+                  prop="orgName"
+                  class="add-form-item"
+                >
+                  <el-input v-model="userVO.orgName" v-show="false" />
+                  <el-input v-model="userVO.orgId" v-show="false" />
+                  <el-popover
+                    placement="bottom"
+                    popper-class="user-dept-popper"
+                    trigger="click"
+                    :value="false"
+                  >
+                    <el-input
+                      slot="reference"
+                      v-model="userVO.orgName"
+                      placeholder="请选择部门"
+                      readonly
+                      clearable
+                      id="deptBtn"
+                    />
+                    <div class="api">
                       <laws-tree
                         :zNodes="zNodes"
                         treeDivId="domesticTree" deptSelect
@@ -176,20 +349,20 @@
                         class="ztree" style="width: 200px;height: 400px;overflow: auto">
                       </laws-tree>
                     </div>
-                  </Poptip>
+                  </el-popover>
                   <!--<ul id="orgTree" class="ztree" style="width: 200px;height: 500px;overflow: auto"></ul>-->
-                </FormItem>
+                </el-form-item>
               </el-col>
             </el-row>
-          </Form>
+          </el-form>
         </div>
         <div id="roleFormButton" class="demo-drawer-footer" :class="{ 'disappear': usersType === 3 }">
-          <Button @click="closeDrawer">取消</Button>
-          <Button type="primary" @click="saveUserInfo('userVO')">提交</Button>
+          <el-button @click="closeDrawer">取消</el-button>
+          <el-button type="primary" @click="saveUserInfo('userVO')">提交</el-button>
         </div>
       </el-drawer>
       <!--查看抽屉-->
-      <el-drawer :mask-closable="false"  width="640" title="用户信息" v-model="showUserSeeModal" @on-close="showClose" class="drawer-bg">
+      <el-drawer :mask-closable="false"  width="640" title="用户信息" v-model="showUserSeeModal" @close="showClose" class="drawer-bg">
         <div class="check-item-row">
           <div class="check-item-col">
             <div class="check-item-label">人员姓名：</div>
@@ -324,12 +497,6 @@ export default {
           value: '1'
         }],
         searching: false
-      },
-      styles: {
-        height: 'calc(100% - 55px)',
-        overflow: 'auto',
-        paddingBottom: '53px',
-        position: 'static'
       },
       usersType: '',
       createType: true,
@@ -736,7 +903,7 @@ export default {
       this.accountState = false
       this.createType = false
       this.getOrgTreeSource()
-      this.$refs['userVO'].resetFields()
+      // this.$refs['userVO'].resetFields()
       this.showUserModal = true
       this.userVO.roleIdList = []
       this.userVO.roleNameList = ''
@@ -919,14 +1086,7 @@ export default {
     // 清除弹窗内容
     cleanUserValue () {
       this.showUserModal = false
-      this.$nextTick(() => {
-        if (this.$refs['userVO'] !== undefined) {
-          this.$refs['userVO'].resetFields()
-          for (let i in this.userVO) {
-            this.userVO[i] = ''
-          }
-        }
-      })
+      this.$refs['userVO'].resetFields()
     },
     // 关闭弹窗
     closeDrawer () {
@@ -982,12 +1142,14 @@ export default {
     this.getLastSyncTime()
     this.$nextTick(() => {
       let tableHeight = $('.content').css('height')
-      let height = parseInt(tableHeight.substring(0, tableHeight.indexOf('p'))) - 185
+      let height = parseInt(tableHeight.substring(0, tableHeight.indexOf('p'))) - 155
       this.tableHeight = height
+      console.log(this.tableHeight)
       window.onresize = function () {
         let tableHeight = $('.content').css('height')
-        let height = parseInt(tableHeight.substring(0, tableHeight.indexOf('p'))) - 185
+        let height = parseInt(tableHeight.substring(0, tableHeight.indexOf('p'))) - 155
         _this.tableHeight = height
+        console.log(_this.tableHeight)
       }
     })
   }
@@ -997,45 +1159,16 @@ export default {
 <style lang="less">
   @import '~@/assets/styles/mixins';
   #user-manage{
-    background: #FFF;
     padding: 0.2rem 0.3rem;
+    width: calc(~'100% - 10px');
+    height: 100%;
+    background: #FFF;
     .table-tools-bar .tools-bar-wrapper .label-select-content {
       min-width: 0 !important;
       width: auto !important;
     }
-    .tools-bar-wrapper{
-      .ivu-form-item{
-        margin-right: 0;
-      }
-    }
-    .tools-bar-wrapper{
-      .ivu-input-wrapper{
-        margin-right: 0;
-      }
-    }
-    .ivu-table-wrapper{
-      height: calc(~'100% - 45px');
-    }
-    .label-input-form{
-      .ivu-select-dropdown{
-        width: 150% !important;
-        max-width: initial;
-      }
-    }
-    @media screen and (min-width: 1366px) and (max-width: 1920px) {
-      .ivu-form-item-content {
-        width: 100px;
-      }
-      .ivu-form-item-content{
-        .ivu-select-selection{
-          min-width: 0;
-        }
-      }
-      .tools-bar-wrapper{
-        .ivu-input-wrapper{
-          min-width: 0;
-        }
-      }
+    .content{
+      height: calc(~'100% - 150px');
     }
     // 同步信息样式
     .syncUser{
@@ -1056,21 +1189,6 @@ export default {
       padding: 10px 16px;
       text-align: right;
       background: #fff;
-    }
-    .main .sub-container > div .ivu-table-wrapper{
-      height: calc(~'100% - 8px');
-    }
-    .ivu-select-item{
-      max-width: 200px;
-      .ellipsis();
-    }
-    .ivu-table-body{
-      overflow-x: hidden !important;
-    }
-  }
-  .user-dept-popper{
-    .ivu-poptip-body{
-      padding: 0;
     }
   }
   .roleSee{
