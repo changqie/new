@@ -23,7 +23,9 @@
         ></laws-tree>
       </div>
       <div class="tree-collapse" @click="treeCollapse" :class="{ 'tree-close': sideClose }">
-        <Icon :type="collapseIcon" :size="18"/>
+        <!--切换折叠样式-->
+        <i class="el-icon-arrow-left" v-if="sideClose === false"></i>
+        <i class="el-icon-arrow-right" v-if="sideClose === true"></i>
       </div>
     </div>
     <div class="tree-right">
@@ -67,7 +69,7 @@
               <el-col :span="8">
                 <el-form-item label="标准性质"  class="serch-form-item">
                   <el-select v-model="sarStandardsSearch.standNature" placeholder="根据标准性质查找" clearable
-                          @keyup.enter.native="getDomesticStandardTableBtn(sarStandardsSearch)" style="width: 204px">
+                          @keyup.enter.native="getDomesticStandardTableBtn(sarStandardsSearch)">
                     <el-option v-for="opt in standNatureOptions" :value="opt.value === undefined ? '' :opt.value" :key="opt.value">{{ opt.label}}
                     </el-option>
                   </el-select>
@@ -76,7 +78,7 @@
               <el-col :span="8">
                 <el-form-item label="标准状态"  class="serch-form-item">
                   <el-select v-model="sarStandardsSearch.standState" placeholder="根据标准状态查找" clearable
-                          @keyup.enter.native="getDomesticStandardTableBtn(sarStandardsSearch)" style="width: 204px">
+                          @keyup.enter.native="getDomesticStandardTableBtn(sarStandardsSearch)">
                     <el-option v-for="opt in standStateOptions" :value="opt.value === undefined ? '' :opt.value" :key="opt.value">{{ opt.label}}</el-option>
                   </el-select>
                 </el-form-item>
@@ -160,9 +162,6 @@
           </el-button>
         </div>
         <div class="table-wrapper">
-          <!--          <el-table border :columns="domesticStandColumn" :height="tableHeight" :data="stahndinfoList"-->
-          <!--                 @on-selection-change="standSelectChange" class="drag-table domestic-standard-database-tables"-->
-          <!--                 :row-class-name="dragRowClassName"></el-table>-->
           <el-table
             ref="multipleTable"
             :data="stahndinfoList"
@@ -224,7 +223,7 @@
                   class="opera-btn"
                   size="mini"
                   type="warning"
-                  @click="handleEdit(scope.$index, scope.row)">编辑</el-button>
+                  @click="selectStandardPro(scope.row, 'edit')">编辑</el-button>
                 <el-button
                   class="opera-btn"
                   size="mini"
@@ -237,7 +236,7 @@
       </div>
       <pagination :page="tableFlag === '' ? sarStandardsSearch.page : tableFlag.page " :total="total"
                   @pageChange="pageChange" @pageSizeChange="pageSizeChange"></pagination>
-      <!--               导出文件改名字模态框      -->
+      <!--导出文件改名字模态框-->
       <el-dialog :visible.sync="exportModelFlag" title="导出文件" width="30%">
         <el-form :inline="true" class="label-input-form">
         <el-form-item label="导出名称" class="serch-form-item">
@@ -245,11 +244,10 @@
         </el-form-item>
         </el-form>
         <span  slot="footer" class="dialog-footer">
-          <el-button type="primary" size="mini" @click="exportTestItem">确定</el-button>
-          <el-button type="primary" size="mini" @click="cancal">取消</el-button>
+          <el-button type="primary" class="searchAngNewBtn" size="mini" @click="exportTestItem">确定</el-button>
+          <el-button type="primary" class="searchAngNewBtn" size="mini" @click="cancal">取消</el-button>
         </span>
       </el-dialog>
-
       <!-- 新增国内标准 -->
       <el-drawer
         :title="modalshowtitle"
@@ -333,7 +331,7 @@
               <el-col span="12">
                 <el-form-item label="标准文本" prop="standFileList" label-width="130px" class="add-form-item">
                   <el-input v-model="sarStandardsInfoEO.standFile" v-show="false"></el-input>
-                  <el-button @click="clickButtonToUpload('standFileList')" icon="ios-cloud-upload-outline"
+                  <el-button size="small" @click="clickButtonToUpload('standFileList')" icon="ios-cloud-upload-outline"
                           :disabled="formdisableflag" class="form-upload-btn">
                     {{ (sarStandardsInfoEO.standFile === 'null' || sarStandardsInfoEO.standFile === '' ||
                     sarStandardsInfoEO.standFile == null) ? '点击上传' : '查看已上传的文件' }}
@@ -342,7 +340,7 @@
               </el-col>
             </el-row>
             <!----------------------------------------------------- 基础信息 ----------------------------------------------------->
-            <el-divider orientation="left">基础信息</el-divider>
+            <el-divider content-position="left">基础信息</el-divider>
             <el-row>
               <el-col span="12">
                 <el-form-item label="标准类别" prop="standSort" label-width="130px" class="add-form-item">
@@ -373,13 +371,13 @@
             </el-row>
             <el-row>
               <el-col span="12">
-                <el-form-item label="标准英文名称" prop="standEnName" label-width="130px" class="standards-info-item">
+                <el-form-item label="标准英文名称" prop="standEnName" label-width="130px" class="add-form-item">
                   <el-input v-model="sarStandardsInfoEO.standEnName" :disabled="formdisableflag" placeholder="请输入标准英文名称"
                          clearable></el-input>
                 </el-form-item>
               </el-col>
               <el-col span="12">
-                <el-form-item label="发布日期" prop="issueTime" label-width="130px" class="standards-info-item">
+                <el-form-item label="发布日期" prop="issueTime" label-width="130px" class="add-form-item">
                   <el-datePicker v-model="sarStandardsInfoEO.issueTime" :editable="false" :disabled="formdisableflag"
                               placeholder="请选择发布日期"></el-datePicker>
                 </el-form-item>
@@ -387,14 +385,14 @@
             </el-row>
             <el-row>
               <el-col span="12">
-                <el-form-item label="实施日期" prop="putTime" label-width="130px" class="standards-info-item">
+                <el-form-item label="实施日期" prop="putTime" label-width="130px" class="add-form-item">
                   <el-datePicker v-model="sarStandardsInfoEO.putTime" :editable="false" :disabled="formdisableflag"
                               placeholder="请选择实施日期"></el-datePicker>
                 </el-form-item>
               </el-col>
               <el-col span="12">
                 <el-form-item label="认证实施时间-CCC新车型" title="认证实施时间-CCC新车型" label-width="130px" prop="cccCertPutTime"
-                          class="standards-info-item">
+                              class="add-form-item">
                   <el-datePicker v-model="sarStandardsInfoEO.cccCertPutTime" :editable="false" :disabled="formdisableflag"
                               placeholder="请选择认证实施时间-CCC新车型"></el-datePicker>
                 </el-form-item>
@@ -403,14 +401,14 @@
             <el-row>
               <el-col span="12">
                 <el-form-item label="认证实施时间-公告新车型" title="认证实施时间-公告新车型" prop="noticeCertPutTime" label-width="130px"
-                          class="standards-info-item">
+                              class="add-form-item">
                   <el-datePicker v-model="sarStandardsInfoEO.noticeCertPutTime" :editable="false"
                               :disabled="formdisableflag" placeholder="请选择认证实施时间-公告新车型"></el-datePicker>
                 </el-form-item>
               </el-col>
               <el-col span="12">
                 <el-form-item label="认证实施时间-国环" title="认证实施时间-国环" prop="nationCertPutTime" label-width="130px"
-                          class="standards-info-item">
+                              class="add-form-item">
                   <el-datePicker v-model="sarStandardsInfoEO.nationCertPutTime" :editable="false"
                               :disabled="formdisableflag" placeholder="请选择认证实施时间-国环"></el-datePicker>
                 </el-form-item>
@@ -419,14 +417,14 @@
             <el-row>
               <el-col span="12">
                 <el-form-item label="认证实施时间-北环" title="认证实施时间-北环" label-width="130px" prop="northCertPutTime"
-                          class="standards-info-item">
+                              class="add-form-item">
                   <el-datePicker v-model="sarStandardsInfoEO.northCertPutTime" :editable="false"
                               :disabled="formdisableflag" placeholder="请选择认证实施时间-北环"></el-datePicker>
                 </el-form-item>
               </el-col>
               <el-col span="12">
                 <el-form-item label="发布日期是否明确" title="发布日期是否明确" prop="issueTimeCm" label-width="130px"
-                          class="standards-info-item">
+                              class="add-form-item">
                   <el-select v-model="sarStandardsInfoEO.issueTimeCm" clearable>
                     <el-option v-for="opt in isList" :value="opt.value === undefined ? '' :opt.value" :key="opt.value">{{ opt.label }}</el-option>
                   </el-select>
@@ -435,26 +433,26 @@
             </el-row>
             <el-row>
               <el-col span="12">
-                <el-form-item label="新车型实施日期" title="新车型实施日期" prop="newcarPutTime" label-width="130px" class="standards-info-item">
+                <el-form-item label="新车型实施日期" title="新车型实施日期" prop="newcarPutTime" label-width="130px" class="add-form-item">
                   <el-datePicker v-model="sarStandardsInfoEO.newcarPutTime" :editable="false" :disabled="formdisableflag" placeholder="请选择新车型实施日期"></el-datePicker>
                 </el-form-item>
               </el-col>
               <el-col span="12">
                 <el-form-item label="新车型实施日期 是否明确" title="新车型实施日期 是否明确" prop="newcarPutTimeCm" label-width="130px"
-                          class="standards-info-item">
+                              class="add-form-item">
                   <el-select v-model="sarStandardsInfoEO.newcarPutTimeCm" clearable>
                     <el-option v-for="opt in isList" :value="opt.value === undefined ? '' :opt.value" :key="opt.value">{{ opt.label }}</el-option>
                   </el-select>
                 </el-form-item>
               </el-col>
               <el-col span="12">
-                <el-form-item label="在产车实施日期" prop="productPutTime" label-width="130px" class="standards-info-item" title="在产车实施日期">
+                <el-form-item label="在产车实施日期" prop="productPutTime" label-width="130px" class="add-form-item" title="在产车实施日期">
                   <el-datePicker v-model="sarStandardsInfoEO.productPutTime" :editable="false" :disabled="formdisableflag" placeholder="请选择在产车实施日期"></el-datePicker>
                 </el-form-item>
               </el-col>
               <el-col span="12">
                 <el-form-item label="在产车实施日期 是否明确" title="在产车实施日期 是否明确" prop="productPutTimeCm" label-width="130px"
-                          class="standards-info-item">
+                              class="add-form-item">
                   <el-select v-model="sarStandardsInfoEO.productPutTimeCm" clearable>
                     <el-option v-for="opt in isList" :value="opt.value === undefined ? '' :opt.value" :key="opt.value">{{ opt.label }}</el-option>
                   </el-select>
@@ -463,13 +461,13 @@
             </el-row>
             <el-row>
               <el-col span="12">
-                <el-form-item label="未立项—获稿时间" prop="unProjectTime" label-width="130px" class="standards-info-item">
+                <el-form-item label="未立项—获稿时间" prop="unProjectTime" label-width="130px" class="add-form-item">
                   <el-datePicker v-model="sarStandardsInfoEO.unProjectTime" :editable="false" :disabled="formdisableflag"
                               placeholder="请选择未立项—获稿时间"></el-datePicker>
                 </el-form-item>
               </el-col>
               <el-col span="12">
-                <el-form-item label="立项—获稿时间" prop="projectTime" label-width="130px" class="standards-info-item"
+                <el-form-item label="立项—获稿时间" prop="projectTime" label-width="130px" class="add-form-item"
                           title="立项—获稿时间">
                   <el-datePicker v-model="sarStandardsInfoEO.projectTime" :editable="false" :disabled="formdisableflag"
                               placeholder="请选择立项—获稿时间"></el-datePicker>
@@ -478,7 +476,7 @@
             </el-row>
             <el-row>
               <el-col span="12">
-                <el-form-item label="适用认证" prop="applyAuth" label-width="130px" class="standards-info-item">
+                <el-form-item label="适用认证" prop="applyAuth" label-width="130px" class="add-form-item">
                   <search-multiple-select v-model="sarStandardsInfoEO.applyAuth"  :disabled="formdisableflag" placeholder="请选择适用认证" :options="applyAuthOptions">
                     <!--<el-option v-for="opt in applyAuthOptions" :value="opt.value" :key="opt.value">{{ opt.label }}</el-option>-->
                   </search-multiple-select>
@@ -487,429 +485,448 @@
             </el-row>
 
 <!--            -&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45; 代替和采标关系 -&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;-->
-            <el-divider orientation="left">代替和采标关系</el-divider>
+            <el-divider content-position="left">代替和采标关系</el-divider>
             <el-row>
               <el-col span="21">
-                <el-form-item label="代替标准号" prop="replaceStandNum" class="standards-info-item text-area-item">
+                <el-form-item label="代替标准号" prop="replaceStandNum"  label-width="130px"  class="add-form-item">
                   <el-input v-model.trim="sarStandardsInfoEO.replaceStandNum" ></el-input>
                 </el-form-item>
               </el-col>
               <el-col span="3">
-                <el-button type="primary" size="mini" @click="selectStands">手动查找</el-button>
+                <el-button  class="searchAngNewBtn" type="primary" size="small" @click="selectStands">手动查找</el-button>
               </el-col>
             </el-row>
             <el-row>
               <el-col span="24">
                 <el-form-item label="被代替标准号" prop="replacedStandNum" label-width="130px"
-                          class="standards-info-item text-area-item">
+                              class="add-form-item">
                   <el-input v-model="sarStandardsInfoEO.replacedStandNum" :maxlength="100" show-word-limit
                          :disabled="formdisableflag" type="textarea" :autosize="{minRows: 1,maxRows: 4}"
                          placeholder="请输入被代替标准号" clearable></el-input>
                 </el-form-item>
               </el-col>
             </el-row>
-<!--            <el-row>-->
-<!--              <el-col span="12">-->
-<!--                <el-form-item label="采用国际标准号" prop="interStandNum" label-width="130px" class="standards-info-item">-->
-<!--                  <el-input v-model="sarStandardsInfoEO.interStandNum" :disabled="formdisableflag" placeholder="请输入采用国际标准号"-->
-<!--                         clearable></el-input>-->
-<!--                </el-form-item>-->
-<!--              </el-col>-->
-<!--              <el-col span="12">-->
-<!--                <el-form-item label="采标程度" prop="adoptExtent" label-width="130px" class="standards-info-item">-->
-<!--                  <el-select v-model="sarStandardsInfoEO.adoptExtent" :disabled="formdisableflag" placeholder="请选择采标程度"-->
-<!--                          clearable>-->
-<!--                    <el-option v-for="opt in adoptExtentOptions" :value="opt.value === undefined ? '' :opt.value" :key="opt.value">{{ opt.label }}-->
-<!--                    </el-option>-->
-<!--                  </el-select>-->
-<!--                </el-form-item>-->
-<!--              </el-col>-->
-<!--            </el-row>-->
+            <el-row>
+              <el-col span="12">
+                <el-form-item label="采用国际标准号" prop="interStandNum" label-width="130px" class="add-form-item">
+                  <el-input v-model="sarStandardsInfoEO.interStandNum" :disabled="formdisableflag" placeholder="请输入采用国际标准号"
+                         clearable></el-input>
+                </el-form-item>
+              </el-col>
+              <el-col span="12">
+                <el-form-item label="采标程度" prop="adoptExtent" label-width="130px" class="add-form-item">
+                  <el-select v-model="sarStandardsInfoEO.adoptExtent" :disabled="formdisableflag" placeholder="请选择采标程度"
+                          clearable>
+                    <el-option v-for="opt in adoptExtentOptions" :value="opt.value === undefined ? '' :opt.value" :key="opt.value">{{ opt.label }}
+                    </el-option>
+                  </el-select>
+                </el-form-item>
+              </el-col>
+            </el-row>
 <!--            &lt;!&ndash;-&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45; 适用范围 -&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&ndash;&gt;-->
-<!--            <Divider orientation="left">适用范围</Divider>-->
-<!--            <el-row>-->
-<!--              <el-col span="24">-->
-<!--                <el-form-item label="适用车型" prop="applyArctic" label-width="130px" class="standards-info-item">-->
-<!--                  <search-multiple-select v-model="sarStandardsInfoEO.applyArctic" :disabled="formdisableflag"-->
-<!--                                          placeholder="请选择适用车型" :options="applyArcticOptions">-->
-<!--                    &lt;!&ndash;<el-option v-for="item in applyArcticOptions" :value="item.value" :key="item.value">{{ item.label }}&ndash;&gt;-->
-<!--                    &lt;!&ndash;</el-option>&ndash;&gt;-->
-<!--                  </search-multiple-select>-->
-<!--                </el-form-item>-->
-<!--              </el-col>-->
-<!--            </el-row>-->
-<!--            <el-row>-->
-<!--              <el-col span="24">-->
-<!--                <el-form-item label="能源种类" prop="emergyKind" label-width="130px" class="standards-info-item">-->
-<!--                  <search-multiple-select v-model="sarStandardsInfoEO.emergyKind" multiple :disabled="formdisableflag"-->
-<!--                                          placeholder="请选择能源种类" :options="emergyKindOptions">-->
-<!--                    &lt;!&ndash;<el-option v-for="opt in emergyKindOptions" :value="opt.value" :key="opt.value">{{ opt.label }}&ndash;&gt;-->
-<!--                    &lt;!&ndash;</el-option>&ndash;&gt;-->
-<!--                  </search-multiple-select>-->
-<!--                </el-form-item>-->
-<!--              </el-col>-->
-<!--            </el-row>-->
-<!--            <el-row>-->
-<!--              <el-col span="12">-->
-<!--                <el-form-item label="是否为新能源专向标准" title="是否为新能源专向标准" prop="isEnergyStand" label-width="130px"-->
-<!--                          class="standards-info-item">-->
-<!--                  <el-select v-model="sarStandardsInfoEO.isEnergyStand" clearable>-->
-<!--                    <el-option v-for="opt in isList" :value="opt.value === undefined ? '' :opt.value" :key="opt.value">{{ opt.label }}</el-option>-->
-<!--                  </el-select>-->
-<!--                </el-form-item>-->
-<!--              </el-col>-->
-<!--            </el-row>-->
+            <el-divider content-position="left">适用范围</el-divider>
+            <el-row>
+              <el-col span="24">
+                <el-form-item label="适用车型" prop="applyArctic" label-width="130px" class="add-form-item">
+                  <search-multiple-select v-model="sarStandardsInfoEO.applyArctic" :disabled="formdisableflag"
+                                          placeholder="请选择适用车型" :options="applyArcticOptions">
+                  </search-multiple-select>
+                </el-form-item>
+              </el-col>
+            </el-row>
+            <el-row>
+              <el-col span="24">
+                <el-form-item label="能源种类" prop="emergyKind" label-width="130px" class="add-form-item">
+                  <search-multiple-select v-model="sarStandardsInfoEO.emergyKind" multiple :disabled="formdisableflag"
+                                          placeholder="请选择能源种类" :options="emergyKindOptions">
+                    <!--<el-option v-for="opt in emergyKindOptions" :value="opt.value" :key="opt.value">{{ opt.label }}-->
+                    <!--</el-option>-->
+                  </search-multiple-select>
+                </el-form-item>
+              </el-col>
+            </el-row>
+            <el-row>
+              <el-col span="12">
+                <el-form-item label="是否为新能源专向标准" title="是否为新能源专向标准" prop="isEnergyStand" label-width="130px"
+                          class="add-form-item">
+                  <el-select v-model="sarStandardsInfoEO.isEnergyStand" clearable>
+                    <el-option v-for="opt in isList" :value="opt.value === undefined ? '' :opt.value" :key="opt.value">{{ opt.label }}</el-option>
+                  </el-select>
+                </el-form-item>
+              </el-col>
+            </el-row>
 <!--            &lt;!&ndash;-&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45; 起草信息 -&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&ndash;&gt;-->
-<!--            <Divider orientation="left">起草信息</Divider>-->
-<!--            <el-row>-->
-<!--              <el-col span="12">-->
-<!--                <el-form-item label="参与起草情况" prop="draftState" label-width="130px" class="standards-info-item">-->
-<!--                  <el-input v-model="sarStandardsInfoEO.draftState" :maxlength="200" :disabled="formdisableflag"-->
-<!--                         placeholder="请输入参与起草情况" clearable></el-input>-->
-<!--                </el-form-item>-->
-<!--              </el-col>-->
-<!--              <el-col span="12">-->
-<!--                <el-form-item label="修订依据" prop="reviseBasis" label-width="130px" class="standards-info-item">-->
-<!--                  <el-input v-model="sarStandardsInfoEO.reviseBasis" :maxlength="200" :disabled="formdisableflag"-->
-<!--                         placeholder="请输入修订依据" clearable></el-input>-->
-<!--                </el-form-item>-->
-<!--              </el-col>-->
-<!--            </el-row>-->
-<!--            <el-row>-->
-<!--              <el-col span="12">-->
-<!--                <el-form-item label="起草单位" prop="draftingUnit" label-width="130px" class="standards-info-item top1px">-->
-<!--                  <el-input v-model="sarStandardsInfoEO.draftingUnit" :disabled="formdisableflag" placeholder="请输入起草单位"-->
-<!--                         clearable></el-input>-->
-<!--                </el-form-item>-->
-<!--              </el-col>-->
-<!--              <el-col span="12">-->
-<!--                <el-form-item label="起草人" prop="draftUser" label-width="130px" class="standards-info-item top1px">-->
-<!--                  <el-input v-model="sarStandardsInfoEO.draftUser" :disabled="formdisableflag" placeholder="请输入起草人"-->
-<!--                         clearable></el-input>-->
-<!--                </el-form-item>-->
-<!--              </el-col>-->
-<!--            </el-row>-->
+            <el-divider content-position="left">起草信息</el-divider>
+            <el-row>
+              <el-col span="12">
+                <el-form-item label="参与起草情况" prop="draftState" label-width="130px" class="add-form-item">
+                  <el-input v-model="sarStandardsInfoEO.draftState" :maxlength="200" :disabled="formdisableflag"
+                         placeholder="请输入参与起草情况" clearable></el-input>
+                </el-form-item>
+              </el-col>
+              <el-col span="12">
+                <el-form-item label="修订依据" prop="reviseBasis" label-width="130px" class="add-form-item">
+                  <el-input v-model="sarStandardsInfoEO.reviseBasis" :maxlength="200" :disabled="formdisableflag"
+                         placeholder="请输入修订依据" clearable></el-input>
+                </el-form-item>
+              </el-col>
+            </el-row>
+            <el-row>
+              <el-col span="12">
+                <el-form-item label="起草单位" prop="draftingUnit" label-width="130px" class="add-form-item">
+                  <el-input v-model="sarStandardsInfoEO.draftingUnit" :disabled="formdisableflag" placeholder="请输入起草单位"
+                         clearable></el-input>
+                </el-form-item>
+              </el-col>
+              <el-col span="12">
+                <el-form-item label="起草人" prop="draftUser" label-width="130px" class="add-form-item">
+                  <el-input v-model="sarStandardsInfoEO.draftUser" :disabled="formdisableflag" placeholder="请输入起草人"
+                         clearable></el-input>
+                </el-form-item>
+              </el-col>
+            </el-row>
 <!--            &lt;!&ndash;-&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45; 文本信息 -&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&ndash;&gt;-->
-<!--            <Divider orientation="left">文本信息</Divider>-->
-<!--            <el-row>-->
-<!--              <el-col span="12">-->
-<!--                <el-form-item label="制修订计划完成时间" prop="planCompletionTime" label-width="130px" class="standards-info-item">-->
-<!--                  <el-datePicker v-model="sarStandardsInfoEO.planCompletionTime" :editable="false"-->
-<!--                              :disabled="formdisableflag" placeholder="请选择制修订计划完成时间"></el-datePicker>-->
-<!--                </el-form-item>-->
-<!--              </el-col>-->
-<!--              <el-col span="12">-->
-<!--                <el-form-item label="预测进入下制修订阶段时间" title="预测进入下制修订阶段时间" label-width="130px" prop="enterNextStageTime"-->
-<!--                          class="standards-info-item">-->
-<!--                  <el-datePicker v-model="sarStandardsInfoEO.enterNextStageTime" :editable="false"-->
-<!--                              :disabled="formdisableflag" placeholder="请选择预测进入下制修订阶段时间"></el-datePicker>-->
-<!--                </el-form-item>-->
-<!--              </el-col>-->
-<!--            </el-row>-->
+            <el-divider content-position="left">文本信息</el-divider>
+            <el-row>
+              <el-col span="12">
+                <el-form-item label="制修订计划完成时间" prop="planCompletionTime" label-width="130px" class="add-form-item">
+                  <el-datePicker v-model="sarStandardsInfoEO.planCompletionTime" :editable="false"
+                              :disabled="formdisableflag" placeholder="请选择制修订计划完成时间"></el-datePicker>
+                </el-form-item>
+              </el-col>
+              <el-col span="12">
+                <el-form-item label="预测进入下制修订阶段时间" title="预测进入下制修订阶段时间" label-width="130px" prop="enterNextStageTime"
+                          class="add-form-item">
+                  <el-datePicker v-model="sarStandardsInfoEO.enterNextStageTime" :editable="false"
+                              :disabled="formdisableflag" placeholder="请选择预测进入下制修订阶段时间"></el-datePicker>
+                </el-form-item>
+              </el-col>
+            </el-row>
 
-<!--            <el-row>-->
-<!--              <el-col span="12">-->
-<!--                <el-form-item label="初稿" prop="firstDraftFile" label-width="130px" class="standards-info-item">-->
-<!--                  <el-button @click="clickButtonToUpload('firstDraftFileList')" icon="ios-cloud-upload-outline"-->
-<!--                          :disabled="formdisableflag" class="form-upload-btn">-->
-<!--                    {{ (sarStandardsInfoEO.firstDraftFile === 'null' || sarStandardsInfoEO.firstDraftFile === '' ||-->
-<!--                    sarStandardsInfoEO.firstDraftFile == null) ? '点击上传' : '查看已上传的文件' }}-->
-<!--                  </el-button>-->
-<!--                </el-form-item>-->
-<!--              </el-col>-->
-<!--              <el-col span="12">-->
-<!--                <el-form-item label="初稿获稿时间" prop="firstDraftFileTime" label-width="130px" class="standards-info-item">-->
-<!--                  <el-datePicker v-model="sarStandardsInfoEO.firstDraftFileTime" :editable="false"-->
-<!--                              :disabled="formdisableflag" placeholder="请选择初稿获稿时间"></el-datePicker>-->
-<!--                </el-form-item>-->
-<!--              </el-col>-->
-<!--            </el-row>-->
-<!--            <el-row>-->
-<!--              <el-col span="12">-->
-<!--                <el-form-item label="初稿意见反馈" prop="firstDraftFileFeedback" label-width="130px" class="standards-info-item">-->
-<!--                  <el-input v-model="sarStandardsInfoEO.firstDraftFileFeedback" :maxlength="100"-->
-<!--                         :disabled="formdisableflag" placeholder="请输入初稿意见反馈"></el-input>-->
-<!--                </el-form-item>-->
-<!--              </el-col>-->
-<!--              <el-col span="12">-->
-<!--                <el-form-item label="WTO公示稿" prop="wtoPublicFile" label-width="130px" class="standards-info-item">-->
-<!--                  <el-button @click="clickButtonToUpload('wtoPublicFileList')" icon="ios-cloud-upload-outline"-->
-<!--                          :disabled="formdisableflag" class="form-upload-btn">-->
-<!--                    {{ (sarStandardsInfoEO.wtoPublicFile === 'null' || sarStandardsInfoEO.wtoPublicFile === '' ||-->
-<!--                    sarStandardsInfoEO.wtoPublicFile == null) ? '点击上传' : '查看已上传的文件' }}-->
-<!--                  </el-button>-->
-<!--                </el-form-item>-->
-<!--              </el-col>-->
-<!--            </el-row>-->
-<!--            <el-row>-->
-<!--              <el-col span="12">-->
-<!--                <el-form-item label="WTO公示稿获稿时间" prop="wtoPublicFileTime" label-width="130px" class="standards-info-item">-->
-<!--                  <el-datePicker v-model="sarStandardsInfoEO.wtoPublicFileTime" :editable="false"-->
-<!--                              :disabled="formdisableflag" placeholder="请选择WTO公示稿获稿时间"></el-datePicker>-->
-<!--                </el-form-item>-->
-<!--              </el-col>-->
-<!--              <el-col span="12">-->
-<!--                <el-form-item label="WTO公示稿意见反馈" prop="wtoPublicFileFeedback" label-width="130px"-->
-<!--                          class="standards-info-item">-->
-<!--                  <el-input v-model="sarStandardsInfoEO.wtoPublicFileFeedback" :maxlength="100" :disabled="formdisableflag"-->
-<!--                         placeholder="请输入WTO公示稿意见反馈"></el-input>-->
-<!--                </el-form-item>-->
-<!--              </el-col>-->
-<!--            </el-row>-->
-<!--            <el-row>-->
-<!--              <el-col span="12">-->
-<!--                <el-form-item label="预计进入下一阶段时间" title="预计进入下一阶段时间"  prop="estimatedNextTime" label-width="130px" class="standards-info-item">-->
-<!--                  <el-datePicker v-model="sarStandardsInfoEO.estimatedNextTime" :editable="false" :disabled="formdisableflag"-->
-<!--                              placeholder="请选择报批稿获稿时间"></el-datePicker>-->
-<!--                </el-form-item>-->
-<!--              </el-col>-->
-<!--              <el-col span="12">-->
-<!--                <el-form-item label="草案" prop="draftFile" label-width="130px" class="standards-info-item">-->
-<!--                  <el-button @click="clickButtonToUpload('draftFileList')" icon="ios-cloud-upload-outline"-->
-<!--                          :disabled="formdisableflag" class="form-upload-btn">-->
-<!--                    {{ (sarStandardsInfoEO.draftFile === 'null' || sarStandardsInfoEO.draftFile === '' ||-->
-<!--                    sarStandardsInfoEO.draftFile == null) ? '点击上传' : '查看已上传的文件' }}-->
-<!--                  </el-button>-->
-<!--                </el-form-item>-->
-<!--              </el-col>-->
-<!--            </el-row>-->
-<!--            <el-row>-->
-<!--              <el-col span="12">-->
-<!--                <el-form-item label="征求意见稿" prop="opinionFile" label-width="130px" class="standards-info-item">-->
-<!--                  <el-button @click="clickButtonToUpload('opinionFileList')" icon="ios-cloud-upload-outline"-->
-<!--                          :disabled="formdisableflag" class="form-upload-btn">-->
-<!--                    {{ (sarStandardsInfoEO.opinionFile === 'null' || sarStandardsInfoEO.opinionFile === '' ||-->
-<!--                    sarStandardsInfoEO.opinionFile == null) ? '点击上传' : '查看已上传的文件' }}-->
-<!--                  </el-button>-->
-<!--                </el-form-item>-->
-<!--              </el-col>-->
-<!--              <el-col span="12">-->
-<!--                <el-form-item label="征求意见稿获稿时间" prop="opinionFileTime" label-width="130px" class="standards-info-item">-->
-<!--                  <el-datePicker v-model="sarStandardsInfoEO.opinionFileTime" :editable="false" :disabled="formdisableflag"-->
-<!--                              placeholder="请选择征求意见稿获稿时间"></el-datePicker>-->
-<!--                </el-form-item>-->
-<!--              </el-col>-->
-<!--            </el-row>-->
-<!--            <el-row>-->
-<!--              <el-col span="12">-->
-<!--                <el-form-item label="征求意见稿意见反馈" prop="opinionFileFeedback" label-width="130px" class="standards-info-item">-->
-<!--                  <el-input v-model="sarStandardsInfoEO.opinionFileFeedback" :maxlength="100" :disabled="formdisableflag"-->
-<!--                         placeholder="请输入征求意见稿意见反馈"></el-input>-->
-<!--                </el-form-item>-->
-<!--              </el-col>-->
-<!--              <el-col span="12">-->
-<!--                <el-form-item label="送审稿" prop="sentScreenFile" label-width="130px" class="standards-info-item">-->
-<!--                  <el-button @click="clickButtonToUpload('sentScreenFileList')" icon="ios-cloud-upload-outline"-->
-<!--                          :disabled="formdisableflag" class="form-upload-btn">-->
-<!--                    {{ (sarStandardsInfoEO.sentScreenFile === 'null' || sarStandardsInfoEO.sentScreenFile === '' ||-->
-<!--                    sarStandardsInfoEO.sentScreenFile == null) ? '点击上传' : '查看已上传的文件' }}-->
-<!--                  </el-button>-->
-<!--                </el-form-item>-->
-<!--              </el-col>-->
-<!--            </el-row>-->
-<!--            <el-row>-->
-<!--              <el-col span="12">-->
-<!--                <el-form-item label="送审稿获稿时间" prop="sentScreenFileTime" label-width="130px" class="standards-info-item">-->
-<!--                  <el-datePicker v-model="sarStandardsInfoEO.sentScreenFileTime" :editable="false"-->
-<!--                              :disabled="formdisableflag" placeholder="请选择送审稿获稿时间"></el-datePicker>-->
-<!--                </el-form-item>-->
-<!--              </el-col>-->
-<!--              <el-col span="12">-->
-<!--                <el-form-item label="送审稿意见反馈" prop="sentScreenFileFeedback" label-width="130px" class="standards-info-item">-->
-<!--                  <el-input v-model="sarStandardsInfoEO.sentScreenFileFeedback" :maxlength="100"-->
-<!--                         :disabled="formdisableflag" placeholder="请输入送审稿意见反馈"></el-input>-->
-<!--                </el-form-item>-->
-<!--              </el-col>-->
-<!--            </el-row>-->
-<!--            <el-row>-->
-<!--              <el-col span="12">-->
-<!--                <el-form-item label="报批稿" prop="approvalFile" label-width="130px" class="standards-info-item">-->
-<!--                  <el-button @click="clickButtonToUpload('approvalFileList')" icon="ios-cloud-upload-outline"-->
-<!--                          :disabled="formdisableflag" class="form-upload-btn">-->
-<!--                    {{ (sarStandardsInfoEO.approvalFile === 'null' || sarStandardsInfoEO.approvalFile === '' ||-->
-<!--                    sarStandardsInfoEO.approvalFile == null) ? '点击上传' : '查看已上传的文件' }}-->
-<!--                  </el-button>-->
-<!--                </el-form-item>-->
-<!--              </el-col>-->
-<!--              <el-col span="12">-->
-<!--                <el-form-item label="报批稿获稿时间" prop="approvalFileTime" label-width="130px" class="standards-info-item">-->
-<!--                  <el-datePicker v-model="sarStandardsInfoEO.approvalFileTime" :editable="false"-->
-<!--                              :disabled="formdisableflag" placeholder="请选择报批稿获稿时间"></el-datePicker>-->
-<!--                </el-form-item>-->
-<!--              </el-col>-->
-<!--            </el-row>-->
-<!--            <el-row>-->
-<!--              <el-col span="12">-->
-<!--                <el-form-item label="报批稿意见反馈" prop="approvalFileFeedback" label-width="130px" class="standards-info-item">-->
-<!--                  <el-input v-model="sarStandardsInfoEO.approvalFileFeedback" :maxlength="100" :disabled="formdisableflag"-->
-<!--                         placeholder="请输入报批稿意见反馈"></el-input>-->
-<!--                </el-form-item>-->
-<!--              </el-col>-->
-<!--              <el-col span="12">-->
-<!--                <el-form-item label="关联文件" prop="relevanceFile" label-width="130px" class="standards-info-item">-->
-<!--                  <el-button @click="clickButtonToUpload('relevanceFileList')" icon="ios-cloud-upload-outline"-->
-<!--                          :disabled="formdisableflag" class="form-upload-btn">-->
-<!--                    {{ (sarStandardsInfoEO.relevanceFile === 'null' || sarStandardsInfoEO.relevanceFile === '' ||-->
-<!--                    sarStandardsInfoEO.relevanceFile == null) ? '点击上传' : '查看已上传的文件' }}-->
-<!--                  </el-button>-->
-<!--                </el-form-item>-->
-<!--              </el-col>-->
-<!--            </el-row>-->
+            <el-row>
+              <el-col span="12">
+                <el-form-item label="初稿" prop="firstDraftFile" label-width="130px" class="add-form-item">
+                  <el-button size="small" @click="clickButtonToUpload('firstDraftFileList')" icon="ios-cloud-upload-outline"
+                          :disabled="formdisableflag" class="form-upload-btn">
+                    {{ (sarStandardsInfoEO.firstDraftFile === 'null' || sarStandardsInfoEO.firstDraftFile === '' ||
+                    sarStandardsInfoEO.firstDraftFile == null) ? '点击上传' : '查看已上传的文件' }}
+                  </el-button>
+                </el-form-item>
+              </el-col>
+              <el-col span="12">
+                <el-form-item label="初稿获稿时间" prop="firstDraftFileTime" label-width="130px" class="add-form-item">
+                  <el-datePicker v-model="sarStandardsInfoEO.firstDraftFileTime" :editable="false"
+                              :disabled="formdisableflag" placeholder="请选择初稿获稿时间"></el-datePicker>
+                </el-form-item>
+              </el-col>
+            </el-row>
+            <el-row>
+              <el-col span="12">
+                <el-form-item label="初稿意见反馈" prop="firstDraftFileFeedback" label-width="130px" class="add-form-item">
+                  <el-input v-model="sarStandardsInfoEO.firstDraftFileFeedback" :maxlength="100"
+                         :disabled="formdisableflag" placeholder="请输入初稿意见反馈"></el-input>
+                </el-form-item>
+              </el-col>
+              <el-col span="12">
+                <el-form-item label="WTO公示稿" prop="wtoPublicFile" label-width="130px" class="add-form-item">
+                  <el-button size="small" @click="clickButtonToUpload('wtoPublicFileList')" icon="ios-cloud-upload-outline"
+                          :disabled="formdisableflag" class="form-upload-btn">
+                    {{ (sarStandardsInfoEO.wtoPublicFile === 'null' || sarStandardsInfoEO.wtoPublicFile === '' ||
+                    sarStandardsInfoEO.wtoPublicFile == null) ? '点击上传' : '查看已上传的文件' }}
+                  </el-button>
+                </el-form-item>
+              </el-col>
+            </el-row>
+            <el-row>
+              <el-col span="12">
+                <el-form-item label="WTO公示稿获稿时间" prop="wtoPublicFileTime" label-width="130px" class="add-form-item">
+                  <el-datePicker v-model="sarStandardsInfoEO.wtoPublicFileTime" :editable="false"
+                              :disabled="formdisableflag" placeholder="请选择WTO公示稿获稿时间"></el-datePicker>
+                </el-form-item>
+              </el-col>
+              <el-col span="12">
+                <el-form-item label="WTO公示稿意见反馈" prop="wtoPublicFileFeedback" label-width="130px"
+                          class="add-form-item">
+                  <el-input v-model="sarStandardsInfoEO.wtoPublicFileFeedback" :maxlength="100" :disabled="formdisableflag"
+                         placeholder="请输入WTO公示稿意见反馈"></el-input>
+                </el-form-item>
+              </el-col>
+            </el-row>
+            <el-row>
+              <el-col span="12">
+                <el-form-item label="预计进入下一阶段时间" title="预计进入下一阶段时间"  prop="estimatedNextTime" label-width="130px" class="add-form-item">
+                  <el-datePicker v-model="sarStandardsInfoEO.estimatedNextTime" :editable="false" :disabled="formdisableflag"
+                              placeholder="请选择报批稿获稿时间"></el-datePicker>
+                </el-form-item>
+              </el-col>
+              <el-col span="12">
+                <el-form-item label="草案" prop="draftFile" label-width="130px" class="add-form-item">
+                  <el-button size="small" @click="clickButtonToUpload('draftFileList')" icon="ios-cloud-upload-outline"
+                          :disabled="formdisableflag" class="form-upload-btn">
+                    {{ (sarStandardsInfoEO.draftFile === 'null' || sarStandardsInfoEO.draftFile === '' ||
+                    sarStandardsInfoEO.draftFile == null) ? '点击上传' : '查看已上传的文件' }}
+                  </el-button>
+                </el-form-item>
+              </el-col>
+            </el-row>
+            <el-row>
+              <el-col span="12">
+                <el-form-item label="征求意见稿" prop="opinionFile" label-width="130px" class="add-form-item">
+                  <el-button size="small" @click="clickButtonToUpload('opinionFileList')" icon="ios-cloud-upload-outline"
+                          :disabled="formdisableflag" class="form-upload-btn">
+                    {{ (sarStandardsInfoEO.opinionFile === 'null' || sarStandardsInfoEO.opinionFile === '' ||
+                    sarStandardsInfoEO.opinionFile == null) ? '点击上传' : '查看已上传的文件' }}
+                  </el-button>
+                </el-form-item>
+              </el-col>
+              <el-col span="12">
+                <el-form-item label="征求意见稿获稿时间" prop="opinionFileTime" label-width="130px" class="add-form-item">
+                  <el-datePicker v-model="sarStandardsInfoEO.opinionFileTime" :editable="false" :disabled="formdisableflag"
+                              placeholder="请选择征求意见稿获稿时间"></el-datePicker>
+                </el-form-item>
+              </el-col>
+            </el-row>
+            <el-row>
+              <el-col span="12">
+                <el-form-item label="征求意见稿意见反馈" prop="opinionFileFeedback" label-width="130px" class="add-form-item">
+                  <el-input v-model="sarStandardsInfoEO.opinionFileFeedback" :maxlength="100" :disabled="formdisableflag"
+                         placeholder="请输入征求意见稿意见反馈"></el-input>
+                </el-form-item>
+              </el-col>
+              <el-col span="12">
+                <el-form-item label="送审稿" prop="sentScreenFile" label-width="130px" class="add-form-item">
+                  <el-button size="small" @click="clickButtonToUpload('sentScreenFileList')" icon="ios-cloud-upload-outline"
+                          :disabled="formdisableflag" class="form-upload-btn">
+                    {{ (sarStandardsInfoEO.sentScreenFile === 'null' || sarStandardsInfoEO.sentScreenFile === '' ||
+                    sarStandardsInfoEO.sentScreenFile == null) ? '点击上传' : '查看已上传的文件' }}
+                  </el-button>
+                </el-form-item>
+              </el-col>
+            </el-row>
+            <el-row>
+              <el-col span="12">
+                <el-form-item label="送审稿获稿时间" prop="sentScreenFileTime" label-width="130px" class="add-form-item">
+                  <el-datePicker v-model="sarStandardsInfoEO.sentScreenFileTime" :editable="false"
+                              :disabled="formdisableflag" placeholder="请选择送审稿获稿时间"></el-datePicker>
+                </el-form-item>
+              </el-col>
+              <el-col span="12">
+                <el-form-item label="送审稿意见反馈" prop="sentScreenFileFeedback" label-width="130px" class="add-form-item">
+                  <el-input v-model="sarStandardsInfoEO.sentScreenFileFeedback" :maxlength="100"
+                         :disabled="formdisableflag" placeholder="请输入送审稿意见反馈"></el-input>
+                </el-form-item>
+              </el-col>
+            </el-row>
+            <el-row>
+              <el-col span="12">
+                <el-form-item label="报批稿" prop="approvalFile" label-width="130px" class="add-form-item">
+                  <el-button size="small" @click="clickButtonToUpload('approvalFileList')" icon="ios-cloud-upload-outline"
+                          :disabled="formdisableflag" class="form-upload-btn">
+                    {{ (sarStandardsInfoEO.approvalFile === 'null' || sarStandardsInfoEO.approvalFile === '' ||
+                    sarStandardsInfoEO.approvalFile == null) ? '点击上传' : '查看已上传的文件' }}
+                  </el-button>
+                </el-form-item>
+              </el-col>
+              <el-col span="12">
+                <el-form-item label="报批稿获稿时间" prop="approvalFileTime" label-width="130px" class="add-form-item">
+                  <el-datePicker v-model="sarStandardsInfoEO.approvalFileTime" :editable="false"
+                              :disabled="formdisableflag" placeholder="请选择报批稿获稿时间"></el-datePicker>
+                </el-form-item>
+              </el-col>
+            </el-row>
+            <el-row>
+              <el-col span="12">
+                <el-form-item label="报批稿意见反馈" prop="approvalFileFeedback" label-width="130px" class="add-form-item">
+                  <el-input v-model="sarStandardsInfoEO.approvalFileFeedback" :maxlength="100" :disabled="formdisableflag"
+                         placeholder="请输入报批稿意见反馈"></el-input>
+                </el-form-item>
+              </el-col>
+              <el-col span="12">
+                <el-form-item label="关联文件" prop="relevanceFile" label-width="130px" class="add-form-item">
+                  <el-button size="small" @click="clickButtonToUpload('relevanceFileList')" icon="ios-cloud-upload-outline"
+                          :disabled="formdisableflag" class="form-upload-btn">
+                    {{ (sarStandardsInfoEO.relevanceFile === 'null' || sarStandardsInfoEO.relevanceFile === '' ||
+                    sarStandardsInfoEO.relevanceFile == null) ? '点击上传' : '查看已上传的文件' }}
+                  </el-button>
+                </el-form-item>
+              </el-col>
+            </el-row>
 <!--            &lt;!&ndash;-&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45; 内容简介 -&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&ndash;&gt;-->
-<!--            <Divider orientation="left">内容简介</Divider>-->
-<!--            <el-row>-->
-<!--              <el-col span="12">-->
-<!--                <el-form-item label="已收到以下部门适法性确认结果" title="已收到以下部门适法性确认结果" prop="recieveConfirmResult" label-width="130px"-->
-<!--                          class="standards-info-item text-area-item">-->
-<!--                  <el-input v-model="sarStandardsInfoEO.recieveConfirmResult" :maxlength="200" :disabled="formdisableflag"-->
-<!--                         placeholder="请输入已收到以下部门适法性确认结果" clearable></el-input>-->
-<!--                </el-form-item>-->
-<!--              </el-col>-->
-<!--              <el-col span="12">-->
-<!--                <el-form-item label="试验首款车" prop="trialFirstCar" label-width="130px" class="standards-info-item">-->
-<!--                  <el-input v-model="sarStandardsInfoEO.trialFirstCar" :maxlength="200" :disabled="formdisableflag"-->
-<!--                         placeholder="请输入试验首款车" clearable></el-input>-->
-<!--                </el-form-item>-->
-<!--              </el-col>-->
-<!--            </el-row>-->
-<!--            <el-row>-->
-<!--              <el-col span="12">-->
-<!--                <el-form-item label="领域担当" prop="domainAssume" label-width="130px" class="standards-info-item">-->
-<!--                  <el-input v-model="sarStandardsInfoEO.domainAssume" :maxlength="200" :disabled="formdisableflag"-->
-<!--                         placeholder="请输入领域担当" clearable></el-input>-->
-<!--                </el-form-item>-->
-<!--              </el-col>-->
-<!--              <el-col span="12">-->
-<!--                <el-form-item label="预算基准" prop="budgetBenchmark" label-width="130px" class="standards-info-item">-->
-<!--                  <el-input v-model="sarStandardsInfoEO.budgetBenchmark" :maxlength="200" :disabled="formdisableflag"-->
-<!--                         placeholder="请输入预算基准" clearable></el-input>-->
-<!--                </el-form-item>-->
-<!--              </el-col>-->
-<!--            </el-row>-->
-<!--            <el-row>-->
-<!--              <el-col span="12">-->
-<!--                <el-form-item label="法规解读内容" prop="lawsExplainText" label-width="130px" class="standards-info-item">-->
-<!--                  <el-input v-model="sarStandardsInfoEO.lawsExplainText" :maxlength="200" :disabled="formdisableflag"-->
-<!--                         placeholder="请输入法规解读内容" clearable></el-input>-->
-<!--                </el-form-item>-->
-<!--              </el-col>-->
-<!--              <el-col span="12">-->
-<!--                <el-form-item label="法规解读关键字" prop="lawsExplainKeyword" label-width="130px" class="standards-info-item">-->
-<!--                  <el-input v-model="sarStandardsInfoEO.lawsExplainKeyword" :maxlength="200" :disabled="formdisableflag"-->
-<!--                         placeholder="请输入法规解读关键字" clearable></el-input>-->
-<!--                </el-form-item>-->
-<!--              </el-col>-->
-<!--            </el-row>-->
-<!--            <el-row>-->
-<!--              <el-col span="24">-->
-<!--                <el-form-item label="法规解读标准引用" prop="lawsExplainQuote" label-width="130px"-->
-<!--                          class="standards-info-item text-area-item">-->
-<!--                  <el-select v-model="sarStandardsInfoEO.lawsExplainQuote" multiple class="new-multiple-select"-->
-<!--                          @click.native="lawsExplainQuoteClick">-->
-<!--                    <el-option v-for="item in sarStandardsInfoEO.lawsExplainQuoteList" :value="item.value === undefined ? '' :item.value"-->
-<!--                            :key="item.value">{{ item.label }}-->
-<!--                    </el-option>-->
-<!--                  </el-select>-->
-<!--                  <el-input v-show="false" id="lawsExplainQuote"></el-input>-->
-<!--                </el-form-item>-->
-<!--              </el-col>-->
-<!--            </el-row>-->
-<!--            <el-row>-->
-<!--              <el-col span="12">-->
-<!--                <el-form-item label="法规解读文件" prop="lawsExplainFile" label-width="130px" class="standards-info-item">-->
-<!--                  <el-input v-model="sarStandardsInfoEO.lawsExplainFile" v-show="false"></el-input>-->
-<!--                  <el-button @click="clickButtonToUpload('lawsExplainFileList')" icon="ios-cloud-upload-outline"-->
-<!--                          :disabled="formdisableflag" class="form-upload-btn">-->
-<!--                    {{ (sarStandardsInfoEO.lawsExplainFile === 'null' || sarStandardsInfoEO.lawsExplainFile === '' ||-->
-<!--                    sarStandardsInfoEO.lawsExplainFile == null) ? '点击上传' : '查看已上传的文件' }}-->
-<!--                  </el-button>-->
-<!--                </el-form-item>-->
-<!--              </el-col>-->
-<!--              <el-col span="12">-->
-<!--                <el-form-item label="是否结题" prop="isQuestion" label-width="130px" class="standards-info-item">-->
-<!--                  <el-select v-model="sarStandardsInfoEO.isQuestion" clearable>-->
-<!--                    <el-option v-for="opt in isList" :value="opt.value === undefined ? '' :opt.value" :key="opt.value">{{ opt.label }}</el-option>-->
-<!--                  </el-select>-->
-<!--                </el-form-item>-->
-<!--              </el-col>-->
-<!--            </el-row>-->
-<!--            <el-row>-->
-<!--              <el-col span="12">-->
-<!--                <el-form-item label="结题时间" prop="finalizeTime" label-width="130px" class="standards-info-item">-->
-<!--                  <el-datePicker v-model="sarStandardsInfoEO.finalizeTime" :editable="false"-->
-<!--                              :disabled="formdisableflag" placeholder="请选择结题时间"></el-datePicker>-->
-<!--                </el-form-item>-->
-<!--              </el-col>-->
-<!--              <el-col span="12">-->
-<!--                <el-form-item label="结题附件" prop="finalizeFile" label-width="130px" class="standards-info-item">-->
-<!--                  <el-button @click="clickButtonToUpload('finalizeFileList')" icon="ios-cloud-upload-outline"-->
-<!--                          :disabled="formdisableflag" class="form-upload-btn">-->
-<!--                    {{ (sarStandardsInfoEO.finalizeFile === 'null' || sarStandardsInfoEO.finalizeFile-->
-<!--                    === '' ||-->
-<!--                    sarStandardsInfoEO.finalizeFile == null) ? '点击上传' : '查看已上传的文件' }}-->
-<!--                  </el-button>-->
-<!--                </el-form-item>-->
-<!--              </el-col>-->
-<!--            </el-row>-->
-<!--            <el-row>-->
-<!--              <el-col span="12">-->
-<!--                &lt;!&ndash;<el-form-item label="责任部门" prop="responsibleUnit" class="standards-info-item">&ndash;&gt;-->
-<!--                &lt;!&ndash;<el-input v-model="sarStandardsInfoEO.responsibleUnit" :disabled="formdisableflag"></el-input>&ndash;&gt;-->
-<!--                &lt;!&ndash;</el-form-item>&ndash;&gt;-->
-<!--                &lt;!&ndash; 此处获取组织机构架构图 &ndash;&gt;-->
-<!--                <el-form-item label="责任部门" prop="orgName" label-width="130px" class="standards-info-item">-->
-<!--                  <el-input v-model="sarStandardsInfoEO.responsibleUnit" v-show="false"/>-->
-<!--                  <Poptip placement="bottom" popper-class="user-dept-popper" @on-popper-show="selectDeptNode">-->
-<!--                    <el-input v-model="sarStandardsInfoEO.orgName" placeholder="请选择部门" readonly clearable id="deptBtn"/>-->
-<!--                    <div class="api" slot="content">-->
-<!--                      <laws-tree ref="standResponsibleUnit" :zNodes="zNodesS"-->
-<!--                                 treeDivId="zNodesS"-->
-<!--                                 showRMenu-->
-<!--                                 deptSelect-->
-<!--                                 v-if="modalshowflag"-->
-<!--                                 @treeDblClick="treeDblClick"-->
-<!--                                 class="ztree" style="width: 200px;height: 400px;overflow: auto">-->
-<!--                      </laws-tree>-->
-<!--                    </div>-->
-<!--                  </Poptip>-->
-<!--                  &lt;!&ndash;<ul id="orgTree" class="ztree" style="width: 200px;height: 500px;overflow: auto"></ul>&ndash;&gt;-->
-<!--                </el-form-item>-->
-<!--              </el-col>-->
-<!--            </el-row>-->
-<!--            <el-row>-->
-<!--              <el-col span="24">-->
-<!--                <el-form-item label="所属专业领域" prop="category" label-width="130px" class="standards-info-item">-->
-<!--                  <search-multiple-select-->
-<!--                    v-if="modalshowflag"-->
-<!--                    v-model="sarStandardsInfoEO.category"-->
-<!--                    :options="categoryOptions"-->
-<!--                    :disabled="formdisableflag"-->
-<!--                    placeholder="请选择所属专业领域"/>-->
-<!--                </el-form-item>-->
-<!--              </el-col>-->
-<!--            </el-row>-->
-<!--            &lt;!&ndash;-&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45; 相近标准 -&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&ndash;&gt;-->
-<!--            &lt;!&ndash;            <Divider orientation="left">相近标准</Divider>&ndash;&gt;-->
-<!--            <el-row>-->
-<!--              <el-col span="24">-->
-<!--                <el-form-item label="试验项目" prop="testItems" label-width="130px" class="standards-info-item text-area-item">-->
-<!--                  <el-select v-model="sarStandardsInfoEO.testItems" multiple class="new-multiple-select"-->
-<!--                          @click.native="testItemsClick">-->
-<!--                    <el-option v-for="item in sarStandardsInfoEO.testItemsList" :value="item.value === undefined ? '' :item.value" :key="item.value">{{-->
-<!--                      item.label }}-->
-<!--                    </el-option>-->
-<!--                  </el-select>-->
-<!--                  <el-input v-show="false" id="testItems"></el-input>-->
-<!--                </el-form-item>-->
-<!--              </el-col>-->
-<!--            </el-row>-->
+            <el-divider content-position="left">内容简介</el-divider>
+            <el-row>
+              <el-col span="12">
+                <el-form-item label="已收到以下部门适法性确认结果" title="已收到以下部门适法性确认结果" prop="recieveConfirmResult" label-width="130px"
+                          class="add-form-item">
+                  <el-input v-model="sarStandardsInfoEO.recieveConfirmResult" :maxlength="200" :disabled="formdisableflag"
+                         placeholder="请输入已收到以下部门适法性确认结果" clearable></el-input>
+                </el-form-item>
+              </el-col>
+              <el-col span="12">
+                <el-form-item label="试验首款车" prop="trialFirstCar" label-width="130px" class="add-form-item">
+                  <el-input v-model="sarStandardsInfoEO.trialFirstCar" :maxlength="200" :disabled="formdisableflag"
+                         placeholder="请输入试验首款车" clearable></el-input>
+                </el-form-item>
+              </el-col>
+            </el-row>
+            <el-row>
+              <el-col span="12">
+                <el-form-item label="领域担当" prop="domainAssume" label-width="130px" class="add-form-item">
+                  <el-input v-model="sarStandardsInfoEO.domainAssume" :maxlength="200" :disabled="formdisableflag"
+                         placeholder="请输入领域担当" clearable></el-input>
+                </el-form-item>
+              </el-col>
+              <el-col span="12">
+                <el-form-item label="预算基准" prop="budgetBenchmark" label-width="130px" class="add-form-item">
+                  <el-input v-model="sarStandardsInfoEO.budgetBenchmark" :maxlength="200" :disabled="formdisableflag"
+                         placeholder="请输入预算基准" clearable></el-input>
+                </el-form-item>
+              </el-col>
+            </el-row>
+            <el-row>
+              <el-col span="12">
+                <el-form-item label="法规解读内容" prop="lawsExplainText" label-width="130px" class="add-form-item">
+                  <el-input v-model="sarStandardsInfoEO.lawsExplainText" :maxlength="200" :disabled="formdisableflag"
+                         placeholder="请输入法规解读内容" clearable></el-input>
+                </el-form-item>
+              </el-col>
+              <el-col span="12">
+                <el-form-item label="法规解读关键字" prop="lawsExplainKeyword" label-width="130px" class="add-form-item">
+                  <el-input v-model="sarStandardsInfoEO.lawsExplainKeyword" :maxlength="200" :disabled="formdisableflag"
+                         placeholder="请输入法规解读关键字" clearable></el-input>
+                </el-form-item>
+              </el-col>
+            </el-row>
+            <el-row>
+              <el-col span="24">
+                <el-form-item label="法规解读标准引用" prop="lawsExplainQuote" label-width="130px"
+                              class="add-form-item">
+                  <el-select v-model="sarStandardsInfoEO.lawsExplainQuote" multiple class="new-multiple-select"
+                          @click.native="lawsExplainQuoteClick">
+                    <el-option v-for="item in sarStandardsInfoEO.lawsExplainQuoteList" :value="item.value === undefined ? '' :item.value"
+                            :key="item.value">{{ item.label }}
+                    </el-option>
+                  </el-select>
+                  <el-input v-show="false" id="lawsExplainQuote"></el-input>
+                </el-form-item>
+              </el-col>
+            </el-row>
+            <el-row>
+              <el-col span="12">
+                <el-form-item label="法规解读文件" prop="lawsExplainFile" label-width="130px" class="add-form-item">
+                  <el-input v-model="sarStandardsInfoEO.lawsExplainFile" v-show="false"></el-input>
+                  <el-button size="small" @click="clickButtonToUpload('lawsExplainFileList')" icon="ios-cloud-upload-outline"
+                          :disabled="formdisableflag" class="form-upload-btn">
+                    {{ (sarStandardsInfoEO.lawsExplainFile === 'null' || sarStandardsInfoEO.lawsExplainFile === '' ||
+                    sarStandardsInfoEO.lawsExplainFile == null) ? '点击上传' : '查看已上传的文件' }}
+                  </el-button>
+                </el-form-item>
+              </el-col>
+              <el-col span="12">
+                <el-form-item label="是否结题" prop="isQuestion" label-width="130px" class="add-form-item">
+                  <el-select v-model="sarStandardsInfoEO.isQuestion" clearable>
+                    <el-option v-for="opt in isList" :value="opt.value === undefined ? '' :opt.value" :key="opt.value">{{ opt.label }}</el-option>
+                  </el-select>
+                </el-form-item>
+              </el-col>
+            </el-row>
+            <el-row>
+              <el-col span="12">
+                <el-form-item label="结题时间" prop="finalizeTime" label-width="130px" class="add-form-item">
+                  <el-datePicker v-model="sarStandardsInfoEO.finalizeTime" :editable="false"
+                              :disabled="formdisableflag" placeholder="请选择结题时间"></el-datePicker>
+                </el-form-item>
+              </el-col>
+              <el-col span="12">
+                <el-form-item label="结题附件" prop="finalizeFile" label-width="130px" class="add-form-item">
+                  <el-button size="small" @click="clickButtonToUpload('finalizeFileList')" icon="ios-cloud-upload-outline"
+                          :disabled="formdisableflag" class="form-upload-btn">
+                    {{ (sarStandardsInfoEO.finalizeFile === 'null' || sarStandardsInfoEO.finalizeFile
+                    === '' ||
+                    sarStandardsInfoEO.finalizeFile == null) ? '点击上传' : '查看已上传的文件' }}
+                  </el-button>
+                </el-form-item>
+              </el-col>
+            </el-row>
+            <el-row>
+              <el-col span="12">
+                <!--<el-form-item label="责任部门" prop="responsibleUnit" class="add-form-item">-->
+                <!--<el-input v-model="sarStandardsInfoEO.responsibleUnit" :disabled="formdisableflag"></el-input>-->
+                <!--</el-form-item>-->
+                <!-- 此处获取组织机构架构图 -->
+                <el-form-item label="责任部门" prop="orgName" label-width="130px" class="add-form-item">
+                  <el-input v-model="sarStandardsInfoEO.responsibleUnit" v-show="false"/>
+                  <el-popover placement="bottom" popper-class="user-dept-popper" trigger="click" :value="false">
+                    <el-input v-model="sarStandardsInfoEO.orgName" placeholder="请选择部门" readonly clearable id="deptBtn"/>
+                    <div class="api" slot="content">
+                      <laws-tree ref="standResponsibleUnit" :zNodes="zNodesS"
+                                 treeDivId="zNodesS"
+                                 showRMenu
+                                 deptSelect
+                                 v-if="modalshowflag"
+                                 @treeDblClick="treeDblClick"
+                                 class="ztree" style="width: 200px;height: 400px;overflow: auto">
+                      </laws-tree>
+                    </div>
+                  </el-popover>
+                </el-form-item>
+              </el-col>
+            </el-row>
+            <el-row>
+              <el-col span="24">
+                <el-form-item label="所属专业领域" prop="category" label-width="130px" class="add-form-item">
+                  <search-multiple-select
+                    v-if="modalshowflag"
+                    v-model="sarStandardsInfoEO.category"
+                    :options="categoryOptions"
+                    :disabled="formdisableflag"
+                    placeholder="请选择所属专业领域"/>
+                </el-form-item>
+              </el-col>
+            </el-row>
+            <!----------------------------------------------------- 相近标准 ----------------------------------------------------->
+                        <el-divider content-position="left">相近标准</el-divider>
+            <el-row>
+              <el-col span="24">
+                <el-form-item label="试验项目" prop="testItems" label-width="130px" class="add-form-item">
+                  <el-select v-model="sarStandardsInfoEO.testItems" multiple class="new-multiple-select"
+                          @click.native="testItemsClick">
+                    <el-option v-for="item in sarStandardsInfoEO.testItemsList" :value="item.value === undefined ? '' :item.value" :key="item.value">{{
+                      item.label }}
+                    </el-option>
+                  </el-select>
+                  <el-input v-show="false" id="testItems"></el-input>
+                </el-form-item>
+              </el-col>
+            </el-row>
           </el-form>
         </div>
         <div class="demo-drawer-footer">
-          <el-button style="margin-right: 8px" type="primary" size="mini" @click="resetForm">取消</el-button>
-          <el-button type="primary" size="mini" v-if="!formdisableflag" @click="saveOrUpdateStands" :loading="isSubmit">提交</el-button>
+          <el-button size="small" style="margin-right: 8px" type="primary" @click="resetForm"  class="searchAngNewBtn">取消</el-button>
+          <el-button size="small" type="primary" v-if="!formdisableflag" @click="saveOrUpdateStands" :loading="isSubmit"  class="searchAngNewBtn">提交</el-button>
         </div>
       </el-drawer>
+<!--      导入-->
+      <el-dialog :visible.sync="importModalshowflagtemp" title="导入文件" :footer-hide="true">
+        <el-upload
+          multiple
+          drag
+          show-upload-list
+          :on-success="uploadSuccess"
+          :on-remove="removeOneFile"
+          :action="uploadPath"
+          :file-list="defaultFileList"
+          :format="['PDF','doc','docx','ppt','pptx']"
+          :on-format-error="handleAddFormatError"
+          :max-size="204800"
+          :on-exceeded-size="handleSizeError"
+          name="file" ref="importFileAboutStand">
+<!--          <div style="padding: 20px 0">-->
+            <i class="el-icon-upload"></i>
+<!--            <p>点击或拖拽上传文件</p>-->
+            <div class="el-upload__text">点击或拖拽上传文件</div>
+<!--          </div>-->
+        </el-upload>
+      </el-dialog>
     </div>
   </div>
 </template>
@@ -937,6 +954,7 @@ export default {
       },
       searching: false,
       stahndinfoList: [],
+      tableHeight: 0,
       tableFlag: '',
       total: 0,
       countryOptions: [],
@@ -1093,6 +1111,8 @@ export default {
         approvalFileTime: '',
         approvalFileFeedback: ''
       }, // 标准新增过程中用到的对象
+      currentFileList: '', // 当前操作的是哪个FormItem的上传
+      importModalshowflagtemp: false,
       isList: [
         {
           label: '是',
@@ -1107,6 +1127,8 @@ export default {
       saveExportType: '',
       exportModelFlag: false,
       exportName: '',
+      uploadPath: 'api/att/attFile/upload',
+      defaultFileList: [], // 默认显示
       selectedList: [], // 标准中选中的数据
       modalshowflag: false,
       formdisableflag: false, // 查看标准不可编辑
@@ -1114,104 +1136,104 @@ export default {
       addOrUPdateFlag: 1, // 新增：1， 修改：2
       itemAddOrUPdateFlag: 1, // 新增：1， 修改：2
       menuAddOrUpdateFlag: 1, // 新增：1， 修改：2
-      standNumFlag: 1 // 新增：1， 修改：2
-      // sarStandardsInfoRules: {
-      //   standSort: [
-      //     {required: true, message: '标准类别不能为空', trigger: 'change'}
-      //   ],
-      //   applyArctic: [
-      //     // {required: true, type: 'array', message: '适用车型不能为空', trigger: 'change'},
-      //     {type: 'Array', validator: this.verify.valiCategory, trigger: 'change'}
-      //   ],
-      //   standNumber: [
-      //     {required: true, type: 'string', message: '标准编号不能为空', trigger: 'blur'},
-      //     {type: 'string', max: 100, message: '标准编号不能超过100个字符', trigger: 'blur'}
-      //   ],
-      //   standYear: [
-      //     // {required: true, message: '标准年份不能为空', trigger: 'blur'},
-      //     // {required: true, validator: this.verify.valiateStandYear, trigger: 'blur'},
-      //     {type: 'string', max: 100, message: '标准年份不能超过100个字符', trigger: 'blur'},
-      //     {validator: this.verify.checkSpecialCharacter2, trigger: 'blur'}
-      //   ],
-      //   standName: [
-      //     {required: true, message: '标准名称不能为空', trigger: 'blur'},
-      //     {type: 'string', max: 500, message: '标准名称不能超过500个字符', trigger: 'blur'}
-      //   ],
-      //   standEnName: [
-      //     {type: 'string', max: 500, message: '标准英文名称不能超过500个字符', trigger: 'blur'},
-      //     {validator: this.verify.valiateEnName, trigger: 'blur'}
-      //   ],
-      //   standState: [
-      //     {required: true, message: '标准状态不能为空', trigger: 'change'}
-      //   ],
-      //   standNature: [
-      //     {required: true, message: '标准性质不能为空', trigger: 'change'}
-      //   ],
-      //   // replaceStandNum: [
-      //   //   {type: 'string', max: 100, message: '代替标准号不能超过100个字符', trigger: 'blur'}
-      //   //   // {type: 'string', validator: this.validateReplaceStandNum, trigger: 'blur'}
-      //   // ],
-      //   replacedStandNum: [
-      //     {type: 'string', max: 100, message: '被代替标准号不能超过100个字符', trigger: 'blur'}
-      //     /* {type: 'string', validator: this.validateReplacedStandNum, trigger: 'blur'} */
-      //   ],
-      //   interStandNum: [
-      //     {type: 'string', max: 100, message: '采用国际标准号不能超过100个字符', trigger: 'blur'}
-      //   ],
-      //   adoptExtent: [],
-      //   emergyKind: [
-      //     // {required: true, type: 'array', message: '能源种类不能为空', trigger: 'change'},
-      //     {type: 'Array', validator: this.verify.valiCategory, trigger: 'change'}
-      //   ],
-      //   applyAuth: [
-      //     {type: 'Array', validator: this.verify.valiCategory, trigger: 'change'}
-      //   ],
-      //   // issueTime: [
-      //   //   {required: true, type: 'date', message: '发布日期不能为空', trigger: 'change'}
-      //   // ],
-      //   // putTime: [
-      //   //   {required: true, type: 'date', message: '实施日期不能为空', trigger: 'change'}
-      //   // ],
-      //   newcarPutTime: [],
-      //   productPutTime: [],
-      //   newproductPutTime: [],
-      //   draftingUnit: [
-      //     {type: 'string', max: 1000, message: '起草单位不能超过1000个字符', trigger: 'blur'}
-      //     // {validator: this.verify.checkSpecialCharacter, trigger: 'blur'}
-      //   ],
-      //   draftUser: [
-      //     {type: 'string', max: 255, message: '起草人不能超过255个字符', trigger: 'blur'}
-      //     // {validator: this.verify.checkSpecialCharacter, trigger: 'blur'}
-      //   ],
-      //   standFileList: [],
-      //   finalizeFile: [],
-      //   finalizeFileList: [],
-      //   standModifyFile: [],
-      //   draftFile: [],
-      //   opinionFile: [],
-      //   sentScreenFile: [],
-      //   approvalFile: [],
-      //   relevanceFile: [],
-      //   tags: [
-      //     {type: 'string', max: 100, message: '关键词不能超过100个字符', trigger: 'blur'}
-      //     // {validator: this.verify.checkSpecialCharacterOftags, trigger: 'blur'}
-      //   ],
-      //   synopsis: [
-      //     {type: 'string', max: 500, message: '内容摘要不能超过500个字符', trigger: 'blur'}
-      //     // {validator: this.verify.checkSpecialCharacter, trigger: 'blur'} gaoyan 2018-11-07 客户提到特殊符号校验问题
-      //   ],
-      //   responsibleUnit: [
-      //     {type: 'string', max: 100, message: '责任部门不能超过100个字符', trigger: 'change'}
-      //     // {validator: this.verify.checkSpecialCharacter, trigger: 'change'}
-      //   ],
-      //   registerPutTime: [],
-      //   category: [
-      //     {type: 'Array', validator: this.verify.valiCategory, trigger: 'change'}
-      //   ],
-      //   remark: [
-      //     {type: 'string', max: 1000, message: '备注不能超过1000个字符', trigger: 'blur'}
-      //   ]
-      // }
+      standNumFlag: 1, // 新增：1， 修改：2
+      sarStandardsInfoRules: {
+        standSort: [
+          {required: true, message: '标准类别不能为空', trigger: 'change'}
+        ],
+        applyArctic: [
+          // {required: true, type: 'array', message: '适用车型不能为空', trigger: 'change'},
+          {type: 'Array', validator: this.verify.valiCategory, trigger: 'change'}
+        ],
+        standNumber: [
+          {required: true, type: 'string', message: '标准编号不能为空', trigger: 'blur'},
+          {type: 'string', max: 100, message: '标准编号不能超过100个字符', trigger: 'blur'}
+        ],
+        standYear: [
+          // {required: true, message: '标准年份不能为空', trigger: 'blur'},
+          // {required: true, validator: this.verify.valiateStandYear, trigger: 'blur'},
+          {type: 'string', max: 100, message: '标准年份不能超过100个字符', trigger: 'blur'},
+          {validator: this.verify.checkSpecialCharacter2, trigger: 'blur'}
+        ],
+        standName: [
+          {required: true, message: '标准名称不能为空', trigger: 'blur'},
+          {type: 'string', max: 500, message: '标准名称不能超过500个字符', trigger: 'blur'}
+        ],
+        standEnName: [
+          {type: 'string', max: 500, message: '标准英文名称不能超过500个字符', trigger: 'blur'},
+          {validator: this.verify.valiateEnName, trigger: 'blur'}
+        ],
+        standState: [
+          {required: true, message: '标准状态不能为空', trigger: 'change'}
+        ],
+        standNature: [
+          {required: true, message: '标准性质不能为空', trigger: 'change'}
+        ],
+        // replaceStandNum: [
+        //   {type: 'string', max: 100, message: '代替标准号不能超过100个字符', trigger: 'blur'}
+        //   // {type: 'string', validator: this.validateReplaceStandNum, trigger: 'blur'}
+        // ],
+        replacedStandNum: [
+          {type: 'string', max: 100, message: '被代替标准号不能超过100个字符', trigger: 'blur'}
+          /* {type: 'string', validator: this.validateReplacedStandNum, trigger: 'blur'} */
+        ],
+        interStandNum: [
+          {type: 'string', max: 100, message: '采用国际标准号不能超过100个字符', trigger: 'blur'}
+        ],
+        adoptExtent: [],
+        emergyKind: [
+          // {required: true, type: 'array', message: '能源种类不能为空', trigger: 'change'},
+          {type: 'Array', validator: this.verify.valiCategory, trigger: 'change'}
+        ],
+        applyAuth: [
+          {type: 'Array', validator: this.verify.valiCategory, trigger: 'change'}
+        ],
+        // issueTime: [
+        //   {required: true, type: 'date', message: '发布日期不能为空', trigger: 'change'}
+        // ],
+        // putTime: [
+        //   {required: true, type: 'date', message: '实施日期不能为空', trigger: 'change'}
+        // ],
+        newcarPutTime: [],
+        productPutTime: [],
+        newproductPutTime: [],
+        draftingUnit: [
+          {type: 'string', max: 1000, message: '起草单位不能超过1000个字符', trigger: 'blur'}
+          // {validator: this.verify.checkSpecialCharacter, trigger: 'blur'}
+        ],
+        draftUser: [
+          {type: 'string', max: 255, message: '起草人不能超过255个字符', trigger: 'blur'}
+          // {validator: this.verify.checkSpecialCharacter, trigger: 'blur'}
+        ],
+        standFileList: [],
+        finalizeFile: [],
+        finalizeFileList: [],
+        standModifyFile: [],
+        draftFile: [],
+        opinionFile: [],
+        sentScreenFile: [],
+        approvalFile: [],
+        relevanceFile: [],
+        tags: [
+          {type: 'string', max: 100, message: '关键词不能超过100个字符', trigger: 'blur'}
+          // {validator: this.verify.checkSpecialCharacterOftags, trigger: 'blur'}
+        ],
+        synopsis: [
+          {type: 'string', max: 500, message: '内容摘要不能超过500个字符', trigger: 'blur'}
+          // {validator: this.verify.checkSpecialCharacter, trigger: 'blur'} gaoyan 2018-11-07 客户提到特殊符号校验问题
+        ],
+        responsibleUnit: [
+          {type: 'string', max: 100, message: '责任部门不能超过100个字符', trigger: 'change'}
+          // {validator: this.verify.checkSpecialCharacter, trigger: 'change'}
+        ],
+        registerPutTime: [],
+        category: [
+          {type: 'Array', validator: this.verify.valiCategory, trigger: 'change'}
+        ],
+        remark: [
+          {type: 'string', max: 1000, message: '备注不能超过1000个字符', trigger: 'blur'}
+        ]
+      }
     }
   },
   props: {
@@ -1219,6 +1241,207 @@ export default {
   watch: {
   },
   methods: {
+    // 查看标准属性
+    selectStandardPro (item, state) {
+      this.modalshowtitle = '编辑国内标准'
+      this.modalshowflag = true
+      // console.log('item', item)
+      // 内容摘要
+      if (item.synopsis !== null && item.synopsis !== '') {
+        item.synopsis = item.synopsis.replace(/<br \/>/g, '\r\n')
+        item.synopsis = item.synopsis.replace(/<br \/>/g, '\n')
+      }
+      // // 代替标准号
+      // if (item.replaceStandNum !== null && item.replaceStandNum !== '') {
+      //   item.replaceStandNum = item.replaceStandNum.replace(/<br \/>/g, '\r\n')
+      //   item.replaceStandNum = item.replaceStandNum.replace(/<br \/>/g, '\n')
+      // }
+      // 被代替标准号
+      if (item.replacedStandNum !== null && item.replacedStandNum !== '') {
+        item.replacedStandNum = item.replacedStandNum.replace(/<br \/>/g, '\r\n')
+        item.replacedStandNum = item.replacedStandNum.replace(/<br \/>/g, '\n')
+      }
+      // 关键词
+      if (item.tags !== null && item.tags !== '') {
+        item.tags = item.tags.replace(/<br \/>/g, '\r\n')
+        item.tags = item.tags.replace(/<br \/>/g, '\n')
+      }
+      // 备注
+      if (item.remark !== null && item.tags !== '') {
+        item.remark = item.remark.replace(/<br \/>/g, '\r\n')
+        item.remark = item.remark.replace(/<br \/>/g, '\n')
+      }
+      this.sarStandardsInfoEO = JSON.parse(JSON.stringify(item))
+      let subClass = item.standSort
+      this.changeInlandSubclassVal()
+      this.sarStandardsInfoEO.standSort = subClass
+      let a = []
+      if (this.sarStandardsInfoEO.applyArctic != null && !(this.sarStandardsInfoEO.applyArctic instanceof Array)) {
+        a = item.applyArctic.split(',')
+        this.sarStandardsInfoEO.applyArctic = a // 适用车型
+      }
+      if (this.sarStandardsInfoEO.emergyKind != null && !(this.sarStandardsInfoEO.emergyKind instanceof Array)) {
+        a = item.emergyKind.split(',')
+        this.sarStandardsInfoEO.emergyKind = a // 能源种类
+      }
+      if (this.sarStandardsInfoEO.lawsExplainQuote != null && !(this.sarStandardsInfoEO.lawsExplainQuote instanceof Array)) {
+        a = item.lawsExplainQuote.split(',')
+        this.sarStandardsInfoEO.lawsExplainQuote = a
+      }
+      if (this.sarStandardsInfoEO.replaceStandNum != null && !(this.sarStandardsInfoEO.replaceStandNum instanceof Array)) {
+        a = item.replaceStandNum.split(',')
+        this.sarStandardsInfoEO.replaceStandNum = a
+      }
+      if (this.sarStandardsInfoEO.testItems != null && !(this.sarStandardsInfoEO.testItems instanceof Array)) {
+        a = item.testItems.split(',')
+        this.sarStandardsInfoEO.testItems = a
+      }
+      if (this.sarStandardsInfoEO.applyAuth != null && !(this.sarStandardsInfoEO.applyAuth instanceof Array)) {
+        a = item.applyAuth.split(',')
+        this.sarStandardsInfoEO.applyAuth = a // 适用认证
+      }
+      if (this.sarStandardsInfoEO.category != null && !(this.sarStandardsInfoEO.category instanceof Array)) {
+        a = item.category.split(',')
+        this.sarStandardsInfoEO.category = a // 所属类别
+      }
+      if (this.sarStandardsInfoEO.issueTime != null && this.sarStandardsInfoEO.issueTime !== '') {
+        this.sarStandardsInfoEO.issueTime = this.sarStandardsInfoEO.issueTime.replace(new RegExp(/-/gm), '/')
+        this.sarStandardsInfoEO.issueTime = new Date(this.sarStandardsInfoEO.issueTime)
+      }
+      if (this.sarStandardsInfoEO.putTime != null && this.sarStandardsInfoEO.putTime !== '') {
+        this.sarStandardsInfoEO.putTime = this.sarStandardsInfoEO.putTime.replace(new RegExp(/-/gm), '/')
+        this.sarStandardsInfoEO.putTime = new Date(this.sarStandardsInfoEO.putTime)
+      }
+      if (this.sarStandardsInfoEO.newcarPutTime != null && this.sarStandardsInfoEO.newcarPutTime !== '') {
+        this.sarStandardsInfoEO.newcarPutTime = this.sarStandardsInfoEO.newcarPutTime.replace(new RegExp(/-/gm), '/')
+        this.sarStandardsInfoEO.newcarPutTime = new Date(this.sarStandardsInfoEO.newcarPutTime)
+      }
+      if (this.sarStandardsInfoEO.standExpirationTime != null && this.sarStandardsInfoEO.standExpirationTime !== '') {
+        this.sarStandardsInfoEO.standExpirationTime = this.sarStandardsInfoEO.standExpirationTime.replace(new RegExp(/-/gm), '/')
+        this.sarStandardsInfoEO.standExpirationTime = new Date(this.sarStandardsInfoEO.standExpirationTime)
+      }
+      if (this.sarStandardsInfoEO.noticeCertPutTime != null && this.sarStandardsInfoEO.noticeCertPutTime !== '') {
+        this.sarStandardsInfoEO.noticeCertPutTime = this.sarStandardsInfoEO.noticeCertPutTime.replace(new RegExp(/-/gm), '/')
+        this.sarStandardsInfoEO.noticeCertPutTime = new Date(this.sarStandardsInfoEO.noticeCertPutTime)
+      }
+      if (this.sarStandardsInfoEO.cccCertPutTime != null && this.sarStandardsInfoEO.cccCertPutTime !== '') {
+        this.sarStandardsInfoEO.cccCertPutTime = this.sarStandardsInfoEO.cccCertPutTime.replace(new RegExp(/-/gm), '/')
+        this.sarStandardsInfoEO.cccCertPutTime = new Date(this.sarStandardsInfoEO.cccCertPutTime)
+      }
+      if (this.sarStandardsInfoEO.nationCertPutTime != null && this.sarStandardsInfoEO.nationCertPutTime !== '') {
+        this.sarStandardsInfoEO.nationCertPutTime = this.sarStandardsInfoEO.nationCertPutTime.replace(new RegExp(/-/gm), '/')
+        this.sarStandardsInfoEO.nationCertPutTime = new Date(this.sarStandardsInfoEO.nationCertPutTime)
+      }
+      if (this.sarStandardsInfoEO.northCertPutTime != null && this.sarStandardsInfoEO.northCertPutTime !== '') {
+        this.sarStandardsInfoEO.northCertPutTime = this.sarStandardsInfoEO.northCertPutTime.replace(new RegExp(/-/gm), '/')
+        this.sarStandardsInfoEO.northCertPutTime = new Date(this.sarStandardsInfoEO.northCertPutTime)
+      }
+      if (this.sarStandardsInfoEO.noticeProductPutTime != null && this.sarStandardsInfoEO.noticeProductPutTime !== '') {
+        this.sarStandardsInfoEO.noticeProductPutTime = this.sarStandardsInfoEO.noticeProductPutTime.replace(new RegExp(/-/gm), '/')
+        this.sarStandardsInfoEO.noticeProductPutTime = new Date(this.sarStandardsInfoEO.noticeProductPutTime)
+      }
+      if (this.sarStandardsInfoEO.cccProductPutTime != null && this.sarStandardsInfoEO.cccProductPutTime !== '') {
+        this.sarStandardsInfoEO.cccProductPutTime = this.sarStandardsInfoEO.cccProductPutTime.replace(new RegExp(/-/gm), '/')
+        this.sarStandardsInfoEO.cccProductPutTime = new Date(this.sarStandardsInfoEO.cccProductPutTime)
+      }
+      if (this.sarStandardsInfoEO.nationProductPutTime != null && this.sarStandardsInfoEO.nationProductPutTime !== '') {
+        this.sarStandardsInfoEO.nationProductPutTime = this.sarStandardsInfoEO.nationProductPutTime.replace(new RegExp(/-/gm), '/')
+        this.sarStandardsInfoEO.nationProductPutTime = new Date(this.sarStandardsInfoEO.nationProductPutTime)
+      }
+      if (this.sarStandardsInfoEO.northProductPutTime != null && this.sarStandardsInfoEO.northProductPutTime !== '') {
+        this.sarStandardsInfoEO.northProductPutTime = this.sarStandardsInfoEO.northProductPutTime.replace(new RegExp(/-/gm), '/')
+        this.sarStandardsInfoEO.northProductPutTime = new Date(this.sarStandardsInfoEO.northProductPutTime)
+      }
+      if (this.sarStandardsInfoEO.issueTextTime != null && this.sarStandardsInfoEO.issueTextTime !== '') {
+        this.sarStandardsInfoEO.issueTextTime = this.sarStandardsInfoEO.issueTextTime.replace(new RegExp(/-/gm), '/')
+        this.sarStandardsInfoEO.issueTextTime = new Date(this.sarStandardsInfoEO.issueTextTime)
+      }
+      if (this.sarStandardsInfoEO.registerPutTime != null && this.sarStandardsInfoEO.registerPutTime !== '') {
+        this.sarStandardsInfoEO.registerPutTime = this.sarStandardsInfoEO.registerPutTime.replace(new RegExp(/-/gm), '/')
+        this.sarStandardsInfoEO.registerPutTime = new Date(this.sarStandardsInfoEO.registerPutTime)
+      }
+      if (this.sarStandardsInfoEO.wtoPublicFileTime != null && this.sarStandardsInfoEO.wtoPublicFileTime !== '') {
+        this.sarStandardsInfoEO.wtoPublicFileTime = this.sarStandardsInfoEO.wtoPublicFileTime.replace(new RegExp(/-/gm), '/')
+        this.sarStandardsInfoEO.wtoPublicFileTime = new Date(this.sarStandardsInfoEO.wtoPublicFileTime)
+      }
+      if (this.sarStandardsInfoEO.opinionFileTime != null && this.sarStandardsInfoEO.opinionFileTime !== '') {
+        this.sarStandardsInfoEO.opinionFileTime = this.sarStandardsInfoEO.opinionFileTime.replace(new RegExp(/-/gm), '/')
+        this.sarStandardsInfoEO.opinionFileTime = new Date(this.sarStandardsInfoEO.opinionFileTime)
+      }
+      if (this.sarStandardsInfoEO.approvalFileTime != null && this.sarStandardsInfoEO.approvalFileTime !== '') {
+        this.sarStandardsInfoEO.approvalFileTime = this.sarStandardsInfoEO.approvalFileTime.replace(new RegExp(/-/gm), '/')
+        this.sarStandardsInfoEO.approvalFileTime = new Date(this.sarStandardsInfoEO.approvalFileTime)
+      }
+      if (this.sarStandardsInfoEO.sentScreenFileTime != null && this.sarStandardsInfoEO.sentScreenFileTime !== '') {
+        this.sarStandardsInfoEO.sentScreenFileTime = this.sarStandardsInfoEO.sentScreenFileTime.replace(new RegExp(/-/gm), '/')
+        this.sarStandardsInfoEO.sentScreenFileTime = new Date(this.sarStandardsInfoEO.sentScreenFileTime)
+      }
+
+      if (this.sarStandardsInfoEO.firstDraftFileTime != null && this.sarStandardsInfoEO.firstDraftFileTime !== '') {
+        this.sarStandardsInfoEO.firstDraftFileTime = this.sarStandardsInfoEO.firstDraftFileTime.replace(new RegExp(/-/gm), '/')
+        this.sarStandardsInfoEO.firstDraftFileTime = new Date(this.sarStandardsInfoEO.firstDraftFileTime)
+      }
+
+      if (this.sarStandardsInfoEO.planCompletionTime != null && this.sarStandardsInfoEO.planCompletionTime !== '') {
+        this.sarStandardsInfoEO.planCompletionTime = this.sarStandardsInfoEO.planCompletionTime.replace(new RegExp(/-/gm), '/')
+        this.sarStandardsInfoEO.planCompletionTime = new Date(this.sarStandardsInfoEO.planCompletionTime)
+      }
+      if (this.sarStandardsInfoEO.enterNextStageTime != null && this.sarStandardsInfoEO.enterNextStageTime !== '') {
+        this.sarStandardsInfoEO.enterNextStageTime = this.sarStandardsInfoEO.enterNextStageTime.replace(new RegExp(/-/gm), '/')
+        this.sarStandardsInfoEO.enterNextStageTime = new Date(this.sarStandardsInfoEO.enterNextStageTime)
+      }
+      if (this.sarStandardsInfoEO.productPutTime != null && this.sarStandardsInfoEO.productPutTime !== '') {
+        this.sarStandardsInfoEO.productPutTime = this.sarStandardsInfoEO.productPutTime.replace(new RegExp(/-/gm), '/')
+        this.sarStandardsInfoEO.productPutTime = new Date(this.sarStandardsInfoEO.productPutTime)
+      }
+      if (this.sarStandardsInfoEO.newproductPutTime != null && this.sarStandardsInfoEO.newproductPutTime !== '') {
+        this.sarStandardsInfoEO.newproductPutTime = this.sarStandardsInfoEO.newproductPutTime.replace(new RegExp(/-/gm), '/')
+        this.sarStandardsInfoEO.newproductPutTime = new Date(this.sarStandardsInfoEO.newproductPutTime)
+      }
+      if (this.sarStandardsInfoEO.certPutTimeList.length !== 0) {
+        this.sarStandardsInfoEO.certPutTimeList.map((item) => {
+          switch (item.timeName) {
+            case '公告新车型':
+              this.sarStandardsInfoEO.noticeCertPutTime = item.putTime
+              break
+            case 'CCC新车型':
+              this.sarStandardsInfoEO.cccCertPutTime = item.putTime
+              break
+            case '国环受理时间':
+              this.sarStandardsInfoEO.nationCertPutTime = item.putTime
+              break
+            case '北环受理时间':
+              this.sarStandardsInfoEO.northCertPutTime = item.putTime
+              break
+          }
+        })
+      }
+      if (state === 'show') {
+        this.formdisableflag = true
+      } else {
+        this.addOrUPdateFlag = 2
+        this.standNumFlag = 2
+        this.formdisableflag = false
+        this.saveOldNum = item.standNumber
+        this.saveOldSort = item.standSort
+        this.saveOldYear = item.standYear
+        this.saveOldReplaceNum = item.replaceStandNum
+        // let selectNode = this.getTreeNameByid(this.sarStandardsInfoEO.responsibleUnit)
+        this.sarStandardsInfoEO.orgName = item.responsibleUnitShow
+        // 编辑过程中将resId 替换成  attid
+        this.updateResidToAttid('standFile')
+        this.updateResidToAttid('standModifyFile')
+        this.updateResidToAttid('opinionFile')
+        this.updateResidToAttid('sentScreenFile')
+        this.updateResidToAttid('approvalFile')
+        this.updateResidToAttid('relevanceFile')
+        this.updateResidToAttid('draftFile')
+        this.updateResidToAttid('firstDraftFile')
+        this.updateResidToAttid('wtoPublicFile')
+        this.updateResidToAttid('lawsExplainFile')
+        this.updateResidToAttid('finalizeFile')
+      }
+    },
     // 二级菜单新建，编辑，删除
     clickDropMenu (name, treeNode) {
       this.selectSarMenu = JSON.parse(JSON.stringify(treeNode))
@@ -1341,11 +1564,14 @@ export default {
       // this.sarStandardsSearch.standSort = ''
     },
     treeCollapse () {
+      console.log(this.sideClose)
       this.sideClose = !this.sideClose
+      console.log(this.sideClose)
     },
     // 收展按钮
     collapseIcon () {
-      return this.sideClose ? 'ios-arrow-forward' : 'ios-arrow-back'
+      // return this.sideClose ? 'el-icon-arrow-left' : 'el-icon-arrow-right'
+      return 'el-icon-arrow-left'
     },
     // 查询二级菜单
     selectMenu () {
@@ -1435,6 +1661,147 @@ export default {
       this.standNumFlag = 1
       this.getOrgTreeSource()
       this.changeInlandSubclassVal()
+    },
+    uploadSuccess (res, file, fileList) {
+      if (res.ok) {
+        //  修改开始 此处之前是支持选多个文件的，现在已修改成只允许上传一个文件，所以增加置空
+        // this.sarStandardsInfoEO[this.currentFileList] = []
+        // this.sarStandardsInfoEO[this.currentFile] = ''
+        // 修改结束
+        // this.sarStandardsInfoEO[this.currentFileList].push(res.data)
+        this.sarStandardsInfoEO[this.currentFile] += res.data.id + ','
+        this.$message({
+          message: '文件上传成功',
+          type: 'success'
+        })
+        // this.importModalshowflagtemp = false
+      } else {
+        this.$Message.error(res.message)
+      }
+    },
+    removeOneFile (file, fileList) {
+      // this.sarStandardsInfoEO[this.currentFileList] = this.removeAaary(this.sarStandardsInfoEO[this.currentFileList], file.response.data)
+      let ids = this.sarStandardsInfoEO[this.currentFile].split(',')
+      let fileIds = file.response.data.id
+      let newIdList = this.removeAaary(ids, fileIds)
+      let newStr = ''
+      if (newIdList != null && newIdList.length > 0) {
+        for (let i = 0; i < newIdList.length; i++) {
+          if (newIdList[i] !== '') {
+            newStr += newIdList[i] + ','
+          }
+        }
+        this.sarStandardsInfoEO[this.currentFile] = newStr
+      } else {
+        this.sarStandardsInfoEO[this.currentFile] = ''
+      }
+    },
+    // 删除数组中的某个对象
+    removeAaary (_arr, _obj) {
+      var length = _arr.length
+      for (var i = 0; i < length; i++) {
+        if (_arr[i] === _obj) {
+          if (i === 0) {
+            _arr.shift() // 删除并返回数组的第一个元素
+            return _arr
+          } else if (i === length - 1) {
+            _arr.pop() // 删除并返回数组的最后一个元素
+            return _arr
+          } else {
+            _arr.splice(i, 1) // 删除下标为i的元素
+            return _arr
+          }
+        }
+      }
+    },
+    handleAddFormatError (file) {
+      this.$message.error('文件' + file.name + '格式不正确，请上传pdf、doc、docx、ppt、pptx文件')
+    },
+    // 导入文件大小超出范围
+    handleSizeError (file) {
+      this.spinShow = false
+      this.$message.error('文件' + file.name + '大小不超过200M')
+    },
+    clickButtonToUpload (current) {
+      this.currentFileList = current
+      this.currentFile = JSON.parse(JSON.stringify(current).replace('List', ''))
+      this.importModalshowflagtemp = true
+      this.$refs.importFileAboutStand.clearFiles()
+      this.defaultFileList = []
+      if (this.sarStandardsInfoEO[this.currentFile] === 'null' || this.sarStandardsInfoEO[this.currentFile] == null) {
+        this.sarStandardsInfoEO[this.currentFile] = ''
+      }
+      let fileList
+      if (this.sarStandardsInfoEO[this.currentFile] != null && this.sarStandardsInfoEO[this.currentFile] !== '') {
+        let paramefile = this.sarStandardsInfoEO[this.currentFile]
+        if (paramefile.charAt(paramefile.length - 1) === ',') {
+          paramefile = paramefile.substring(0, paramefile.length - 1)
+        }
+        this.$http.get('att/attFile/getMultiFileInfos', {
+          fileIds: paramefile
+        }, {
+          _this: this
+        }, res => {
+          fileList = res.data
+          if (fileList != null && fileList.length > 0) {
+            for (let i = 0; i < fileList.length; i++) {
+              let obj = {name: '', response: {}}
+              obj.name = fileList[i].oldFileName
+              obj.response.data = fileList[i]
+              this.defaultFileList.push(obj)
+            }
+          }
+        }, e => {
+        })
+      }
+    },
+    // 删除标准
+    deleteStand (flag, itemid) {
+      if (flag === 1) {
+        this.$Modal.confirm({
+          title: '提示',
+          content: '确认删除该条数据？',
+          onOk: () => {
+            this.$http.post('lawss/sarStandardsInfo/deleteSarStandards', {ids: itemid}, {
+              _this: this
+            }, res => {
+              this.getDomesticStandardTable(this.tableFlag)
+              this.selectedList = []
+            }, e => {
+            })
+          },
+          onCancel: () => {
+          }
+        })
+      } else {
+        if (this.selectedList.length === 0) {
+          this.$Message.error('请先选择要删除的数据！')
+        } else {
+          this.$Modal.confirm({
+            title: '提示',
+            content: '确认删除选中数据？',
+            onOk: () => {
+              this.$http.post('lawss/sarStandardsInfo/deleteSarStandards', {ids: this.selectedList.join(',')}, {
+                _this: this
+              }, res => {
+                this.getDomesticStandardTable(this.tableFlag)
+                this.selectedList = []
+              }, e => {
+              })
+            },
+            onCancel: () => {
+            }
+          })
+        }
+      }
+    },
+    // 模板下载
+    uploadImportModal (flag) {
+      if (flag === 1) {
+        window.open('/api/att/attFile/uploadModalFile?fileName=国内外标准导入模板.zip')
+      } else {
+        window.open('/api/att/attFile/uploadModalFile?fileName=标准条目导入模板.xlsx')
+      }
     },
     handleClose (done) {
       this.$confirm('确认关闭？')
@@ -1551,6 +1918,12 @@ export default {
             this.searchInlandNodes = JSON.parse(JSON.stringify(treeNode))
           }
         }, e => {})
+    },
+    // 所属部门选取
+    treeDblClick (treeId, treeNode) {
+      this.sarStandardsInfoEO.responsibleUnit = treeNode.id
+      this.sarStandardsInfoEO.orgName = treeNode.name
+      $('#deptBtn').click()
     }
   },
   computed: {
@@ -1609,7 +1982,18 @@ export default {
     display: -ms-flex;
     height: 100%;
     position: relative;
-
+    .table-tools-bar {
+      #labelSelect {
+        margin-right: 0;
+      }
+      #labelInput {
+        margin-right: 0;
+      }
+      .rightBtn{
+        float: left;
+        margin-right: 0;
+      }
+    }
     .tree-content {
       width: 16%;
       position: relative;
@@ -1624,61 +2008,62 @@ export default {
         position: absolute;
         right: 0;
       }
-      .tree-close{
-        .tree{
-          left: -200px !important;
-        }
-        .tree-right{
-          .ivu-form-inline .ivu-form-item {
-            display: inline-block;
-            margin-right: 0;
-            vertical-align: top;
-          }
-        }
-        .side-bar-collapse{
-          background: @sideBarColor !important;
-          color: #FFF;
-        }
-      }
     }
 
     .tree-right {
-      width: calc(90% - 1px);
-      /*height: calc(~'100% - 165px')!important;*/
+      overflow-y: hidden;
       padding:10px;
       position: relative;
-      .table-tools-bar {
-        #labelSelect {
-          margin-right: 0;
-        }
-        #labelInput {
-          margin-right: 0;
-        }
-        .rightBtn{
-          float: left;
-          margin-right: 0;
-        }
-      }
+      width: 100%;
+      /*.ivu-form-inline .ivu-form-item {*/
+      /*  display: inline-block;*/
+      /*  margin-right: 0;*/
+      /*  vertical-align: top;*/
+      /*}*/
+      // 表格
       .content{
-        display: flex;
-        display: -ms-flex;
-        display: -moz-flex;
-        display: -webkit-flex;
-        flex-direction: column;
-        -webkit-box-orient: vertical;
-        -webkit-box-direction: normal;
-        width: 100%;
-        /*height: calc(~'100% - 70px')!important;*/
-      }
-      .table-wrapper{
-        height: calc(~'100% - 130px')!important;
         overflow-y: auto;
+        height: calc(100% - 7px);
       }
+    }
+    .content{
+      display: flex;
+      display: -ms-flex;
+      display: -moz-flex;
+      display: -webkit-flex;
+      flex-direction: column;
+      -webkit-box-orient: vertical;
+      -webkit-box-direction: normal;
+      width: 100%;
+      /*height: calc(~'100% - 70px')!important;*/
+    }
+    .table-wrapper{
+      height: calc(~'100% - 115px')!important;
+      overflow-y: auto;
     }
 
     .el-drawer-form{
       max-height: 570px;
       overflow-y: auto;
+      padding-left: 25px;
+    }
+    .el-divider--horizontal {
+      display: block;
+      height: 1px;
+      width: 100%;
+      margin-bottom: 20px;
+    }
+    .tree-close{
+      .tree{
+        left: -200px !important;
+      }
+      .tree-right{
+        width: calc(~'100% - 15px') !important;
+      }
+      .side-bar-collapse{
+        background: #5596CC !important;
+        color: #FFF;
+      }
     }
   }
 </style>
