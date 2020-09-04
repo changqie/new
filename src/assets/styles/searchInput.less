@@ -1,0 +1,32 @@
+/*搜索下拉框公共样式*/
+.search-select{
+  .el-input__icon{
+    line-height: 32px;
+  }
+  .search-visible{
+    .el-icon-arrow-down{
+      transform: rotate(180deg);
+      transition: transform .2s linear;
+    }
+  }
+  .el-input-hidden{
+    position: absolute;
+    top: 0;
+    left: 0;
+  }
+}
+.search-select-el-dropdown-menu{
+  font-size: 12px;
+  .search-input{
+    .el-input__inner{
+      margin-left: 5%;
+      width: 90%;
+      height: 32px;
+      line-height: 32px;
+      font-size: 12px;
+    }
+    .el-input__suffix{
+      margin: -3px 2px 0 0;
+    }
+  }
+}

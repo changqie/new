@@ -1,22 +1,28 @@
 <!-- 可搜索选择框 -->
 <template>
   <el-dropdown
-    trigger="custom"
+    trigger="click"
     class="search-select"
-    :visible="visible"
-    @on-clickoutside="handleClickOutSide"
-    @on-click="handleOptionClick">
-    <el-input type="hidden" v-model="selectedValue"></el-input>
+    size="medium"
+  >
     <el-input
-      :placeholder="placeholder"
+      type="text"
       readonly
-      :clearable="clearable"
+      :placeholder="placeholder"
       v-model="selectedLabel"
-      :disabled="disabled"
+      suffix-icon="el-icon-arrow-down"
       @click.native="visibleToggle"
       :class="{ 'search-visible': visible }"
-      icon="ios-arrow-down"></el-input>
-    <el-dropdown-menu slot="dropdown">
+    ></el-input>
+    <el-input
+      type="hidden"
+      v-model="selectedValue"
+      class="el-input-hidden"
+    ></el-input>
+    <el-dropdown-menu
+      slot="dropdown"
+      class="search-select-el-dropdown-menu"
+    >
       <div class="search-input">
         <el-input
           v-model="searchKey"
@@ -25,7 +31,15 @@
           clearable />
       </div>
       <div class="search-options">
-        <el-dropdown-item v-for="option in filterOptions" :name="option.value || option.id" :title="option.label || option.name" :key="option.value">{{ option.label || option.name }}</el-dropdown-item>
+        <el-dropdown-item
+          v-for="option in filterOptions"
+          :name="option.value || option.id"
+          :title="option.label || option.name"
+          :key="option.value"
+          @click.native="ondropClick(option)"
+        >
+          {{ option.label || option.name }}
+        </el-dropdown-item>
       </div>
     </el-dropdown-menu>
   </el-dropdown>
@@ -58,27 +72,6 @@ export default {
         this.visible = !this.visible
       }
     },
-
-    /**
-       * @description: 选取
-       * @author: chenxiaoxi
-       * @date: 2018/12/25 10:39:08
-       */
-    handleOptionClick (val) {
-      if (this.options !== '' && this.options !== null) {
-        this.options.map((opt) => {
-          // 用value去匹配label,输入框最终显示的是label
-          if (opt.value === val) {
-            this.selectedLabel = opt.label || opt.name
-            this.selectedValue = val
-            this.$emit('input', val)
-            this.$emit('on-change', val)
-            this.visible = false
-          }
-        })
-      }
-    },
-
     /**
        * @description: 选项过滤
        * @author: chenxiaoxi
@@ -122,14 +115,13 @@ export default {
         this.selectedValue = ''
       }
     },
-
-    /**
-     * @description: 点击组件之外
-     * @author: chenxiaoxi
-     * @date: 2019/04/10 14:17:00
-     */
-    handleClickOutSide () {
-      this.visible = false
+    // 点击下拉选项事件
+    ondropClick (option) {
+      this.visible = false // 隐藏下拉菜单
+      this.selectedValue = option.value
+      this.selectedLabel = option.label
+      this.$emit('input', option.value) // 赋值给父组件
+      this.$emit('on-change', option.value) // 赋值给父组件
     }
   },
   components: {},
@@ -209,36 +201,4 @@ export default {
 <style lang="less">
   @import '~@/assets/styles/mixins';
   @import '~@/assets/styles/style';
-  .search-select{
-    width: 100%;
-    line-height: 0px;
-    .search-input{
-      padding: 0 5px 5px 5px;
-      .ivu-input{
-        border-radius: 2px;
-      }
-    }
-    .ivu-icon-ios-arrow-down{
-      transition: transform .2s linear;
-    }
-    .search-visible{
-      .ivu-icon-ios-arrow-down{
-        transform: rotate(180deg);
-      }
-    }
-    .ivu-input{
-      padding-right: 7px !important;
-      .un-select()
-    }
-    .search-options{
-      max-height: 200px;
-      overflow-x: hidden;
-      overflow-y: auto;
-    }
-    .input-color{
-      .ivu-input{
-        border: 1px solid #dcdee2 !important;
-      }
-    }
-  }
 </style>
