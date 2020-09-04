@@ -31,7 +31,7 @@
           <el-button
             type="primary"
             class="searchAngNewBtn"
-            @click="classAdd"
+            @click="classAdd(1, null)"
             v-btn-permission="'SDXRQ8LV6K'"
             >新增</el-button>
         </el-form-item>
@@ -78,12 +78,12 @@
               class="opera-btn"
               size="mini"
               type="primary"
-              @click="handlePreview(scope.$index, scope.row)">查看</el-button>
+              @click="classAdd(3, scope.row)">查看</el-button>
             <el-button
               class="opera-btn"
               size="mini"
               type="warning"
-              @click="handleEdit(scope.$index, scope.row)">编辑</el-button>
+              @click="classAdd(2, scope.row)">编辑</el-button>
             <el-button
               class="opera-btn"
               size="mini"
@@ -102,14 +102,15 @@
       @pageSizeChange="pageSizeChange"></pagination>
     <!--新增抽屉-->  
     <el-drawer
-      title="新增信息"
+      :title="title"
       :visible.sync="dialogState"
       direction="rtl"
       custom-class="demo-drawer"
       ref="drawer"
       size="50%"
+      :class = "classObject"
       >
-      <div class="demo-drawer__content">
+      <div class="demo-drawer__content" v-if="this.oprState === 1 || this.oprState === 2">
         <el-form :model="classModelAdd" ref="classModelAdd" :rules="classRules"  class="label-input-form">
           <el-row>
             <el-col span="12">
@@ -151,6 +152,28 @@
           <el-button type="primary" @click="saveClass('ruleForm')">提交</el-button>
         </div>
       </div>
+      <div class="demo-drawer__content" v-else>
+        <div class="check-item-row">
+          <div class="check-item-col1">
+            <div class="check-item-label"> 选项：</div>
+            <div class="check-item-value">{{classModelAdd.dicTypeName}}</div>
+          </div>
+          <div class="check-item-col1">
+            <div class="check-item-label">排序号：</div>
+            <div class="check-item-value">{{classModelAdd.showIndex}}</div>
+          </div>
+        </div>
+        <div class="check-item-row">
+          <div class="check-item-col2">
+              <div class="check-item-label">描述：</div>
+              <div class="check-item-value">{{classModelAdd.describes}}</div>
+          </div>
+          <div class="check-item-col2">
+            <div class="check-item-label"></div>
+              <div class="check-item-value"></div>
+          </div>
+        </div>
+      </div>
     </el-drawer>
   </div>
 </template>
@@ -190,6 +213,8 @@ export default {
         // 唯一辨识
         dicId: 'FDFDFDVFTGR'
       },
+      // 弹窗标题
+      title: '',
        //  表单验证
       classRules: {
         dicTypeName: [
@@ -204,10 +229,13 @@ export default {
           {type: 'string', max: 500, message: '最多输入500位', trigger: 'blur'}
         ]
       },
+
       // 中间变量
       standName1: '',
       describes1: '',
-      standCode1: ''
+      standCode1: '',
+      // 判断是新增or 编辑 or 查看
+      oprState: ''
     }
   },
   methods: {
@@ -252,14 +280,36 @@ export default {
       // this.$refs.selection.selectAll(false)
     },
     // 新增弹窗打开
-    classAdd () {
-      this.dialogState = true
+    classAdd (oprState, row) {
+      this.oprState = oprState
+      if (this.oprState === 1) {
+        this.title = '新增信息'
+        this.dialogState = true
+      } else  if (this.oprState === 2) {
+        this.title = '编辑信息'
+        this.classModelAdd = row
+        this.dialogState = true 
+      } else {
+        this.title = '查看信息'
+        this.classModelAdd = row
+        this.dialogState = true
+      }
     },
     // 新增弹窗提交
     saveClass (formName) {
+      let data = this.classModelAdd
       this.$refs[formName].validate((valid) => {
         if (valid) {
-          alert('submit!');
+          this.$http.postData('sys/dictype/create', data, {
+              _this: this
+            }, res => {
+              if (res.ok) {
+                this.closeModal()
+                this.dialogState = false
+              } else {
+                this.dialogState = true
+              }
+            }, e => {})
         } else {
           console.log('error submit!!');
           return false;
@@ -268,7 +318,10 @@ export default {
     },
     // 新增弹窗关闭
     closeModal (formName) {
-
+      this.$refs[formName].resetFields();
+      this.classModelAdd = {}
+      this.selectClass()
+      this.dialogState = false
     },
     // 删除
     classBatchDel () {
@@ -290,6 +343,13 @@ export default {
   },
   mounted () {
     this.selectClass()
+  },
+  computed: {
+      classObject() {
+        return {
+          'check-draw' : this.oprState === 3
+        }
+      }
   }
 } 
 </script>
