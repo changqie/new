@@ -1,15 +1,4 @@
-// 设置输入框高度
-.label-input-form{
-  .el-input__inner{
-    height: 32px !important;
-    line-height: 32px !important;
-    width: 165px;
-    // @media all and (-ms-high-contrast: none), (-ms-high-contrast: active) {
-    //   // ie下样式偏差1px
-    //   line-height: 27px !important;
-    // }
-  }
-}
+
 //设置查询按钮
 .el-button--primary.searchAngNewBtn{
   height: 32px;
@@ -123,15 +112,15 @@
 }
 
 //设置form-item
-.el-form--inline .el-form-item.serch-form-item {
+.el-form-item.serch-form-item {
   margin-bottom:  10px;
   margin-right: 6px;
 }
-.el-form--inline .el-form-item.serch-form-item.btn-box {
+.el-form-item.serch-form-item.btn-box {
   margin-bottom:  10px;
   margin-right: 2px;
 }
-// 设置form-item-lable
+// 设置查询orm-item-lable
 .serch-form-item .el-form-item__label{
   position: relative;
   top: 1px;
@@ -151,11 +140,53 @@
   position: relative;
   font-size: 14px;
   .el-input__inner{
+    height: 32px !important;
+    line-height: 32px !important;
+    width: 165px;
     border-radius: 0 4px 4px 0;
     font-size: 12px;
     color: #515a6e;
     font-family: Helvetica, 'Hiragino Sans GB', 'Microsoft Yahei', '\5FAE\8F6F\96C5\9ED1', Arial, sans-serif !important;
   }
+}
+// 设置新增form-item-lable
+.add-form-item .el-form-item__label{
+  position: relative;
+  top: 1px;
+  padding: 0 7px;
+  height: 32px;
+  line-height: 32px;
+  font-size: 12px;
+  border: 1px solid #DDD;
+  border-top-left-radius: 4px;
+  border-bottom-left-radius: 4px;
+  border-right: none;
+  background: #F4F8FB;
+  text-align: center;
+}
+.add-form-item .el-form-item__content {
+  line-height: 32px;
+  position: relative;
+  font-size: 14px;
+  width: 166px;
+  .el-input__inner{
+    border-radius: 0 4px 4px 0;
+    font-size: 12px;
+    color: #515a6e;
+    font-family: Helvetica, 'Hiragino Sans GB', 'Microsoft Yahei', '\5FAE\8F6F\96C5\9ED1', Arial, sans-serif !important;
+    height: 32px !important;
+    line-height: 32px !important;
+    width: 224px;
+  }
+   //设置输入框高度
+// .label-input-form{
+//   .el-input__inner{  
+//     // @media all and (-ms-high-contrast: none), (-ms-high-contrast: active) {
+//     //   // ie下样式偏差1px
+//     //   line-height: 27px !important;
+//     // }
+//   }
+// }
 }
 // 设置新增等按钮区域样式
 .action-bar{
@@ -179,3 +210,21 @@
 .search-area {
   border-bottom: 1px solid #e8eaec;
 }
+/* element样式重置 start */
+/* 去掉input尾部上下小箭头 start */
+input::-webkit-outer-spin-button,input::-webkit-inner-spin-button{
+  -webkit-appearance: none !important;
+  -moz-appearance: none !important;
+  -o-appearance: none !important;
+  -ms-appearance: none !important;
+  appearance: none !important;
+  margin: 0;
+}
+input[type="number"]{
+  -webkit-appearance:textfield;
+  -moz-appearance:textfield;
+  -o-appearance:textfield;
+  -ms-appearance:textfield;
+  appearance:textfield;
+}
+/* 去掉input尾部上下小箭头 end */

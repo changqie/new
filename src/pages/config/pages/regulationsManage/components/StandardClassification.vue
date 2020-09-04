@@ -103,7 +103,6 @@
     <!--新增抽屉-->  
     <el-drawer
       title="新增信息"
-      :before-close="handleClose"
       :visible.sync="dialogState"
       direction="rtl"
       custom-class="demo-drawer"
@@ -117,7 +116,7 @@
               <el-form-item label="选项"
                 :label-width="formLabelWidth"
                 prop="dicTypeName"
-                class="serch-form-item">
+                class="add-form-item">
                 <el-input
                   v-model.trim="classModelAdd.dicTypeName"
                   autocomplete="off" clearable></el-input>
@@ -125,19 +124,21 @@
             </el-col>
             <el-col span="12">
               <el-form-item label="排序号"
-                :label-width="formLabelWidth"
                 prop="showIndex"
-                class="serch-form-item">
+                :label-width="formLabelWidth"
+                class="add-form-item">
                 <el-input
-                  v-model.trim="classModelAdd.showIndex"
+                  type="number"
+                  v-model.number="classModelAdd.showIndex"
+                  @mousewheel.native.prevent
                   autocomplete="off" clearable></el-input>
               </el-form-item>
             </el-col>
             <el-col span="12">
               <el-form-item label="描述"
-                :label-width="formLabelWidth"
                 prop="describes"
-                class="serch-form-item">
+                :label-width="formLabelWidth"
+                class="add-form-item">
                 <el-input
                   v-model.trim="classModelAdd.describes"
                   autocomplete="off" clearable></el-input>
@@ -146,8 +147,8 @@
           </el-row>
         </el-form>
         <div class="demo-drawer__footer">
-          <el-button @click="closeModal">取 消</el-button>
-          <el-button type="primary" @click="$refs.drawer.closeDrawer()" :loading="loading">{{ loading ? '提交中 ...' : '确 定' }}</el-button>
+          <el-button @click="closeModal('ruleForm')">取 消</el-button>
+          <el-button type="primary" @click="saveClass('ruleForm')">提交</el-button>
         </div>
       </div>
     </el-drawer>
@@ -196,7 +197,7 @@ export default {
           {type: 'string', max: 100, message: '最多输入100位', trigger: 'blur'}
         ],
         showIndex: [
-          {type: 'number', required: true, message: '排序号不能为空且为正整数', trigger: 'blur'},
+          {required: true, message: '排序号不能为空且为正整数', trigger: 'blur'},
           {type: 'string', validator: this.verify.validStandNumInCompile2, trigger: 'blur'}
         ],
         describes: [
@@ -254,6 +255,25 @@ export default {
     classAdd () {
       this.dialogState = true
     },
+    // 新增弹窗提交
+    saveClass (formName) {
+      this.$refs[formName].validate((valid) => {
+        if (valid) {
+          alert('submit!');
+        } else {
+          console.log('error submit!!');
+          return false;
+        }
+      });
+    },
+    // 新增弹窗关闭
+    closeModal (formName) {
+
+    },
+    // 删除
+    classBatchDel () {
+
+    },
     // 多选
     handleSelectionChange () {
 
@@ -296,7 +316,8 @@ export default {
       position: relative;
     }
     .demo-drawer__content{
-      border: 1px solid #ccc;
+      // border: 1px solid #ccc;
+      padding: 0 15px;
     }
   }
 </style>
