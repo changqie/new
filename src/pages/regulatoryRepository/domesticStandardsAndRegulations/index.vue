@@ -1,6 +1,7 @@
 <template>
   <div id="domesticStandardDatabase" :class="{ 'tree-close': sideClose }" class="demo-spin-article" v-class>
     <div class="tree-content" :class="{ 'tree-close': sideClose }">
+      <!--    <div class="tree-content" v-if="sideClose">-->
       <div class="tree">
         <laws-tree :zNodes="zNodes"
                    ref="domesticTree"
@@ -32,7 +33,7 @@
       <table-tools-bar v-model="isAdvancedSearch" @search="getDomesticStandardTableBtn(sarStandardsSearch)"
                        @reset="clearAllSearch('sarStandardsSearch')">
         <div slot="content">
-          <el-form :modal="sarStandardsSearch" inline class="label-input-form" :label-width="100">
+          <el-form :modal="sarStandardsSearch" inline class="label-input-form">
             <el-row>
               <el-col :span="8">
                 <el-form-item label="标准名称" class="serch-form-item">
@@ -134,16 +135,13 @@
             <el-form-item class="serch-form-item btn-box">
               <el-button type="primary" @click="clearAllSearch('standCommonlySearch')" class="searchAngNewBtn">清空查询</el-button>
             </el-form-item>
-            <el-form-item class="serch-form-item btn-box">
-              <el-button  type="primary" class="searchAngNewBtn" @click="selectMoreBtn">高级检索</el-button>
-            </el-form-item>
           </el-form>
         </div>
-        <!--        <div slot="right" class="rightBtn">-->
-        <!--          <el-button  type="primary" class="searchAngNewBtn" @click="selectMoreBtn">高级检索</el-button>-->
-        <!--        </div>-->
+        <div slot="right" class="rightBtn">
+          <el-button  type="primary" class="searchAngNewBtn" @click="selectMoreBtn">高级检索</el-button>
+        </div>
       </table-tools-bar>
-<!--      <el-divider></el-divider>-->
+      <el-divider class="noBottom"></el-divider>
       <div class="content">
         <div class="action-bar">
           <el-button type="primary" size="mini" @click="exportStandard('apart')" v-btn-permission="'MP3Y2BAK5V'">导出</el-button>
@@ -1561,7 +1559,6 @@ export default {
     // 高级检索
     selectMoreBtn () {
       this.isAdvancedSearch = true
-      // this.sarStandardsSearch.standSort = ''
     },
     treeCollapse () {
       console.log(this.sideClose)
@@ -2064,6 +2061,9 @@ export default {
         background: #5596CC !important;
         color: #FFF;
       }
+    }
+    .noBottom{
+      margin-bottom: 0;
     }
   }
 </style>
