@@ -222,11 +222,23 @@
                   size="mini"
                   type="warning"
                   @click="selectStandardPro(scope.row, 'edit')">编辑</el-button>
-                <el-button
-                  class="opera-btn"
-                  size="mini"
-                  type="primary"
-                  @click="handleDelete(scope.$index, scope.row)">更多</el-button>
+<!--                <el-button-->
+<!--                  class="opera-btn"-->
+<!--                  size="mini"-->
+<!--                  type="primary"-->
+<!--                  @click="handleDelete(scope.$index, scope.row)">更多</el-button>-->
+                <el-dropdown trigger="click">
+                  <el-button type="primary" class="opera-btn" style="margin-left: 10px" size="mini">
+                    更多
+                  </el-button>
+                  <el-dropdown-menu slot="dropdown">
+                    <el-dropdown-item>收藏</el-dropdown-item>
+                    <el-dropdown-item>分享</el-dropdown-item>
+                    <el-dropdown-item>移除标准</el-dropdown-item>
+                    <el-dropdown-item>删除</el-dropdown-item>
+                    <el-dropdown-item>流程</el-dropdown-item>
+                  </el-dropdown-menu>
+                </el-dropdown>
               </template>
             </el-table-column>
           </el-table>
@@ -257,6 +269,7 @@
       >
 <!--        :before-close="handleClose"-->
         <!-- 新增样式 -->
+        <div class="demo-drawer__content">
         <div class="el-drawer-form">
           <el-form ref="sarStandardsInfoForm" :model="sarStandardsInfoEO" :rules="sarStandardsInfoRules"
                 class="label-input-form">
@@ -937,8 +950,9 @@
           </el-form>
         </div>
         <div class="demo-drawer-footer">
-          <el-button size="small" style="margin-right: 8px" type="primary" @click="resetForm"  class="searchAngNewBtn">取消</el-button>
           <el-button size="small" type="primary" v-if="!formdisableflag" @click="saveOrUpdateStands" :loading="isSubmit"  class="searchAngNewBtn">提交</el-button>
+          <el-button size="small" style="margin-right: 8px" type="primary" @click="resetForm"  class="searchAngNewBtn">取消</el-button>
+        </div>
         </div>
       </el-drawer>
 <!--      导入-->
@@ -1415,7 +1429,8 @@
               @pageChange="configuraPageChange"
               @pageSizeChange="configuraPageSizeChange"></pagination>
             </div>
-            <div style="display: flex;direction: rtl;margin-right: 20px">
+            <!--display:flex-->
+            <div style="direction: rtl;margin-right: 20px">
               <el-button size="mini" type="primary" @click="saveConfigStand">提交</el-button>
               <el-button size="mini" style="padding-left: 10px" @click="cancelConfigStand">取 消</el-button>
             </div>
@@ -3470,7 +3485,7 @@ export default {
       _this: this
     }, res => {
       this.countryOptions = res.data.COUNTRY
-      // this.standSortOptions = res.data.STANDCLASSIFY
+      this.standSortOptions = res.data.STANDCLASSIFY
       this.applyArcticOptions = res.data.PRODUCTTYPE // 根据需求文档，产品类别对应标准属性中的“适用车型”
       this.standStateOptions = res.data.STANDSTATE
       this.standNatureOptions = res.data.SARPROPERTY // 标准性质
@@ -3604,6 +3619,10 @@ export default {
     }
     .tabpagination{
       position: relative;
+    }
+    .demo-drawer-footer{
+      direction: rtl;
+      margin: 10px;
     }
   }
 </style>
