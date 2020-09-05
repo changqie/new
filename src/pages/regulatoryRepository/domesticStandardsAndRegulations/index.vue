@@ -1,8 +1,12 @@
 <template>
-  <div id="domesticStandardDatabase" :class="{ 'tree-close': sideClose }" class="demo-spin-article" v-class>
-    <div class="tree-content" :class="{ 'tree-close': sideClose }">
+  <div id="domesticStandardDatabase"  v-class>
+    <div class="tree-content" >
       <!--    <div class="tree-content" v-if="sideClose">-->
-      <div class="tree">
+<!--      <el-radio-group v-model="isCollapse" style="margin-bottom: 20px;">-->
+<!--        <el-radio-button :label="false"><i class="el-icon-arrow-left"></i></el-radio-button>-->
+<!--        <el-radio-button :label="true"><i class="el-icon-arrow-right"></i></el-radio-button>-->
+<!--      </el-radio-group>-->
+<!--      <el-menu default-active="1-4-1" class="el-menu-vertical-demo" @open="handleOpen" @close="handleClose" :collapse="isCollapse">-->
         <laws-tree :zNodes="zNodes"
                    ref="domesticTree"
                    treeDivId="domesticTree"
@@ -22,7 +26,7 @@
                    @treeRemove="(treeId, treeNode) => clickDropMenu('deleteMenu', treeNode)"
                    @drag="drag"
         ></laws-tree>
-      </div>
+<!--      </el-menu>-->
       <div class="tree-collapse" @click="treeCollapse" :class="{ 'tree-close': sideClose }">
         <!--切换折叠样式-->
         <i class="el-icon-arrow-left" v-if="sideClose === false"></i>
@@ -475,9 +479,17 @@
             <el-row>
               <el-col span="12">
                 <el-form-item label="适用认证" prop="applyAuth" label-width="130px" class="add-form-item">
-                  <search-multiple-select v-model="sarStandardsInfoEO.applyAuth"  :disabled="formdisableflag" placeholder="请选择适用认证" :options="applyAuthOptions">
+<!--                  <search-multiple-select v-model="sarStandardsInfoEO.applyAuth"  :disabled="formdisableflag" placeholder="请选择适用认证" :options="applyAuthOptions">-->
                     <!--<el-option v-for="opt in applyAuthOptions" :value="opt.value" :key="opt.value">{{ opt.label }}</el-option>-->
-                  </search-multiple-select>
+<!--                  </search-multiple-select>-->
+                  <el-select v-model="sarStandardsInfoEO.applyAuth" multiple placeholder="请选择适用认证" :filterable="true">
+                    <el-option
+                      v-for="opt in applyAuthOptions"
+                      :key="opt.value"
+                      :label="opt.label"
+                      :value="opt.value">
+                    </el-option>
+                  </el-select>
                 </el-form-item>
               </el-col>
             </el-row>
@@ -526,20 +538,36 @@
             <el-row>
               <el-col span="24">
                 <el-form-item label="适用车型" prop="applyArctic" label-width="130px" class="add-form-item">
-                  <search-multiple-select v-model="sarStandardsInfoEO.applyArctic" :disabled="formdisableflag"
-                                          placeholder="请选择适用车型" :options="applyArcticOptions">
-                  </search-multiple-select>
+<!--                  <search-multiple-select v-model="sarStandardsInfoEO.applyArctic" :disabled="formdisableflag"-->
+<!--                                          placeholder="请选择适用车型" :options="applyArcticOptions">-->
+<!--                  </search-multiple-select>-->
+                  <el-select v-model="sarStandardsInfoEO.applyArctic" multiple placeholder="请选择适用车型" :filterable="true">
+                    <el-option
+                      v-for="opt in applyArcticOptions"
+                      :key="opt.value"
+                      :label="opt.label"
+                      :value="opt.value">
+                    </el-option>
+                  </el-select>
                 </el-form-item>
               </el-col>
             </el-row>
             <el-row>
               <el-col span="24">
                 <el-form-item label="能源种类" prop="emergyKind" label-width="130px" class="add-form-item">
-                  <search-multiple-select v-model="sarStandardsInfoEO.emergyKind" multiple :disabled="formdisableflag"
-                                          placeholder="请选择能源种类" :options="emergyKindOptions">
+<!--                  <search-multiple-select v-model="sarStandardsInfoEO.emergyKind" multiple :disabled="formdisableflag"-->
+<!--                                          placeholder="请选择能源种类" :options="emergyKindOptions">-->
                     <!--<el-option v-for="opt in emergyKindOptions" :value="opt.value" :key="opt.value">{{ opt.label }}-->
                     <!--</el-option>-->
-                  </search-multiple-select>
+<!--                  </search-multiple-select>-->
+                  <el-select v-model="sarStandardsInfoEO.emergyKind" multiple placeholder="请选择能源种类" :filterable="true">
+                    <el-option
+                      v-for="opt in emergyKindOptions"
+                      :key="opt.value"
+                      :label="opt.label"
+                      :value="opt.value">
+                    </el-option>
+                  </el-select>
                 </el-form-item>
               </el-col>
             </el-row>
@@ -854,7 +882,13 @@
                 <el-form-item label="责任部门" prop="orgName" label-width="130px" class="add-form-item">
                   <el-input v-model="sarStandardsInfoEO.responsibleUnit" v-show="false"/>
                   <el-popover placement="bottom" popper-class="user-dept-popper" trigger="click" :value="false">
-                    <el-input v-model="sarStandardsInfoEO.orgName" placeholder="请选择部门" readonly clearable id="deptBtn"/>
+                    <el-input slot="reference"
+                              v-model="sarStandardsInfoEO.orgName"
+                              placeholder="请选择部门"
+                              readonly
+                              clearable
+                              id="deptBtn"
+                              @on-change="inputChange"/>
                     <div class="api" slot="content">
                       <laws-tree ref="standResponsibleUnit" :zNodes="zNodesS"
                                  treeDivId="zNodesS"
@@ -872,12 +906,20 @@
             <el-row>
               <el-col span="24">
                 <el-form-item label="所属专业领域" prop="category" label-width="130px" class="add-form-item">
-                  <search-multiple-select
-                    v-if="modalshowflag"
-                    v-model="sarStandardsInfoEO.category"
-                    :options="categoryOptions"
-                    :disabled="formdisableflag"
-                    placeholder="请选择所属专业领域"/>
+<!--                  <search-multiple-select-->
+<!--                    v-if="modalshowflag"-->
+<!--                    v-model="sarStandardsInfoEO.category"-->
+<!--                    :options="categoryOptions"-->
+<!--                    :disabled="formdisableflag"-->
+<!--                    placeholder="请选择所属专业领域"/>-->
+                  <el-select v-model="sarStandardsInfoEO.category" multiple placeholder="请选择所属专业领域" :filterable="true">
+                    <el-option
+                      v-for="opt in categoryOptions"
+                      :key="opt.value"
+                      :label="opt.label"
+                      :value="opt.value">
+                    </el-option>
+                  </el-select>
                 </el-form-item>
               </el-col>
             </el-row>
@@ -936,6 +978,7 @@ export default {
   },
   data () {
     return {
+      isCollapse: true,
       sideClose: false, // 边栏收展状态
       isAdvancedSearch: false, // 高级检索窗口是否打开
       zNodesS: [], // 责任部门树结构
@@ -1567,8 +1610,8 @@ export default {
     },
     // 收展按钮
     collapseIcon () {
-      // return this.sideClose ? 'el-icon-arrow-left' : 'el-icon-arrow-right'
-      return 'el-icon-arrow-left'
+      return this.sideClose ? 'el-icon-arrow-left' : 'el-icon-arrow-right'
+      // return 'el-icon-arrow-left'
     },
     // 查询二级菜单
     selectMenu () {
@@ -1658,6 +1701,17 @@ export default {
       this.standNumFlag = 1
       this.getOrgTreeSource()
       this.changeInlandSubclassVal()
+    },
+    testItemsClick () {
+      if (this.testItemsModel) {
+        return false
+      }
+      this.testItemsModel = true
+      $('#testItems').click()
+      this.selectedList2 = []
+      this.$refs.selection2.selectAll(false)
+      this.testItemsForm.testItemName = ''
+      this.getTestItemRow('')
     },
     uploadSuccess (res, file, fileList) {
       if (res.ok) {
@@ -1921,6 +1975,9 @@ export default {
       this.sarStandardsInfoEO.responsibleUnit = treeNode.id
       this.sarStandardsInfoEO.orgName = treeNode.name
       $('#deptBtn').click()
+    },
+    inputChange () {
+      this.modalshowflag = true
     }
   },
   computed: {
@@ -1968,6 +2025,12 @@ export default {
   }
 }
 </script>
+<style>
+  .el-menu-vertical-demo:not(.el-menu--collapse) {
+    width: 200px;
+    min-height: 400px;
+  }
+</style>
 
 <style lang="less" scoped>
   @import '~@/assets/styles/mixins';
@@ -2054,7 +2117,7 @@ export default {
       .tree{
         left: -200px !important;
       }
-      .tree-right{
+      .tree-content .tree-right{
         width: calc(~'100% - 15px') !important;
       }
       .side-bar-collapse{
