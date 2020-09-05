@@ -1,6 +1,6 @@
-<!-- 标准/文件性质 -->
+<!-- 标准类别44 -->
 <template>
-  <div class="standard-classification v-class">
+  <div class="standard-category v-class">
     <div class="search-area">
       <el-form :inline="true" :model="standardForm"  ref="ruleForm" class="label-input-form">
         <div class="search-area-item">
@@ -10,14 +10,14 @@
               placeholder="请输入选项"
               :maxlength="100"
               clearable
-              @keyup.enter.native="selectClassBtn"></el-input>
+              @keyup.enter.native="selectCategoryBtn"></el-input>
           </el-form-item>
           <el-form-item class="serch-form-item btn-box">
             <el-button
               icon="el-icon-search"
               type="primary"
               class="searchAngNewBtn"
-              @click="selectClassBtn"></el-button>
+              @click="selectCategoryBtn"></el-button>
           </el-form-item>
           <el-form-item class="serch-form-item btn-box">
             <el-button
@@ -32,7 +32,7 @@
             type="primary"
             class="searchAngNewBtn"
             @click="classAdd(1, null)"
-            v-btn-permission="'CXRPGWHNSF'"
+            v-btn-permission="'SDXRQ8LV6K'"
             >新增</el-button>
         </el-form-item>
         <el-form-item class="serch-form-item btn-box">
@@ -40,12 +40,11 @@
             type="danger"
             class="searchAngNewBtn"
             @click="classBatchDel"
-            v-btn-permission="'R24ALH4Q89'">删除</el-button>
+            v-btn-permission="'ATBANPLHCM'">删除</el-button>
         </el-form-item>
         </div>
       </el-form>
     </div>
-    <!-- :reserve-selection="true" -->
     <div class="content">
       <el-table
         ref="selection"
@@ -180,10 +179,9 @@
     </el-drawer>
   </div>
 </template>
-
 <script>
 export default {
-  name: 'standardClassification',
+  name: 'StandardCategory',
   data () {
     return {
       // 查询条件
@@ -200,7 +198,7 @@ export default {
       rows: 10,
       loading: false,
       // 列表数据
-      categoryData: [],
+      classData: [],
       // 抽屉打开
       dialogState: false,
       // form-item label宽度
@@ -246,206 +244,28 @@ export default {
   },
   methods: {
     // 条件查询
-    selectClassBtn () {
-      this.standName1 = this.standardForm.standName
-      this.describes1 = this.standardForm.describes
-      this.standCode1 = this.standardForm.standCode
-      this.page = 1
-      this.selectCategory()
+    selectCategoryBtn () {
+
     },
-    // 清空查询
-    resetSelect (formName) {
-      this.standName1 = ''
-      this.standCode1 = ''
-      this.describes1 = ''
-      this.standardForm.standName = ''
-      this.standardForm.standCode = ''
-      this.standardForm.describes = ''
-      this.$refs[formName].resetFields()
-      this.selectCategory()
+    // 清空条件查询
+    resetSelect () {
+
     },
-    // 分页加载列表
-    selectCategory () {
-      let DicTypeEOPage = {
-        page: this.page,
-        pageSize: this.$store.getters.userInfo.configContent,
-        dicTypeName: this.standName1,
-        dicTypeCode: this.standCode1,
-        describes: this.describes1,
-        dicId: 'FDFDFDVFTGR'
-      }
-      this.$http.get('sys/dictype/page', DicTypeEOPage, {
-        _this: this,
-        loading: 'loading'
-      }, res => {
-        this.classData = res.data.list
-        this.total = res.data.count
-      }, e => {
-      })
-      // this.$refs.selection.selectAll(false)
-    },
-    // 新增弹窗打开
-    classAdd (oprState, row) {
-      this.oprState = oprState
-      if (this.oprState === 1) {
-        this.title = '新增信息'
-        this.dialogState = true
-      } else if (this.oprState === 2) {
-        this.title = '编辑信息'
-        this.classModelAdd = row
-        this.dialogState = true
-      } else {
-        this.title = '查看信息'
-        this.classModelAdd = row
-        this.dialogState = true
-      }
-    },
-    // 新增弹窗提交
-    saveClass (formName) {
-      let data = this.classModelAdd
-      console.log('data', data)
-      this.$refs[formName].validate((valid) => {
-        if (valid) {
-          if (this.oprState === 1) {
-            this.$http.postData('sys/dictype/create', data, {
-              _this: this
-            }, res => {
-              if (res.ok) {
-                this.closeModal()
-              } else {
-                this.dialogState = true
-              }
-            }, e => {})
-          } else if (this.oprState === 2) {
-            this.$http.putData('sys/dictype', data, {
-              _this: this
-            }, res => {
-              if (res.ok) {
-                this.closeModal()
-              } else {
-                this.dialogState = true
-              }
-            }, e => {
-            })
-          }
-        } else {
-          console.log('error submit!!')
-          return false
-        }
-      })
-    },
-    // 新增弹窗关闭
-    closeModal (formName) {
-      this.selectCategory()
-      this.classModelAdd.dicTypeName = ''
-      this.classModelAdd.showIndex = ''
-      this.classModelAdd.describes = ''
-      this.dialogState = false
-    },
-    // 批量删除
-    classBatchDel () {
-      if (this.selectNum === '' || this.selectNum.length === 0) {
-        this.$confirm('请选择一条数据进行删除?', '提示', {
-          showCancelButton: false,
-          confirmButtonText: '确定',
-          cancelButtonText: '取消',
-          type: 'warning'
-        })
-      } else {
-        (
-          this.$confirm('确认删除这些数据?', '提示', {
-            confirmButtonText: '确定',
-            cancelButtonText: '取消',
-            type: 'warning'
-          }).then(() => {
-            let delIds = []
-            let delTypeCodes = []
-            for (let i = 0; i < this.selectNum.length; i++) {
-              delIds.push(this.selectNum[i].id)
-              delTypeCodes.push(this.selectNum[i].dicTypeCode)
-            }
-            delIds = delIds.join(',')
-            delTypeCodes = delTypeCodes.join(',')
-            let data = {}
-            data.ids = delIds
-            data.dicTypeCodes = delTypeCodes
-            this.$http.delete('sys/dictype/deleteArr', data, {
-              _this: this
-            }, res => {
-              if (res.ok) {
-                this.selectCategory()
-              }
-            })
-        }).catch(() => {
-          // 取消删除，清空选择
-            this.$refs.selection.clearSelection()
-          })
-        )
-      }
+    // 打开弹窗
+    classAdd () {
+
     },
     // 删除
-    classDel (row) {
-      let data = {}
-      data.dicTypeEOId = row.id
-      data.dicTypeCode = row.dicTypeCode
-      if (data.id !== '' && data.dicTypeCode !== '') {
-        this.$confirm('确认删除该条数据?', '提示', {
-          confirmButtonText: '确定',
-          cancelButtonText: '取消',
-          type: 'warning'
-        }).then(() => {
-          this.$http.delete('sys/dictype/delete', data, {
-            _this: this
-          }, res => {
-            if (res.ok) {
-              this.selectCategory()
-            } else {
-            }
-          }).catch(() => {
-          // this.$message({
-          //   type: 'info',
-          //   message: '已取消删除'
-          // });
-          })
-        })
-      }
-    },
-    // 多选
-    handleSelectionChange (val) {
-      this.val = val
-      this.selectNum = val
-      console.log('this.selectNum', this.selectNum)
-    },
-    // 取消多选
-    clearSelection () {
-
-    },
-    pageChange (page) {
-      this.page = page
-      this.selectCategory()
-    },
-    pageSizeChange (pageSize) {
-      this.rows = pageSize
-      this.selectCategory()
-    }
-
-  },
-  mounted () {
-    this.selectCategory()
-  },
-  computed: {
-    classObject () {
-      return {
-        'check-draw': this.oprState === 3
-      }
+    classBatchDel () {
+      
     }
   }
+  
 }
 </script>
-
-<style lang="less" scoped>
+<style lang="less">
   @import 'animate.css';
-  .standard-classification{
+  .standard-category {
     position: relative;
     height: 100%;
     padding: 15px;
@@ -470,3 +290,4 @@ export default {
     }
   }
 </style>
+
