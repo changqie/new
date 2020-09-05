@@ -88,7 +88,7 @@
               class="opera-btn"
               size="mini"
               type="danger"
-              @click="handleDelete(scope.$index, scope.row)">删除</el-button>
+              @click="classDel(scope.row)">删除</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -307,7 +307,6 @@ export default {
             }, res => {
               if (res.ok) {
                 this.closeModal()
-                // this.dialogState = false
               } else {
                 this.dialogState = true
               }
@@ -320,12 +319,11 @@ export default {
     },
     // 新增弹窗关闭
     closeModal (formName) {
-      // this.$refs[formName].resetFields();
       this.classModelAdd = {}
       this.selectClass()
       this.dialogState = false
     },
-    // 删除
+    // 批量删除
     classBatchDel () {
       if (this.selectNum === '' || this.selectNum.length === 0) {
         this.$confirm('请选择一条数据进行删除?', '提示', {
@@ -334,7 +332,7 @@ export default {
           type: 'warning'
         })
       }else (
-            this.$confirm('确认删除该这些数据?', '提示', {
+        this.$confirm('确认删除该这些数据?', '提示', {
           confirmButtonText: '确定',
           cancelButtonText: '取消',
           type: 'warning'
@@ -369,10 +367,37 @@ export default {
           // });          
         })
       )
-      // } else { 
-        // const url = 'sys/dictype/deleteArr'
-        // this.confirm('确认删除该这些数据', delIds, delTypeCodes, url)
-      // }
+    },
+    // 删除
+    classDel (row) {
+      let data = {}
+      data.dicTypeEOId = row.id
+      data.dicTypeCode = row.dicTypeCode
+      if (data.id !== '' && data.dicTypeCode !== '') {
+        this.$confirm('确认删除该这些数据?', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+                  this.$http.delete('sys/dictype/delete', data, {
+          _this: this
+        }, res => {
+          if(res.ok) {
+            this.selectClass()
+            this.$message({
+            type: 'success',
+            message: '删除成功!'
+            });
+          }else{               
+          }
+        }).catch(() => {
+          // this.$message({
+          //   type: 'info',
+          //   message: '已取消删除'
+          // });          
+        })
+        })
+      }
     },
     // 多选
     handleSelectionChange (val) {
