@@ -772,6 +772,8 @@ export default {
             }
           })
         }).catch(() => {
+          this.$refs.selection.clearSelection()
+          this.selectionList = []
         })
       }
     },
