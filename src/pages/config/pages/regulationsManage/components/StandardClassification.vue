@@ -205,7 +205,7 @@ export default {
       dialogState: false,
       // form-item label宽度
       formLabelWidth: '80px',
-        // 新增弹窗数据
+      // 新增弹窗数据
       classModelAdd: {
         // 数据信息
         dicTypeName: '',
@@ -219,7 +219,7 @@ export default {
       },
       // 弹窗标题
       title: '',
-       //  表单验证
+      //  表单验证
       classRules: {
         dicTypeName: [
           {required: true, message: '选项不能为空', trigger: 'blur'},
@@ -241,7 +241,7 @@ export default {
       // 判断是新增or 编辑 or 查看
       oprState: 0,
       // 多选时接收选中行数据
-      selectNum: [],
+      selectNum: []
     }
   },
   methods: {
@@ -252,7 +252,6 @@ export default {
       this.standCode1 = this.standardForm.standCode
       this.page = 1
       this.selectClass()
-
     },
     // 清空查询
     resetSelect (formName) {
@@ -262,7 +261,7 @@ export default {
       this.standardForm.standName = ''
       this.standardForm.standCode = ''
       this.standardForm.describes = ''
-      this.$refs[formName].resetFields();
+      this.$refs[formName].resetFields()
       this.selectClass()
     },
     // 分页加载列表
@@ -291,10 +290,10 @@ export default {
       if (this.oprState === 1) {
         this.title = '新增信息'
         this.dialogState = true
-      } else  if (this.oprState === 2) {
+      } else if (this.oprState === 2) {
         this.title = '编辑信息'
         this.classModelAdd = row
-        this.dialogState = true 
+        this.dialogState = true
       } else {
         this.title = '查看信息'
         this.classModelAdd = row
@@ -307,30 +306,29 @@ export default {
       console.log('data', data)
       this.$refs[formName].validate((valid) => {
         if (valid) {
-          if(this.oprState === 1) {
-              this.$http.postData('sys/dictype/create', data, {
+          if (this.oprState === 1) {
+            this.$http.postData('sys/dictype/create', data, {
               _this: this
             }, res => {
               if (res.ok) {
-                
+
               } else {
                 this.dialogState = true
               }
             }, e => {})
-          } else if(this.oprState === 2) {
+          } else if (this.oprState === 2) {
             this.$http.putData('sys/dictype', data, {
               _this: this
             }, res => {
-            this.closeModal()
+              this.closeModal()
             }, e => {
-            })           
+            })
           }
-    
         } else {
-          console.log('error submit!!');
-          return false;
+          console.log('error submit!!')
+          return false
         }
-      });
+      })
     },
     // 新增弹窗关闭
     closeModal (formName) {
@@ -349,35 +347,37 @@ export default {
           cancelButtonText: '取消',
           type: 'warning'
         })
-      }else (
-        this.$confirm('确认删除该这些数据?', '提示', {
-          confirmButtonText: '确定',
-          cancelButtonText: '取消',
-          type: 'warning'
-        }).then(() => {
-          let delIds = []
-          let delTypeCodes = []
-          for (let i = 0; i < this.selectNum.length; i++) {
-            delIds.push(this.selectNum[i].id)
-            delTypeCodes.push(this.selectNum[i].dicTypeCode)
-          }
-          delIds = delIds.join(',')
-          delTypeCodes = delTypeCodes.join(',')
-          let data = {}
-          data.ids = delIds
-          data.dicTypeCodes = delTypeCodes
-          this.$http.delete('sys/dictype/deleteArr', data, {
+      } else {
+        (
+          this.$confirm('确认删除该这些数据?', '提示', {
+            confirmButtonText: '确定',
+            cancelButtonText: '取消',
+            type: 'warning'
+          }).then(() => {
+            let delIds = []
+            let delTypeCodes = []
+            for (let i = 0; i < this.selectNum.length; i++) {
+              delIds.push(this.selectNum[i].id)
+              delTypeCodes.push(this.selectNum[i].dicTypeCode)
+            }
+            delIds = delIds.join(',')
+            delTypeCodes = delTypeCodes.join(',')
+            let data = {}
+            data.ids = delIds
+            data.dicTypeCodes = delTypeCodes
+            this.$http.delete('sys/dictype/deleteArr', data, {
               _this: this
             }, res => {
-              if(res.ok) {
+              if (res.ok) {
                 this.selectClass()
               }
             })
         }).catch(() => {
           // 取消删除，清空选择
-          this.$refs.selection.clearSelection();         
-        })
-      )
+            this.$refs.selection.clearSelection()
+          })
+        )
+      }
     },
     // 删除
     classDel (row) {
@@ -390,34 +390,34 @@ export default {
           cancelButtonText: '取消',
           type: 'warning'
         }).then(() => {
-                  this.$http.delete('sys/dictype/delete', data, {
-          _this: this
-        }, res => {
-          if(res.ok) {
-            this.selectClass()
-            this.$message({
-            type: 'success',
-            message: '删除成功!'
-            });
-          }else{               
-          }
-        }).catch(() => {
+          this.$http.delete('sys/dictype/delete', data, {
+            _this: this
+          }, res => {
+            if (res.ok) {
+              this.selectClass()
+              this.$message({
+                type: 'success',
+                message: '删除成功!'
+              })
+            } else {
+            }
+          }).catch(() => {
           // this.$message({
           //   type: 'info',
           //   message: '已取消删除'
-          // });          
-        })
+          // });
+          })
         })
       }
     },
     // 多选
     handleSelectionChange (val) {
       this.val = val
-      this.selectNum = val 
+      this.selectNum = val
       console.log('this.selectNum', this.selectNum)
     },
     // 取消多选
-    clearSelection() {
+    clearSelection () {
 
     },
     pageChange (page) {
@@ -434,13 +434,13 @@ export default {
     this.selectClass()
   },
   computed: {
-      classObject() {
-        return {
-          'check-draw' : this.oprState === 3
-        }
+    classObject () {
+      return {
+        'check-draw': this.oprState === 3
       }
+    }
   }
-} 
+}
 </script>
 
 <style lang="less" scoped>
@@ -470,4 +470,3 @@ export default {
     }
   }
 </style>
-

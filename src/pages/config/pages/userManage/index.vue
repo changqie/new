@@ -84,7 +84,9 @@
         :height="tableHeight"
         border
         :header-cell-style="{background: '#f8f8f9', color: '#515a6e'}"
-        @selection-change="handleRowChange">
+        @selection-change="handleRowChange"
+        ref="selection"
+      >
         <el-table-column
           type="selection"
           width="55"
@@ -234,8 +236,8 @@
                   class="add-form-item"
                 >
                   <el-input
-                    type="password"
-                    auto-complete="new-password"
+                    type="text"
+                    onfocus="this.type='password'"
                     v-model="userVO.password"
                     :disabled="usersType === 3"
                     placeholder="请输入用户密码"/>
@@ -249,8 +251,8 @@
                   class="add-form-item"
                 >
                   <el-input
-                    type="password"
-                    auto-complete="new-password"
+                    type="text"
+                    onfocus="this.type='password'"
                     v-model="userVO.passwordCheck"
                     :disabled="usersType === 3"
                     placeholder="请再次输入密码"/>
@@ -262,11 +264,26 @@
                   prop="roleId"
                   class="add-form-item"
                 >
-                  <search-multiple-select v-model="userVO.roleIdList" :multiple= "true" :options="search.roleOptions" placeholder="请选择角色"/>
-                  <!--                      <search-select v-model="userVO.roleId" :multiple= "true" :disabled="usersType === 3"  :options="search.roleOptions" placeholder="请选择角色"/>-->
-                  <!--                      <Select v-model="userVO.roleIdList" multiple>-->
-                  <!--                        <Option v-for="item in search.roleOptions" :value="item.value" :key="item.value">{{ item.label }}</Option>-->
-                  <!--                      </Select>-->
+                  <el-select
+                    v-model="userVO.roleIdList"
+                    multiple
+                    placeholder="请选择角色"
+                    :filterable="true"
+                    class="top1px"
+                  >
+                    <el-option
+                      v-for="item in search.roleOptions"
+                      :key="item.value"
+                      :label="item.label"
+                      :value="item.value">
+                    </el-option>
+                  </el-select>
+                  <!--<search-multiple-select-->
+                    <!--v-model="userVO.roleIdList"-->
+                    <!--:multiple= "true"-->
+                    <!--:options="search.roleOptions"-->
+                    <!--placeholder="请选择角色"-->
+                  <!--/>-->
                 </el-form-item>
               </el-col>
               <el-col :span="12">
@@ -278,7 +295,9 @@
                   <el-input
                     v-model="userVO.mobilePhone"
                     :disabled="usersType === 3"
-                    placeholder="请输入手机号"/>
+                    placeholder="请输入手机号"
+                    class="top1px"
+                  />
                 </el-form-item>
               </el-col>
               <el-col :span="12">
@@ -312,8 +331,17 @@
                   class="add-form-item"
                 >
                   <!--<search-select v-model="userVO.disableFlag" placeholder="请选择状态" :disabled="usersType === 3" :options="search.disableFlagOptions" />-->
-                  <el-select v-model="userVO.disableFlag" placeholder="请选择状态" clearable>
-                    <el-option v-for="item in search.disableFlagOptions" :value="item.value" :key="item.value">{{ item.label }}</el-option>
+                  <el-select
+                    v-model="userVO.disableFlag"
+                    placeholder="请选择状态"
+                    clearable
+                  >
+                    <el-option
+                      v-for="item in search.disableFlagOptions"
+                      :value="item.value"
+                      :key="item.value"
+                      :label="item.label">
+                    </el-option>
                   </el-select>
                 </el-form-item>
               </el-col>
@@ -357,68 +385,58 @@
           </el-form>
         </div>
         <div id="roleFormButton" class="demo-drawer-footer" :class="{ 'disappear': usersType === 3 }">
-          <el-button @click="closeDrawer">取消</el-button>
-          <el-button type="primary" @click="saveUserInfo('userVO')">提交</el-button>
+          <el-button size="mini" @click="closeDrawer">取消</el-button>
+          <el-button type="primary" size="mini" @click="saveUserInfo('userVO')">提交</el-button>
         </div>
       </el-drawer>
       <!--查看抽屉-->
-      <el-drawer :mask-closable="false"  width="640" title="用户信息" v-model="showUserSeeModal" @close="showClose" class="drawer-bg">
-        <div class="check-item-row">
-          <div class="check-item-col">
-            <div class="check-item-label">人员姓名：</div>
-            <div class="check-item-value" :title="userVO.uname">{{ userVO.uname }}</div>
-          </div>
-          <div class="check-item-col">
-            <div class="check-item-label">
-              账&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;号：
+      <el-drawer
+        :wrapperClosable="false"
+        size="640px"
+        title="用户信息"
+        :visible.sync="showUserSeeModal"
+        :destroy-on-close="true"
+        @close="closeDrawer"
+        custom-class="demo-drawer check-draw"
+      >
+        <div class="demo-drawer__content">
+          <div class="check-item-row">
+            <div class="check-item-col1">
+              <div class="check-item-label">人员姓名：</div>
+              <div class="check-item-value">{{ userVO.uname }}</div>
             </div>
-            <div class="check-item-value" :title="userVO.account">
-              {{ userVO.account }}
-            </div>
-          </div>
-        </div>
-        <div class="check-item-row">
-          <div class="check-item-col">
-            <div class="check-item-label">
-              角&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;色：
-            </div>
-            <div class="check-item-value" :title="userVO.roleNameList">{{userVO.roleNameList}}</div>
-          </div>
-          <div class="check-item-col">
-            <div class="check-item-label">
-              用户类型：
-            </div>
-            <div class="check-item-value" :title="userVO.userType ==='GQYJY' ? '研究院':userVO.userType ==='GQJT'?'集团':userVO.userType ==='OTHER'?'其他':''">
-              {{ userVO.userType ==='GQYJY' ? '研究院':userVO.userType ==='GQJT'?'集团':userVO.userType ==='OTHER'?'其他':'' }}
+            <div class="check-item-col1">
+              <div class="check-item-label">账&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;号：</div>
+              <div class="check-item-value">{{ userVO.account }}</div>
             </div>
           </div>
-        </div>
-        <div class="check-item-row">
-          <div class="check-item-col">
-            <div class="check-item-label">
-              所属部门：
+          <div class="check-item-row">
+            <div class="check-item-col2">
+              <div class="check-item-label">角&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;色：</div>
+              <div class="check-item-value">{{userVO.roleNameList}}</div>
             </div>
-            <div class="check-item-value" :title="userVO.orgName">
-              {{ userVO.orgName }}
-            </div>
-          </div>
-          <div class="check-item-col">
-            <div class="check-item-label">手机号码：</div>
-            <div class="check-item-value" :title="userVO.mobilePhone">
-              {{userVO.mobilePhone}}
+            <div class="check-item-col2">
+              <div class="check-item-label">用户类型：</div>
+              <div class="check-item-value">{{ userVO.userType ==='GQYJY' ? '研究院':userVO.userType ==='GQJT'?'集团':userVO.userType ==='OTHER'?'其他':'' }}</div>
             </div>
           </div>
-        </div>
-        <div class="check-item-row">
-          <div class="check-item-col">
-            <div class="check-item-label">
-              用户状态：
+          <div class="check-item-row">
+            <div class="check-item-col1">
+              <div class="check-item-label">所属部门：</div>
+              <div class="check-item-value" :title="userVO.orgName">{{ userVO.orgName }}</div>
             </div>
-            <div class="check-item-value" :title="userVO.disableFlag==0? '启用':'禁用'">
-              {{userVO.disableFlag==0? '启用':'禁用'}}
+            <div class="check-item-col1">
+              <div class="check-item-label">手机号码：</div>
+              <div class="check-item-value">{{userVO.mobilePhone}}</div>
             </div>
           </div>
-          <div class="check-item-col"></div>
+          <div class="check-item-row">
+            <div class="check-item-col2">
+              <div class="check-item-label">用户状态：</div>
+              <div class="check-item-value">{{userVO.disableFlag==0? '启用':'禁用'}}</div>
+            </div>
+            <div class="check-item-col2"></div>
+          </div>
         </div>
       </el-drawer>
     </div>
@@ -811,43 +829,10 @@ export default {
     }
   },
   methods: {
-    showClose () {
-      this.$refs['userVO'].resetFields()
-    },
     // 搜索所属部门
     inputChange () {
       this.search.orgId = ''
       this.getOrgTreeSource()
-    },
-    // 对话框
-    instance (type, content) {
-      const title = '请选择'
-      switch (type) {
-        case 'info':
-          this.$Modal.info({
-            title: title,
-            content: content
-          })
-          break
-        case 'success':
-          this.$Modal.success({
-            title: title,
-            content: content
-          })
-          break
-        case 'warning':
-          this.$Modal.warning({
-            title: title,
-            content: content
-          })
-          break
-        case 'error':
-          this.$Modal.error({
-            title: title,
-            content: content
-          })
-          break
-      }
     },
     // 搜索
     searchUserPageBtn () {
@@ -973,6 +958,7 @@ export default {
             res => {
               if (res.ok) {
                 // this.executeSuccess('保存用户成功！')
+                this.showUserModal = false
                 this.closeDrawer()
                 this.searchUserPage()
               }
@@ -1006,7 +992,7 @@ export default {
         }, e => {})
     },
     // 用户编辑
-    userEdit (row) {
+    userEdit (index, row) {
       this.userTitle = '编辑用户'
       this.usersType = 2
       this.createType = true
@@ -1018,12 +1004,31 @@ export default {
       this.showUserModal = true
     },
     // 用户删除
-    userDel (usId) {
-      this.$http.delete('sys/user/' + usId, {},
-        { _this: this
-        }, res => {
-          this.searchUserPage()
-        })
+    userDel (index, row) {
+      const h = this.$createElement
+      this.$msgbox({
+        title: '消息',
+        message: h('p', null, [
+          h('span', null, '您确认要删除 '),
+          h('i', { style: 'color: #E4393C' }, row.uname),
+          h('span', null, '吗？')
+        ]),
+        showCancelButton: true,
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        this.$http.delete('sys/user/' + row.usid, {},
+          {
+            _this: this
+          }, res => {
+            if (res.ok) {
+              this.searchUserPage() // 调用分页方法
+            }
+          }
+        )
+      }).catch(() => {
+      })
     },
     // 批量删除
     batchUserDel () {
@@ -1035,24 +1040,32 @@ export default {
           userIds.push(userId)
         }
         let userIdsStr = userIds.join(',')
-        this.$Modal.confirm({
-          title: '请选择',
-          content: '确定删除这些数据?',
-          onOk: () => {
-            this.$http.delete('sys/user/' + userIdsStr, {},
-              { _this: this
-              }, res => {
+        this.$confirm('确定删除这些数据?', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+          this.$http.delete('sys/user/' + userIdsStr, {},
+            { _this: this
+            }, res => {
+              if (res.ok) {
                 this.searchUserPage()
-                this.clickUserList = ''
-              })
-            this.$Modal.remove()
-          }})
+                this.clickUserList = []
+              }
+            })
+        }).catch(() => {
+          this.$refs.selection.clearSelection()
+          this.clickUserList = []
+        })
       } else {
-        this.instance('warning', '请选择一条数据进行删除')
+        this.$message({
+          message: '请选择一条数据进行删除',
+          type: 'warning'
+        })
       }
     },
     // 用户查看
-    showUser (row) {
+    showUser (index, row) {
       this.showUserSeeModal = true
       this.userVO = JSON.parse(JSON.stringify(row))
       this.userVO.disableFlag = this.userVO.disableFlag.toString()
@@ -1083,15 +1096,14 @@ export default {
     pageSizeChange (pageSize) {
       this.searchUserPage()
     },
-    // 清除弹窗内容
-    cleanUserValue () {
-      this.showUserModal = false
-      this.$refs['userVO'].resetFields()
-    },
-    // 关闭弹窗
+    // 关闭抽屉
     closeDrawer () {
-      this.showUserModal = false
-      this.cleanUserValue()
+      this.$nextTick(() => {
+        // 清空新增和编辑的form表单内容
+        for (let i in this.userVO) {
+          this.userVO[i] = ''
+        }
+      })
     },
     handleRowChange (selection) {
       this.clickUserList = selection
@@ -1144,12 +1156,10 @@ export default {
       let tableHeight = $('.content').css('height')
       let height = parseInt(tableHeight.substring(0, tableHeight.indexOf('p'))) - 155
       this.tableHeight = height
-      console.log(this.tableHeight)
       window.onresize = function () {
         let tableHeight = $('.content').css('height')
         let height = parseInt(tableHeight.substring(0, tableHeight.indexOf('p'))) - 155
         _this.tableHeight = height
-        console.log(_this.tableHeight)
       }
     })
   }
