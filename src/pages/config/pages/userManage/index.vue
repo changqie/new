@@ -971,16 +971,6 @@ export default {
     .disappear{
       display: none;
     }
-    .demo-drawer-footer{
-      width: 100%;
-      position: absolute;
-      bottom: 0;
-      left: 0;
-      border-top: 1px solid #e8e8e8;
-      padding: 10px 16px;
-      text-align: right;
-      background: #fff;
-    }
   }
   .roleSee{
     font-size: 14px;
