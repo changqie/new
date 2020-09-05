@@ -45,6 +45,7 @@
         </div>
       </el-form>
     </div>
+    <!-- :reserve-selection="true" -->
     <div class="content">
       <el-table
         ref="selection"
@@ -52,6 +53,7 @@
         tooltip-effect="dark"
         style="width: 100%"
         border
+        row-key="id"
         :header-cell-style="{background: '#f8f8f9', color: '#515a6e'}"
         @selection-change="handleSelectionChange">
         <el-table-column
@@ -148,8 +150,8 @@
           </el-row>
         </el-form>
         <div class="demo-drawer__footer">
-          <el-button @click="closeModal('ruleForm')">取 消</el-button>
-          <el-button type="primary" @click="saveClass('ruleForm')">提交</el-button>
+          <el-button size="mini" @click="closeModal('ruleForm')">取 消</el-button>
+          <el-button size="mini" type="primary" @click="saveClass('ruleForm')">提交</el-button>
         </div>
       </div>
       <div class="demo-drawer__content" v-else>
@@ -235,7 +237,7 @@ export default {
       describes1: '',
       standCode1: '',
       // 判断是新增or 编辑 or 查看
-      oprState: '',
+      oprState: 0,
       // 多选时接收选中行数据
       selectNum: [],
     }
@@ -300,17 +302,28 @@ export default {
     // 新增弹窗提交
     saveClass (formName) {
       let data = this.classModelAdd
+      console.log('data', data)
       this.$refs[formName].validate((valid) => {
         if (valid) {
-          this.$http.postData('sys/dictype/create', data, {
+          if(this.oprState === 1) {
+              this.$http.postData('sys/dictype/create', data, {
               _this: this
             }, res => {
               if (res.ok) {
-                this.closeModal()
+                
               } else {
                 this.dialogState = true
               }
             }, e => {})
+          } else if(this.oprState === 2) {
+            this.$http.putData('sys/dictype', data, {
+              _this: this
+            }, res => {
+            this.closeModal()
+            }, e => {
+            })           
+          }
+    
         } else {
           console.log('error submit!!');
           return false;
@@ -319,16 +332,19 @@ export default {
     },
     // 新增弹窗关闭
     closeModal (formName) {
-      this.classModelAdd = {}
       this.selectClass()
+      this.classModelAdd.dicTypeName = ''
+      this.classModelAdd.showIndex = ''
+      this.classModelAdd.describes = ''
       this.dialogState = false
     },
     // 批量删除
     classBatchDel () {
       if (this.selectNum === '' || this.selectNum.length === 0) {
         this.$confirm('请选择一条数据进行删除?', '提示', {
+          showCancelButton: false,
           confirmButtonText: '确定',
-          // cancelButtonText: '取消',
+          cancelButtonText: '取消',
           type: 'warning'
         })
       }else (
@@ -364,7 +380,9 @@ export default {
           // this.$message({
           //   type: 'info',
           //   message: '已取消删除'
-          // });          
+          // }); 
+          // 取消删除，清空选择
+          this.$refs.selection.clearSelection();         
         })
       )
     },
@@ -404,6 +422,10 @@ export default {
       this.val = val
       this.selectNum = val 
       console.log('this.selectNum', this.selectNum)
+    },
+    // 取消多选
+    clearSelection() {
+
     },
     pageChange (page) {
       this.page = page
