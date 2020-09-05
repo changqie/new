@@ -371,18 +371,9 @@ export default {
             }, res => {
               if(res.ok) {
                 this.selectClass()
-                this.$message({
-                type: 'success',
-                message: '删除成功!'
-                });
-              }else{               
               }
             })
         }).catch(() => {
-          // this.$message({
-          //   type: 'info',
-          //   message: '已取消删除'
-          // }); 
           // 取消删除，清空选择
           this.$refs.selection.clearSelection();         
         })
