@@ -26,7 +26,6 @@
       <!-- 节点新增、节点维护 -->
       <el-dialog
         :visible.sync="view.treeView"
-        custom-class="mechanism-tree-modal"
         @on-visible-change="treChange"
         :close-on-click-modal="false"
         width="360px"
@@ -262,7 +261,7 @@
       @close="closeModal"
       :loading="roleSaveLoading"
       width="400px"
-      class="role-setting-form">
+    >
       <div style="padding: 0.2rem">
         <el-form
           ref="roleForm"
@@ -1076,104 +1075,11 @@ export default {
           }
         }
       }
-      .ivu-table-overflowX{
-        overflow-x: auto;
-      }
-      .pagination{
-        .ivu-divider{
-          margin-bottom: 0;
-        }
-      }
-      .syncInfo{
-        padding-bottom: 0.2rem;
-        .flex();
-        flex: 1;
-        align-items: center;
-      }
-    }
-    .ivu-tree-children{
-      .ivu-tree-arrow{
-        margin-right: 5px;
-      }
-    }
-    .content .btn-group{
-      margin-bottom: 0.5rem;
-    }
-    .ivu-divider-horizontal{
-      margin: 8px 0;
-    }
-    .ivu-table-body{
-      overflow-x: auto;
-    }
-    .ivu-table-tip{
-      width: 100%;
-      height: calc(~'100% - 41px');
-      table{
-        display: block;
-        tbody,tr,td{
-          display: block;
-          width: 100% !important;
-          height: 100%;
-        }
-        td{
-          .flex();
-          justify-content: center;
-          align-items: center;
-        }
-      }
     }
     .hasNoData{
       background: #FFF;
       .no-data-icon{
         width: 85px;
-      }
-    }
-    .ivu-table-fixed,
-    .ivu-table-fixed-right{
-      height: 100%;
-      .ivu-table-fixed-body{
-        height: calc(~'100% - 41px');
-      }
-    }
-    .ivu-select-item{
-      max-width: 200px;
-      .ellipsis();
-    }
-    .btn-show{
-      display: inline-block !important;
-    }
-    .btn-hide{
-      display: none !important;
-    }
-    .ivu-tag{
-      cursor: default;
-    }
-  }
-  .role-setting-form{
-    .ivu-modal-body{
-      overflow-y: inherit;
-    }
-  }
-  .demo-drawer-profile{
-    font-size: 14px;
-  }
-  .demo-drawer-profile .ivu-col{
-    margin-bottom: 12px;
-  }
-  .user-info-text{
-    color: #A59D9D;
-  }
-  .mechanism-tree-modal{
-    .ivu-modal{
-      .form-content{
-        width: 300px;
-        margin: 0 auto;
-        .ivu-form-item{
-          .flex();
-          .ivu-form-item-content{
-            flex: 1;
-          }
-        }
       }
     }
   }
