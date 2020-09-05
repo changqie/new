@@ -1,12 +1,7 @@
 <template>
-  <div id="domesticStandardDatabase"  v-class>
-    <div class="tree-content" >
-      <!--    <div class="tree-content" v-if="sideClose">-->
-<!--      <el-radio-group v-model="isCollapse" style="margin-bottom: 20px;">-->
-<!--        <el-radio-button :label="false"><i class="el-icon-arrow-left"></i></el-radio-button>-->
-<!--        <el-radio-button :label="true"><i class="el-icon-arrow-right"></i></el-radio-button>-->
-<!--      </el-radio-group>-->
-<!--      <el-menu default-active="1-4-1" class="el-menu-vertical-demo" @open="handleOpen" @close="handleClose" :collapse="isCollapse">-->
+  <div id="domesticStandardDatabase" :class="{ 'tree-close': sideClose }" class="demo-spin-article">
+    <div class="tree-content" :class="{ 'tree-closed': sideClose }">
+      <div class="tree">
         <laws-tree :zNodes="zNodes"
                    ref="domesticTree"
                    treeDivId="domesticTree"
@@ -26,7 +21,7 @@
                    @treeRemove="(treeId, treeNode) => clickDropMenu('deleteMenu', treeNode)"
                    @drag="drag"
         ></laws-tree>
-<!--      </el-menu>-->
+      </div>
       <div class="tree-collapse" @click="treeCollapse" :class="{ 'tree-close': sideClose }">
         <!--切换折叠样式-->
         <i class="el-icon-arrow-left" v-if="sideClose === false"></i>
@@ -37,7 +32,7 @@
       <table-tools-bar v-model="isAdvancedSearch" @search="getDomesticStandardTableBtn(sarStandardsSearch)"
                        @reset="clearAllSearch('sarStandardsSearch')">
         <div slot="content">
-          <el-form :modal="sarStandardsSearch" inline class="label-input-form">
+          <el-form :modal="sarStandardsSearch" :inline="true" class="label-input-form">
             <el-row>
               <el-col :span="8">
                 <el-form-item label="标准名称" class="serch-form-item">
@@ -115,7 +110,7 @@
           </el-form>
         </div>
         <div slot="left">
-          <el-form :modal="standCommonlySearch" inline="true" class="label-input-form" >
+          <el-form :modal="standCommonlySearch" :inline="true" class="label-input-form" >
             <el-form-item label="标准类别" class="serch-form-item">
               <search-select
                 v-model="standCommonlySearch.standSort"
@@ -155,13 +150,13 @@
           <el-button type="primary" size="mini" :loading="searching" @click="uploadImportModal(1)"
                      v-btn-permission="'nDZVPHAg4Y'">模板下载
           </el-button>
-          <el-button type="primary" size="mini" :loading="searching" @click="addImportModal(1)"
-                     v-btn-permission="'7Y7XX6PXNM'">导入
-          </el-button>
-          <el-button type="primary" size="mini" @click="configurationStandard" v-btn-permission="'4EN5WW694V'">配置标准
-          </el-button>
-          <el-button type="primary" size="mini" @click="deleteStandFromKind(2)" v-btn-permission="'DQSXS89BRN'">移除标准
-          </el-button>
+<!--          <el-button type="primary" size="mini" :loading="searching" @click="addImportModal(1)"-->
+<!--                     v-btn-permission="'7Y7XX6PXNM'">导入-->
+<!--          </el-button>-->
+<!--          <el-button type="primary" size="mini" @click="configurationStandard" v-btn-permission="'4EN5WW694V'">配置标准-->
+<!--          </el-button>-->
+<!--          <el-button type="primary" size="mini" @click="deleteStandFromKind(2)" v-btn-permission="'DQSXS89BRN'">移除标准-->
+<!--          </el-button>-->
         </div>
         <div class="table-wrapper">
           <el-table
@@ -170,6 +165,7 @@
             tooltip-effect="dark"
             style="width: 100%"
             border
+            :row-class-name="dragRowClassName"
             :header-cell-style="{background: '#f8f8f9', color: '#515a6e'}"
             @selection-change="standSelectChange">
             <el-table-column
@@ -265,14 +261,14 @@
           <el-form ref="sarStandardsInfoForm" :model="sarStandardsInfoEO" :rules="sarStandardsInfoRules"
                 class="label-input-form">
             <el-row>
-              <el-col span="12">
+              <el-col :span="12">
                 <el-form-item label="国家/地区" prop="country" label-width="130px" class="add-form-item">
                   <el-select v-model="sarStandardsInfoEO.country" disabled>
                     <el-option v-for="opt in countryOptions" :value="opt.value === undefined ? '' :opt.value" :key="opt.value">{{ opt.label }}</el-option>
                   </el-select>
                 </el-form-item>
               </el-col>
-              <el-col span="12">
+              <el-col :span="12">
                 <el-form-item label="标准性质" prop="standNature" label-width="130px" class="add-form-item">
                   <el-select v-model="sarStandardsInfoEO.standNature" :disabled="formdisableflag" placeholder="请选择标准性质"
                           clearable>
@@ -283,7 +279,7 @@
               </el-col>
             </el-row>
             <el-row>
-              <el-col span="12">
+              <el-col :span="12">
                 <el-form-item label="标准状态" prop="standState" label-width="130px" class="add-form-item">
                   <el-select v-model="sarStandardsInfoEO.standState" :disabled="formdisableflag" placeholder="请选择标准状态"
                           clearable>
@@ -292,7 +288,7 @@
                   </el-select>
                 </el-form-item>
               </el-col>
-              <el-col span="12">
+              <el-col :span="12">
                 <el-form-item label="标准失效日期" prop="standExpirationTime" label-width="130px" class="add-form-item">
                   <el-date-picker v-model="sarStandardsInfoEO.standExpirationTime" :editable="false"
                               :disabled="formdisableflag" placeholder="请选择标准失效日期"></el-date-picker>
@@ -300,14 +296,14 @@
               </el-col>
             </el-row>
             <el-row>
-              <el-col span="12">
+              <el-col :span="12">
                 <el-form-item label="内容摘要" prop="synopsis" label-width="130px" class="add-form-item">
                   <el-input v-model="sarStandardsInfoEO.synopsis" :maxlength="500" show-word-limit type="textarea"
                          :autosize="{minRows: 1,maxRows: 4}" :disabled="formdisableflag" placeholder="请输入内容摘要"
                          clearable></el-input>
                 </el-form-item>
               </el-col>
-              <el-col span="12">
+              <el-col :span="12">
                 <el-form-item label="标准发布文本获得时间（印刷版）" title="标准发布文本获得时间（印刷版）" label-width="130px" prop="issueTextTime"
                               class="add-form-item">
                   <el-date-picker v-model="sarStandardsInfoEO.issueTextTime" :editable="false" :disabled="formdisableflag"
@@ -316,13 +312,13 @@
               </el-col>
             </el-row>
             <el-row>
-              <el-col span="12">
+              <el-col :span="12">
                 <el-form-item label="标准修订立项号" prop="revisionProjectNo" label-width="130px" class="add-form-item">
                   <el-input v-model="sarStandardsInfoEO.revisionProjectNo" :maxlength="200" :disabled="formdisableflag"
                          placeholder="请输入标准修订立项号" clearable></el-input>
                 </el-form-item>
               </el-col>
-              <el-col span="12">
+              <el-col :span="12">
                 <el-form-item label="法规种类" prop="standAttribute" label-width="130px" class="add-form-item">
                   <search-select
                     v-model="sarStandardsInfoEO.standAttribute" :options="standAttributeList" placeholder="请选择法规种类"/>
@@ -330,7 +326,7 @@
               </el-col>
             </el-row>
             <el-row>
-              <el-col span="12">
+              <el-col :span="12">
                 <el-form-item label="标准文本" prop="standFileList" label-width="130px" class="add-form-item">
                   <el-input v-model="sarStandardsInfoEO.standFile" v-show="false"></el-input>
                   <el-button size="small" @click="clickButtonToUpload('standFileList')" icon="ios-cloud-upload-outline"
@@ -344,13 +340,13 @@
             <!----------------------------------------------------- 基础信息 ----------------------------------------------------->
             <el-divider content-position="left">基础信息</el-divider>
             <el-row>
-              <el-col span="12">
+              <el-col :span="12">
                 <el-form-item label="标准类别" prop="standSort" label-width="130px" class="add-form-item">
                   <search-select
                     v-model="sarStandardsInfoEO.standSort" :options="standSortOptions" placeholder="请选择标准类别"/>
                 </el-form-item>
               </el-col>
-              <el-col span="12">
+              <el-col :span="12">
                 <el-form-item label="标准编号" prop="standNumber" label-width="130px" class="add-form-item">
                   <el-input v-model="sarStandardsInfoEO.standNumber" :disabled="formdisableflag" placeholder="请输入标准编号"
                          clearable></el-input>
@@ -358,13 +354,13 @@
               </el-col>
             </el-row>
             <el-row>
-              <el-col span="12">
+              <el-col :span="12">
                 <el-form-item label="标准年份" prop="standYear" label-width="130px" class="add-form-item">
                   <el-input v-model="sarStandardsInfoEO.standYear" :disabled="formdisableflag" placeholder="请输入标准年份"
                          clearable></el-input>
                 </el-form-item>
               </el-col>
-              <el-col span="12">
+              <el-col :span="12">
                 <el-form-item label="标准名称" prop="standName" label-width="130px" class="add-form-item">
                   <el-input v-model="sarStandardsInfoEO.standName" :disabled="formdisableflag" placeholder="请输入标准名称"
                          clearable></el-input>
@@ -372,13 +368,13 @@
               </el-col>
             </el-row>
             <el-row>
-              <el-col span="12">
+              <el-col :span="12">
                 <el-form-item label="标准英文名称" prop="standEnName" label-width="130px" class="add-form-item">
                   <el-input v-model="sarStandardsInfoEO.standEnName" :disabled="formdisableflag" placeholder="请输入标准英文名称"
                          clearable></el-input>
                 </el-form-item>
               </el-col>
-              <el-col span="12">
+              <el-col :span="12">
                 <el-form-item label="发布日期" prop="issueTime" label-width="130px" class="add-form-item">
                   <el-datePicker v-model="sarStandardsInfoEO.issueTime" :editable="false" :disabled="formdisableflag"
                               placeholder="请选择发布日期"></el-datePicker>
@@ -386,13 +382,13 @@
               </el-col>
             </el-row>
             <el-row>
-              <el-col span="12">
+              <el-col :span="12">
                 <el-form-item label="实施日期" prop="putTime" label-width="130px" class="add-form-item">
                   <el-datePicker v-model="sarStandardsInfoEO.putTime" :editable="false" :disabled="formdisableflag"
                               placeholder="请选择实施日期"></el-datePicker>
                 </el-form-item>
               </el-col>
-              <el-col span="12">
+              <el-col :span="12">
                 <el-form-item label="认证实施时间-CCC新车型" title="认证实施时间-CCC新车型" label-width="130px" prop="cccCertPutTime"
                               class="add-form-item">
                   <el-datePicker v-model="sarStandardsInfoEO.cccCertPutTime" :editable="false" :disabled="formdisableflag"
@@ -401,14 +397,14 @@
               </el-col>
             </el-row>
             <el-row>
-              <el-col span="12">
+              <el-col :span="12">
                 <el-form-item label="认证实施时间-公告新车型" title="认证实施时间-公告新车型" prop="noticeCertPutTime" label-width="130px"
                               class="add-form-item">
                   <el-datePicker v-model="sarStandardsInfoEO.noticeCertPutTime" :editable="false"
                               :disabled="formdisableflag" placeholder="请选择认证实施时间-公告新车型"></el-datePicker>
                 </el-form-item>
               </el-col>
-              <el-col span="12">
+              <el-col :span="12">
                 <el-form-item label="认证实施时间-国环" title="认证实施时间-国环" prop="nationCertPutTime" label-width="130px"
                               class="add-form-item">
                   <el-datePicker v-model="sarStandardsInfoEO.nationCertPutTime" :editable="false"
@@ -417,14 +413,14 @@
               </el-col>
             </el-row>
             <el-row>
-              <el-col span="12">
+              <el-col :span="12">
                 <el-form-item label="认证实施时间-北环" title="认证实施时间-北环" label-width="130px" prop="northCertPutTime"
                               class="add-form-item">
                   <el-datePicker v-model="sarStandardsInfoEO.northCertPutTime" :editable="false"
                               :disabled="formdisableflag" placeholder="请选择认证实施时间-北环"></el-datePicker>
                 </el-form-item>
               </el-col>
-              <el-col span="12">
+              <el-col :span="12">
                 <el-form-item label="发布日期是否明确" title="发布日期是否明确" prop="issueTimeCm" label-width="130px"
                               class="add-form-item">
                   <el-select v-model="sarStandardsInfoEO.issueTimeCm" clearable>
@@ -434,12 +430,12 @@
               </el-col>
             </el-row>
             <el-row>
-              <el-col span="12">
+              <el-col :span="12">
                 <el-form-item label="新车型实施日期" title="新车型实施日期" prop="newcarPutTime" label-width="130px" class="add-form-item">
                   <el-datePicker v-model="sarStandardsInfoEO.newcarPutTime" :editable="false" :disabled="formdisableflag" placeholder="请选择新车型实施日期"></el-datePicker>
                 </el-form-item>
               </el-col>
-              <el-col span="12">
+              <el-col :span="12">
                 <el-form-item label="新车型实施日期 是否明确" title="新车型实施日期 是否明确" prop="newcarPutTimeCm" label-width="130px"
                               class="add-form-item">
                   <el-select v-model="sarStandardsInfoEO.newcarPutTimeCm" clearable>
@@ -447,12 +443,12 @@
                   </el-select>
                 </el-form-item>
               </el-col>
-              <el-col span="12">
+              <el-col :span="12">
                 <el-form-item label="在产车实施日期" prop="productPutTime" label-width="130px" class="add-form-item" title="在产车实施日期">
                   <el-datePicker v-model="sarStandardsInfoEO.productPutTime" :editable="false" :disabled="formdisableflag" placeholder="请选择在产车实施日期"></el-datePicker>
                 </el-form-item>
               </el-col>
-              <el-col span="12">
+              <el-col :span="12">
                 <el-form-item label="在产车实施日期 是否明确" title="在产车实施日期 是否明确" prop="productPutTimeCm" label-width="130px"
                               class="add-form-item">
                   <el-select v-model="sarStandardsInfoEO.productPutTimeCm" clearable>
@@ -462,13 +458,13 @@
               </el-col>
             </el-row>
             <el-row>
-              <el-col span="12">
+              <el-col :span="12">
                 <el-form-item label="未立项—获稿时间" prop="unProjectTime" label-width="130px" class="add-form-item">
                   <el-datePicker v-model="sarStandardsInfoEO.unProjectTime" :editable="false" :disabled="formdisableflag"
                               placeholder="请选择未立项—获稿时间"></el-datePicker>
                 </el-form-item>
               </el-col>
-              <el-col span="12">
+              <el-col :span="12">
                 <el-form-item label="立项—获稿时间" prop="projectTime" label-width="130px" class="add-form-item"
                           title="立项—获稿时间">
                   <el-datePicker v-model="sarStandardsInfoEO.projectTime" :editable="false" :disabled="formdisableflag"
@@ -477,7 +473,7 @@
               </el-col>
             </el-row>
             <el-row>
-              <el-col span="12">
+              <el-col :span="12">
                 <el-form-item label="适用认证" prop="applyAuth" label-width="130px" class="add-form-item">
 <!--                  <search-multiple-select v-model="sarStandardsInfoEO.applyAuth"  :disabled="formdisableflag" placeholder="请选择适用认证" :options="applyAuthOptions">-->
                     <!--<el-option v-for="opt in applyAuthOptions" :value="opt.value" :key="opt.value">{{ opt.label }}</el-option>-->
@@ -497,17 +493,17 @@
 <!--            -&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45; 代替和采标关系 -&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;-->
             <el-divider content-position="left">代替和采标关系</el-divider>
             <el-row>
-              <el-col span="21">
+              <el-col :span="21">
                 <el-form-item label="代替标准号" prop="replaceStandNum"  label-width="130px"  class="add-form-item">
                   <el-input v-model.trim="sarStandardsInfoEO.replaceStandNum" ></el-input>
                 </el-form-item>
               </el-col>
-              <el-col span="3">
+              <el-col :span="3">
                 <el-button  class="searchAngNewBtn" type="primary" size="small" @click="selectStands">手动查找</el-button>
               </el-col>
             </el-row>
             <el-row>
-              <el-col span="24">
+              <el-col :span="24">
                 <el-form-item label="被代替标准号" prop="replacedStandNum" label-width="130px"
                               class="add-form-item">
                   <el-input v-model="sarStandardsInfoEO.replacedStandNum" :maxlength="100" show-word-limit
@@ -517,13 +513,13 @@
               </el-col>
             </el-row>
             <el-row>
-              <el-col span="12">
+              <el-col :span="12">
                 <el-form-item label="采用国际标准号" prop="interStandNum" label-width="130px" class="add-form-item">
                   <el-input v-model="sarStandardsInfoEO.interStandNum" :disabled="formdisableflag" placeholder="请输入采用国际标准号"
                          clearable></el-input>
                 </el-form-item>
               </el-col>
-              <el-col span="12">
+              <el-col :span="12">
                 <el-form-item label="采标程度" prop="adoptExtent" label-width="130px" class="add-form-item">
                   <el-select v-model="sarStandardsInfoEO.adoptExtent" :disabled="formdisableflag" placeholder="请选择采标程度"
                           clearable>
@@ -536,7 +532,7 @@
 <!--            &lt;!&ndash;-&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45; 适用范围 -&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&ndash;&gt;-->
             <el-divider content-position="left">适用范围</el-divider>
             <el-row>
-              <el-col span="24">
+              <el-col :span="24">
                 <el-form-item label="适用车型" prop="applyArctic" label-width="130px" class="add-form-item">
 <!--                  <search-multiple-select v-model="sarStandardsInfoEO.applyArctic" :disabled="formdisableflag"-->
 <!--                                          placeholder="请选择适用车型" :options="applyArcticOptions">-->
@@ -553,7 +549,7 @@
               </el-col>
             </el-row>
             <el-row>
-              <el-col span="24">
+              <el-col :span="24">
                 <el-form-item label="能源种类" prop="emergyKind" label-width="130px" class="add-form-item">
 <!--                  <search-multiple-select v-model="sarStandardsInfoEO.emergyKind" multiple :disabled="formdisableflag"-->
 <!--                                          placeholder="请选择能源种类" :options="emergyKindOptions">-->
@@ -572,7 +568,7 @@
               </el-col>
             </el-row>
             <el-row>
-              <el-col span="12">
+              <el-col :span="12">
                 <el-form-item label="是否为新能源专向标准" title="是否为新能源专向标准" prop="isEnergyStand" label-width="130px"
                           class="add-form-item">
                   <el-select v-model="sarStandardsInfoEO.isEnergyStand" clearable>
@@ -584,13 +580,13 @@
 <!--            &lt;!&ndash;-&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45; 起草信息 -&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&ndash;&gt;-->
             <el-divider content-position="left">起草信息</el-divider>
             <el-row>
-              <el-col span="12">
+              <el-col :span="12">
                 <el-form-item label="参与起草情况" prop="draftState" label-width="130px" class="add-form-item">
                   <el-input v-model="sarStandardsInfoEO.draftState" :maxlength="200" :disabled="formdisableflag"
                          placeholder="请输入参与起草情况" clearable></el-input>
                 </el-form-item>
               </el-col>
-              <el-col span="12">
+              <el-col :span="12">
                 <el-form-item label="修订依据" prop="reviseBasis" label-width="130px" class="add-form-item">
                   <el-input v-model="sarStandardsInfoEO.reviseBasis" :maxlength="200" :disabled="formdisableflag"
                          placeholder="请输入修订依据" clearable></el-input>
@@ -598,13 +594,13 @@
               </el-col>
             </el-row>
             <el-row>
-              <el-col span="12">
+              <el-col :span="12">
                 <el-form-item label="起草单位" prop="draftingUnit" label-width="130px" class="add-form-item">
                   <el-input v-model="sarStandardsInfoEO.draftingUnit" :disabled="formdisableflag" placeholder="请输入起草单位"
                          clearable></el-input>
                 </el-form-item>
               </el-col>
-              <el-col span="12">
+              <el-col :span="12">
                 <el-form-item label="起草人" prop="draftUser" label-width="130px" class="add-form-item">
                   <el-input v-model="sarStandardsInfoEO.draftUser" :disabled="formdisableflag" placeholder="请输入起草人"
                          clearable></el-input>
@@ -614,13 +610,13 @@
 <!--            &lt;!&ndash;-&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45; 文本信息 -&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&ndash;&gt;-->
             <el-divider content-position="left">文本信息</el-divider>
             <el-row>
-              <el-col span="12">
+              <el-col :span="12">
                 <el-form-item label="制修订计划完成时间" prop="planCompletionTime" label-width="130px" class="add-form-item">
                   <el-datePicker v-model="sarStandardsInfoEO.planCompletionTime" :editable="false"
                               :disabled="formdisableflag" placeholder="请选择制修订计划完成时间"></el-datePicker>
                 </el-form-item>
               </el-col>
-              <el-col span="12">
+              <el-col :span="12">
                 <el-form-item label="预测进入下制修订阶段时间" title="预测进入下制修订阶段时间" label-width="130px" prop="enterNextStageTime"
                           class="add-form-item">
                   <el-datePicker v-model="sarStandardsInfoEO.enterNextStageTime" :editable="false"
@@ -630,7 +626,7 @@
             </el-row>
 
             <el-row>
-              <el-col span="12">
+              <el-col :span="12">
                 <el-form-item label="初稿" prop="firstDraftFile" label-width="130px" class="add-form-item">
                   <el-button size="small" @click="clickButtonToUpload('firstDraftFileList')" icon="ios-cloud-upload-outline"
                           :disabled="formdisableflag" class="form-upload-btn">
@@ -639,7 +635,7 @@
                   </el-button>
                 </el-form-item>
               </el-col>
-              <el-col span="12">
+              <el-col :span="12">
                 <el-form-item label="初稿获稿时间" prop="firstDraftFileTime" label-width="130px" class="add-form-item">
                   <el-datePicker v-model="sarStandardsInfoEO.firstDraftFileTime" :editable="false"
                               :disabled="formdisableflag" placeholder="请选择初稿获稿时间"></el-datePicker>
@@ -647,13 +643,13 @@
               </el-col>
             </el-row>
             <el-row>
-              <el-col span="12">
+              <el-col :span="12">
                 <el-form-item label="初稿意见反馈" prop="firstDraftFileFeedback" label-width="130px" class="add-form-item">
                   <el-input v-model="sarStandardsInfoEO.firstDraftFileFeedback" :maxlength="100"
                          :disabled="formdisableflag" placeholder="请输入初稿意见反馈"></el-input>
                 </el-form-item>
               </el-col>
-              <el-col span="12">
+              <el-col :span="12">
                 <el-form-item label="WTO公示稿" prop="wtoPublicFile" label-width="130px" class="add-form-item">
                   <el-button size="small" @click="clickButtonToUpload('wtoPublicFileList')" icon="ios-cloud-upload-outline"
                           :disabled="formdisableflag" class="form-upload-btn">
@@ -664,13 +660,13 @@
               </el-col>
             </el-row>
             <el-row>
-              <el-col span="12">
+              <el-col :span="12">
                 <el-form-item label="WTO公示稿获稿时间" prop="wtoPublicFileTime" label-width="130px" class="add-form-item">
                   <el-datePicker v-model="sarStandardsInfoEO.wtoPublicFileTime" :editable="false"
                               :disabled="formdisableflag" placeholder="请选择WTO公示稿获稿时间"></el-datePicker>
                 </el-form-item>
               </el-col>
-              <el-col span="12">
+              <el-col :span="12">
                 <el-form-item label="WTO公示稿意见反馈" prop="wtoPublicFileFeedback" label-width="130px"
                           class="add-form-item">
                   <el-input v-model="sarStandardsInfoEO.wtoPublicFileFeedback" :maxlength="100" :disabled="formdisableflag"
@@ -679,13 +675,13 @@
               </el-col>
             </el-row>
             <el-row>
-              <el-col span="12">
+              <el-col :span="12">
                 <el-form-item label="预计进入下一阶段时间" title="预计进入下一阶段时间"  prop="estimatedNextTime" label-width="130px" class="add-form-item">
                   <el-datePicker v-model="sarStandardsInfoEO.estimatedNextTime" :editable="false" :disabled="formdisableflag"
                               placeholder="请选择报批稿获稿时间"></el-datePicker>
                 </el-form-item>
               </el-col>
-              <el-col span="12">
+              <el-col :span="12">
                 <el-form-item label="草案" prop="draftFile" label-width="130px" class="add-form-item">
                   <el-button size="small" @click="clickButtonToUpload('draftFileList')" icon="ios-cloud-upload-outline"
                           :disabled="formdisableflag" class="form-upload-btn">
@@ -696,7 +692,7 @@
               </el-col>
             </el-row>
             <el-row>
-              <el-col span="12">
+              <el-col :span="12">
                 <el-form-item label="征求意见稿" prop="opinionFile" label-width="130px" class="add-form-item">
                   <el-button size="small" @click="clickButtonToUpload('opinionFileList')" icon="ios-cloud-upload-outline"
                           :disabled="formdisableflag" class="form-upload-btn">
@@ -705,7 +701,7 @@
                   </el-button>
                 </el-form-item>
               </el-col>
-              <el-col span="12">
+              <el-col :span="12">
                 <el-form-item label="征求意见稿获稿时间" prop="opinionFileTime" label-width="130px" class="add-form-item">
                   <el-datePicker v-model="sarStandardsInfoEO.opinionFileTime" :editable="false" :disabled="formdisableflag"
                               placeholder="请选择征求意见稿获稿时间"></el-datePicker>
@@ -713,13 +709,13 @@
               </el-col>
             </el-row>
             <el-row>
-              <el-col span="12">
+              <el-col :span="12">
                 <el-form-item label="征求意见稿意见反馈" prop="opinionFileFeedback" label-width="130px" class="add-form-item">
                   <el-input v-model="sarStandardsInfoEO.opinionFileFeedback" :maxlength="100" :disabled="formdisableflag"
                          placeholder="请输入征求意见稿意见反馈"></el-input>
                 </el-form-item>
               </el-col>
-              <el-col span="12">
+              <el-col :span="12">
                 <el-form-item label="送审稿" prop="sentScreenFile" label-width="130px" class="add-form-item">
                   <el-button size="small" @click="clickButtonToUpload('sentScreenFileList')" icon="ios-cloud-upload-outline"
                           :disabled="formdisableflag" class="form-upload-btn">
@@ -730,13 +726,13 @@
               </el-col>
             </el-row>
             <el-row>
-              <el-col span="12">
+              <el-col :span="12">
                 <el-form-item label="送审稿获稿时间" prop="sentScreenFileTime" label-width="130px" class="add-form-item">
                   <el-datePicker v-model="sarStandardsInfoEO.sentScreenFileTime" :editable="false"
                               :disabled="formdisableflag" placeholder="请选择送审稿获稿时间"></el-datePicker>
                 </el-form-item>
               </el-col>
-              <el-col span="12">
+              <el-col :span="12">
                 <el-form-item label="送审稿意见反馈" prop="sentScreenFileFeedback" label-width="130px" class="add-form-item">
                   <el-input v-model="sarStandardsInfoEO.sentScreenFileFeedback" :maxlength="100"
                          :disabled="formdisableflag" placeholder="请输入送审稿意见反馈"></el-input>
@@ -744,7 +740,7 @@
               </el-col>
             </el-row>
             <el-row>
-              <el-col span="12">
+              <el-col :span="12">
                 <el-form-item label="报批稿" prop="approvalFile" label-width="130px" class="add-form-item">
                   <el-button size="small" @click="clickButtonToUpload('approvalFileList')" icon="ios-cloud-upload-outline"
                           :disabled="formdisableflag" class="form-upload-btn">
@@ -753,7 +749,7 @@
                   </el-button>
                 </el-form-item>
               </el-col>
-              <el-col span="12">
+              <el-col :span="12">
                 <el-form-item label="报批稿获稿时间" prop="approvalFileTime" label-width="130px" class="add-form-item">
                   <el-datePicker v-model="sarStandardsInfoEO.approvalFileTime" :editable="false"
                               :disabled="formdisableflag" placeholder="请选择报批稿获稿时间"></el-datePicker>
@@ -761,13 +757,13 @@
               </el-col>
             </el-row>
             <el-row>
-              <el-col span="12">
+              <el-col :span="12">
                 <el-form-item label="报批稿意见反馈" prop="approvalFileFeedback" label-width="130px" class="add-form-item">
                   <el-input v-model="sarStandardsInfoEO.approvalFileFeedback" :maxlength="100" :disabled="formdisableflag"
                          placeholder="请输入报批稿意见反馈"></el-input>
                 </el-form-item>
               </el-col>
-              <el-col span="12">
+              <el-col :span="12">
                 <el-form-item label="关联文件" prop="relevanceFile" label-width="130px" class="add-form-item">
                   <el-button size="small" @click="clickButtonToUpload('relevanceFileList')" icon="ios-cloud-upload-outline"
                           :disabled="formdisableflag" class="form-upload-btn">
@@ -780,14 +776,14 @@
 <!--            &lt;!&ndash;-&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45; 内容简介 -&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&ndash;&gt;-->
             <el-divider content-position="left">内容简介</el-divider>
             <el-row>
-              <el-col span="12">
+              <el-col :span="12">
                 <el-form-item label="已收到以下部门适法性确认结果" title="已收到以下部门适法性确认结果" prop="recieveConfirmResult" label-width="130px"
                           class="add-form-item">
                   <el-input v-model="sarStandardsInfoEO.recieveConfirmResult" :maxlength="200" :disabled="formdisableflag"
                          placeholder="请输入已收到以下部门适法性确认结果" clearable></el-input>
                 </el-form-item>
               </el-col>
-              <el-col span="12">
+              <el-col :span="12">
                 <el-form-item label="试验首款车" prop="trialFirstCar" label-width="130px" class="add-form-item">
                   <el-input v-model="sarStandardsInfoEO.trialFirstCar" :maxlength="200" :disabled="formdisableflag"
                          placeholder="请输入试验首款车" clearable></el-input>
@@ -795,13 +791,13 @@
               </el-col>
             </el-row>
             <el-row>
-              <el-col span="12">
+              <el-col :span="12">
                 <el-form-item label="领域担当" prop="domainAssume" label-width="130px" class="add-form-item">
                   <el-input v-model="sarStandardsInfoEO.domainAssume" :maxlength="200" :disabled="formdisableflag"
                          placeholder="请输入领域担当" clearable></el-input>
                 </el-form-item>
               </el-col>
-              <el-col span="12">
+              <el-col :span="12">
                 <el-form-item label="预算基准" prop="budgetBenchmark" label-width="130px" class="add-form-item">
                   <el-input v-model="sarStandardsInfoEO.budgetBenchmark" :maxlength="200" :disabled="formdisableflag"
                          placeholder="请输入预算基准" clearable></el-input>
@@ -809,13 +805,13 @@
               </el-col>
             </el-row>
             <el-row>
-              <el-col span="12">
+              <el-col :span="12">
                 <el-form-item label="法规解读内容" prop="lawsExplainText" label-width="130px" class="add-form-item">
                   <el-input v-model="sarStandardsInfoEO.lawsExplainText" :maxlength="200" :disabled="formdisableflag"
                          placeholder="请输入法规解读内容" clearable></el-input>
                 </el-form-item>
               </el-col>
-              <el-col span="12">
+              <el-col :span="12">
                 <el-form-item label="法规解读关键字" prop="lawsExplainKeyword" label-width="130px" class="add-form-item">
                   <el-input v-model="sarStandardsInfoEO.lawsExplainKeyword" :maxlength="200" :disabled="formdisableflag"
                          placeholder="请输入法规解读关键字" clearable></el-input>
@@ -823,7 +819,7 @@
               </el-col>
             </el-row>
             <el-row>
-              <el-col span="24">
+              <el-col :span="24">
                 <el-form-item label="法规解读标准引用" prop="lawsExplainQuote" label-width="130px"
                               class="add-form-item">
                   <el-select v-model="sarStandardsInfoEO.lawsExplainQuote" multiple class="new-multiple-select"
@@ -837,7 +833,7 @@
               </el-col>
             </el-row>
             <el-row>
-              <el-col span="12">
+              <el-col :span="12">
                 <el-form-item label="法规解读文件" prop="lawsExplainFile" label-width="130px" class="add-form-item">
                   <el-input v-model="sarStandardsInfoEO.lawsExplainFile" v-show="false"></el-input>
                   <el-button size="small" @click="clickButtonToUpload('lawsExplainFileList')" icon="ios-cloud-upload-outline"
@@ -847,7 +843,7 @@
                   </el-button>
                 </el-form-item>
               </el-col>
-              <el-col span="12">
+              <el-col :span="12">
                 <el-form-item label="是否结题" prop="isQuestion" label-width="130px" class="add-form-item">
                   <el-select v-model="sarStandardsInfoEO.isQuestion" clearable>
                     <el-option v-for="opt in isList" :value="opt.value === undefined ? '' :opt.value" :key="opt.value">{{ opt.label }}</el-option>
@@ -856,13 +852,13 @@
               </el-col>
             </el-row>
             <el-row>
-              <el-col span="12">
+              <el-col :span="12">
                 <el-form-item label="结题时间" prop="finalizeTime" label-width="130px" class="add-form-item">
                   <el-datePicker v-model="sarStandardsInfoEO.finalizeTime" :editable="false"
                               :disabled="formdisableflag" placeholder="请选择结题时间"></el-datePicker>
                 </el-form-item>
               </el-col>
-              <el-col span="12">
+              <el-col :span="12">
                 <el-form-item label="结题附件" prop="finalizeFile" label-width="130px" class="add-form-item">
                   <el-button size="small" @click="clickButtonToUpload('finalizeFileList')" icon="ios-cloud-upload-outline"
                           :disabled="formdisableflag" class="form-upload-btn">
@@ -874,7 +870,7 @@
               </el-col>
             </el-row>
             <el-row>
-              <el-col span="12">
+              <el-col :span="12">
                 <!--<el-form-item label="责任部门" prop="responsibleUnit" class="add-form-item">-->
                 <!--<el-input v-model="sarStandardsInfoEO.responsibleUnit" :disabled="formdisableflag"></el-input>-->
                 <!--</el-form-item>-->
@@ -904,7 +900,7 @@
               </el-col>
             </el-row>
             <el-row>
-              <el-col span="24">
+              <el-col :span="24">
                 <el-form-item label="所属专业领域" prop="category" label-width="130px" class="add-form-item">
 <!--                  <search-multiple-select-->
 <!--                    v-if="modalshowflag"-->
@@ -926,10 +922,10 @@
             <!----------------------------------------------------- 相近标准 ----------------------------------------------------->
                         <el-divider content-position="left">相近标准</el-divider>
             <el-row>
-              <el-col span="24">
+              <el-col :span="24">
                 <el-form-item label="试验项目" prop="testItems" label-width="130px" class="add-form-item">
                   <el-select v-model="sarStandardsInfoEO.testItems" multiple class="new-multiple-select"
-                          @click.native="testItemsClick">
+                             @click.native="testItemsClick">
                     <el-option v-for="item in sarStandardsInfoEO.testItemsList" :value="item.value === undefined ? '' :item.value" :key="item.value">{{
                       item.label }}
                     </el-option>
@@ -967,7 +963,300 @@
 <!--          </div>-->
         </el-upload>
       </el-dialog>
+      <!--代替标准号-->
+      <el-dialog title="代替标准号" :visible.sync="replaceStandNumModel" width="875px" :close-on-click-modal="false"  @close="replaceStandNumModelCancel = false">
+        <el-form :modal="replaceStandNumForm" :inline="true"  class="label-input-form">
+          <el-form-item label="标准号/名称"  class="serch-form-item">
+            <el-input v-model="replaceStandNumForm.standNumber" placeholder="根据标准号/名称查找" clearable :maxlength="100"
+                   @keyup.enter.native="getDomesticStandardTableBtn(standCommonlySearch)"></el-input>
+          </el-form-item>
+          <el-button
+            :loading="searching"
+            icon="el-icon-search"
+            type="primary"
+            size="mini"
+            class="searchAngNewBtn"
+            @click="getReplaceStandNumRow(1,replaceStandNumForm.pageSize, 'search')">
+          </el-button>
+          <el-button type="primary" size="small" @click="getReplaceStandNumRow('')"  class="searchAngNewBtn">清空查询</el-button>
+        </el-form>
+<!--        <Table border ref="selections" :columns="configStandColumn" :data="replaceStandNumRow" :height="350"-->
+<!--               :loading="lawsExplainQuoteFormLoading"-->
+<!--               @on-select="(selection, row) =>selectReplaceStandNumRowSelect(selection,'select', row )"-->
+<!--               @on-select-cancel="(selection, row) =>selectReplaceStandNumRowSelect(selection, 'cancel', row)"-->
+<!--               @on-select-all="(selection) =>selectReplaceStandNumRowSelect(selection, 'all')"-->
+<!--               @on-select-all-cancel="(selection) =>selectReplaceStandNumRowSelect(selection, 'allCancel')"-->
+<!--               @on-selection-change="selectReplaceStandNumRowChange"></Table>-->
+        <el-table
+          ref="selections"
+          :data="replaceStandNumRow"
+          :loading="lawsExplainQuoteFormLoading"
+          tooltip-effect="dark"
+          style="width: 100%;height:300px; overflow-y: auto;overflow-x: hidden;"
+          border
+          :header-cell-style="{background: '#f8f8f9', color: '#515a6e'}"
+          @selection-change="selectReplaceStandNumRowChange"
+          @select-all="(selection) =>selectReplaceStandNumRowSelect(selection, 'all')"
+          @select="(selection, row) =>selectReplaceStandNumRowSelect(selection,'select', row )">
+          <el-table-column
+            type="selection"
+            width="55"
+            align="center">
+          </el-table-column>
+          <el-table-column
+            prop="standNumber"
+            label="标准号"
+            width="130"
+            align="center">
+          </el-table-column>
+          <el-table-column
+            prop="standName"
+            label="标准名称"
+            width="130"
+            align="center">
+          </el-table-column>
+          <el-table-column
+            prop="issueTime"
+            label="发布日期"
+            width="130"
+            align="center">
+          </el-table-column>
+          <el-table-column
+            prop="putTime"
+            label="实施日期"
+            width="130"
+            align="center">
+          </el-table-column>
+          <el-table-column
+            prop="standNatureShow"
+            label="标准性质"
+            width="130"
+            align="center">
+          </el-table-column>
+          <el-table-column
+            prop="standStateShow"
+            label="标准状态"
+            width="130"
+            align="center">
+          </el-table-column>
+        </el-table>
+<!--        <pagination :page="replaceStandNumForm.page " :total="replaceStandNumForm.total"-->
+<!--                    @pageChange="(val) =>getReplaceStandNumRow(val, replaceStandNumForm.pageSize)"-->
+<!--                    @pageSizeChange="(val) => getReplaceStandNumRow(replaceStandNumForm.page, val)"></pagination>-->
+        <!--分页-->
+        <pagination
+          class="tabpagination"
+          :page="replacePage"
+          :total="replaceTotal"
+          @pageChange="pageChangeReplace"
+          @pageSizeChange="pageSizeChangeReplace"></pagination>
+<!--        <el-divider></el-divider>-->
+        <sapn slot="footer" class="dialog-footer">
+          <el-button size="mini" type="primary" @click="replaceStandNumModelCancel">取消</el-button>
+          <el-button size="mini" type="primary" @click="replaceStandNumModelBt">确定</el-button>
+        </sapn>
+      </el-dialog>
+      <!-- 法规解读标准引用-->
+      <el-dialog title="法规解读标准引用" :visible.sync="lawsExplainQuoteModel" :close-on-click-modal="false"  width="875px">
+        <el-form :modal="lawsExplainQuoteForm" :inline="true" class="label-input-form">
+          <el-formItem label="标准号/名称" class="serch-form-item">
+            <el-input v-model="lawsExplainQuoteForm.standNumber" placeholder="根据标准号/名称查找" clearable :maxlength="100"
+                   @click.native="getDomesticStandardTableBtn(standCommonlySearch)"></el-input>
+          </el-formItem>
+          <el-button
+            :loading="searching"
+            icon="el-icon-search"
+            type="primary"
+            size="mini"
+            class="newSearchBtn"
+            @click="getLawsExplainQuoteRow(1,lawsExplainQuoteForm.pageSize, 'search')">
+          </el-button>
+          <el-button type="primary" @click="getLawsExplainQuoteRow('')" size="mini" class="searchAngNewBtn">清空查询</el-button>
+        </el-form>
+<!--        <Table border ref="selection" :columns="configStandColumn" :data="lawsExplainQuoteRow" :height="350"-->
+<!--               :loading="lawsExplainQuoteFormLoading"-->
+<!--               @on-select="(selection, row) =>selectLawsExplainQuoteRowSelect(selection,'select', row )"-->
+<!--               @on-select-cancel="(selection, row) =>selectLawsExplainQuoteRowSelect(selection, 'cancel', row)"-->
+<!--               @on-select-all="(selection) =>selectLawsExplainQuoteRowSelect(selection, 'all')"-->
+<!--               @on-select-all-cancel="(selection) =>selectLawsExplainQuoteRowSelect(selection, 'allCancel')"-->
+<!--               @on-selection-change="selectLawsExplainQuoteRowChange"></Table>-->
+        <el-table
+          ref="selections"
+          :data="lawsExplainQuoteRow"
+          :loading="lawsExplainQuoteFormLoading"
+          tooltip-effect="dark"
+          style="width: 100%;height:300px; overflow-y: auto;overflow-x: hidden;"
+          border
+          :header-cell-style="{background: '#f8f8f9', color: '#515a6e'}"
+          @selection-change="selectLawsExplainQuoteRowChange"
+          @select="(selection, row) =>selectLawsExplainQuoteRowSelect(selection,'select', row )"
+          @select-all="(selection) =>selectLawsExplainQuoteRowSelect(selection, 'all')">
+          <el-table-column
+            type="selection"
+            width="55"
+            align="center">
+          </el-table-column>
+          <el-table-column
+            prop="standNumber"
+            label="标准号"
+            width="130"
+            align="center">
+          </el-table-column>
+          <el-table-column
+            prop="standName"
+            label="标准名称"
+            width="130"
+            align="center">
+          </el-table-column>
+          <el-table-column
+            prop="issueTime"
+            label="发布日期"
+            width="130"
+            align="center">
+          </el-table-column>
+          <el-table-column
+            prop="putTime"
+            label="实施日期"
+            width="130"
+            align="center">
+          </el-table-column>
+          <el-table-column
+            prop="standNatureShow"
+            label="标准性质"
+            width="130"
+            align="center">
+          </el-table-column>
+          <el-table-column
+            prop="standStateShow"
+            label="标准状态"
+            width="130"
+            align="center">
+          </el-table-column>
+        </el-table>
+<!--        <pagination :page="lawsExplainQuoteForm.page " :total="lawsExplainQuoteForm.total"-->
+<!--                    @pageChange="(val) =>getLawsExplainQuoteRow(val, lawsExplainQuoteForm.pageSize)"-->
+<!--                    @pageSizeChange="(val) => getLawsExplainQuoteRow(lawsExplainQuoteForm.page, val)"></pagination>-->
+        <!--分页-->
+        <pagination
+          class="tabpagination"
+          :page="page"
+          :total="total"
+          @pageChange="pageChangeLaws"
+          @pageSizeChange="pageSizeChangeLaws"></pagination>
+        <div slot="footer" class="dialog-footer">
+          <el-button type="primary" size="mini" @click="canle">取消</el-button>
+          <el-button type="primary" size="mini" @click="lawsExplainQuoteModelBt">确定</el-button>
+        </div>
+      </el-dialog>
+      <!-- 试验项目-->
+      <el-dialog title="试验项目" :visible.sync="testItemsModel" :close-on-click-modal="false"  width="1138px">
+        <el-form :modal="testItemsForm" :inline="true"  class="label-input-form">
+          <el-formItem label="试验项目名称" class="serch-form-item">
+            <el-input v-model="testItemsForm.testItemName" placeholder="按试验项目名称查找" :maxlength="100" clearable
+                   @keyup.enter.native="selectTestItemClassBtn"/>
+          </el-formItem>
+          <el-button
+            :loading="searching"
+            icon="el-icon-search"
+            type="primary"
+            size="mini"
+            class="newSearchBtn"
+            @click="getTestItemRow(1)">
+          </el-button>
+          <el-button type="primary" @click="getTestItemRow('')" size="mini" class="searchAngNewBtn">清空查询</el-button>
+        </el-form>
+<!--        <Table border ref="selection2" :columns="testItemTableColumn" :data="testItemTableList" :height="350"-->
+<!--               :loading="testItemSearching"-->
+<!--               @on-select="(selection, row) =>selectTestItemRowSelect(selection,'select', row )"-->
+<!--               @on-select-cancel="(selection, row) =>selectTestItemRowSelect(selection, 'cancel', row)"-->
+<!--               @on-select-all="(selection) =>selectTestItemRowSelect(selection, 'all')"-->
+<!--               @on-select-all-cancel="(selection) =>selectTestItemRowSelect(selection, 'allCancel')"-->
+<!--               @on-selection-change="selectTestItemRowChange"></Table>-->
+<!--        <pagination :page="testItemsForm.page " :total="testItemsForm.total"-->
+<!--                    @pageChange="(val) =>getTestItemRow(val, testItemsForm.pageSize)"-->
+<!--                    @pageSizeChange="(val) => getTestItemRow(testItemsForm.page, val)"></pagination>-->
+        <el-table
+          ref="selections"
+          :data="testItemTableList"
+          :loading="testItemSearching"
+          tooltip-effect="dark"
+          style="width: 100%;height:300px; overflow-y: auto;overflow-x: hidden;"
+          border
+          :header-cell-style="{background: '#f8f8f9', color: '#515a6e'}"
+          @selection-change="selectTestItemRowChange"
+          @select="(selection, row) =>selectTestItemRowSelect(selection,'select', row )"
+          @select-all="(selection) =>selectTestItemRowSelect(selection, 'all')">
+          <el-table-column
+            type="selection"
+            width="55"
+            align="center">
+          </el-table-column>
+          <el-table-column
+            prop="testItemCode"
+            label="项目代码"
+            width="130"
+            align="center">
+          </el-table-column>
+          <el-table-column
+            prop="testObj"
+            label="试验对象"
+            width="130"
+            align="center">
+          </el-table-column>
+          <el-table-column
+            prop="testItemName"
+            label="试验项目名称"
+            width="130"
+            align="center">
+          </el-table-column>
+          <el-table-column
+            prop="authTypeShow"
+            label="适用认证"
+            width="130"
+            align="center">
+          </el-table-column>
+          <el-table-column
+            prop="standCode"
+            label="标准号"
+            width="130"
+            align="center">
+          </el-table-column>
+          <el-table-column
+            prop="standName"
+            label="标准名称"
+            width="130"
+            align="center">
+          </el-table-column>
+          <el-table-column
+            prop="creationUser"
+            label="创建人"
+            width="130"
+            align="center">
+          </el-table-column>
+          <el-table-column
+            prop="creationTime"
+            label="创建日期"
+            width="130"
+            align="center">
+          </el-table-column>
+        </el-table>
+        <!--分页-->
+<!--        <pagination :page="testItemsForm.page " :total="testItemsForm.total"-->
+<!--                    @pageChange="(val) =>getTestItemRow(val, testItemsForm.pageSize)"-->
+<!--                    @pageSizeChange="(val) => getTestItemRow(testItemsForm.page, val)"></pagination>-->
+        <pagination
+          class="tabpagination"
+          :page="pageItems"
+          :total="totalItems"
+          @pageChange="pageChangeItems"
+          @pageSizeChange="pageSizeChangeItems"></pagination>
+        <div slot="footer">
+          <el-button @click="testItemsModel=false" size="mini" type="primary">取消</el-button>
+          <el-button type="primary" @click="testItemsModellBt" size="mini">确定</el-button>
+        </div>
+      </el-dialog>
     </div>
+    <Spin size="large" fix v-if="spinShow"></Spin>
   </div>
 </template>
 
@@ -978,9 +1267,21 @@ export default {
   },
   data () {
     return {
+      spinShow: false,
       isCollapse: true,
       sideClose: false, // 边栏收展状态
       isAdvancedSearch: false, // 高级检索窗口是否打开
+      replaceStandNumModel: false,
+      lawsExplainQuoteModel: false,
+      page: 1,
+      total: 0,
+      rows: 10,
+      replacePage: 1,
+      replaceTotal: 0,
+      replaceRows: 10,
+      pageItems: 1,
+      totalItems: 0,
+      itemsRows: 10,
       zNodesS: [], // 责任部门树结构
       zNodesSItem: [],
       searchInlandNodes: [], // 条目部门选择树形结构
@@ -997,7 +1298,6 @@ export default {
       stahndinfoList: [],
       tableHeight: 0,
       tableFlag: '',
-      total: 0,
       countryOptions: [],
       standSortOptions: [], // 标准类别下拉框
       standSortConfigOptions: [], // 标准类别下拉框
@@ -1172,6 +1472,22 @@ export default {
       defaultFileList: [], // 默认显示
       selectedList: [], // 标准中选中的数据
       modalshowflag: false,
+      modalItemaddShowflag: false, // 新增标准条目显示
+      standItemEO: {
+        id: '',
+        standId: '',
+        itemsNum: '',
+        itemsName: '',
+        parts: '',
+        tackTime: '',
+        applyArctic: '', // 试用车型
+        energyKind: '', // 能源种类
+        responsibleUnit: '',
+        remarks: '',
+        orgName: ''
+      }, // 标准条目新增过程中用到对象
+      menuModalFlag: false,
+      testItemsModel: false,
       formdisableflag: false, // 查看标准不可编辑
       modalshowtitle: '新增国内标准',
       addOrUPdateFlag: 1, // 新增：1， 修改：2
@@ -1274,7 +1590,48 @@ export default {
         remark: [
           {type: 'string', max: 1000, message: '备注不能超过1000个字符', trigger: 'blur'}
         ]
-      }
+      },
+      // 代替标准号
+      replaceStandNumForm: {
+        standNumber: '',
+        page: 1,
+        pageSize: this.$store.getters.userInfo.configContent,
+        total: 0,
+        standType: 'INLAND',
+        quoteIdList: '',
+        validFlag: '0'
+      },
+      replaceStandNumRow: [],
+      lawsExplainQuoteRow: [],
+      lawsExplainQuoteFormLoading: false,
+      testItemTableList: [],
+      testItemSearching: false,
+      testItemModelNum: [],
+      replaceStandNumModelNum: [],
+      lawsExplainQuoteModelNum: [],
+      selectedListRep: [],
+      quoteIdList1: '',
+      selectedList1: [],
+      selectedList2: [],
+      testItemsForm: {
+        testItemName: '',
+        page: 1,
+        pageSize: this.$store.getters.userInfo.configContent,
+        total: 0,
+        testIdList: ''
+      },
+      lawsExplainQuoteForm: {
+        standNumber: '',
+        page: 1,
+        pageSize: this.$store.getters.userInfo.configContent,
+        total: 0,
+        standType: 'INLAND',
+        quoteIdList: '',
+        validFlag: '0'
+      },
+      // 提交状态
+      isSubmit: false,
+      selectSarMenu: {} // 用来记录当前选中的二级菜单对象
     }
   },
   props: {
@@ -1539,6 +1896,32 @@ export default {
         })
       }
     },
+    // 拖拽事件
+    drag (treeNode, dragId) {
+      if (treeNode !== null) {
+        let search = {
+          menuId: treeNode.id,
+          idlist: this.selectedList.length ? this.selectedList : dragId
+        }
+        this.$http.postData('lawss/sarStandardsInfo/saveStandardsMenu', search, {
+          _this: this
+        }, res => {
+          if (res.ok) {
+            this.$message({
+              message: '操作成功',
+              type: 'success'
+            })
+            this.getDomesticStandardTable(this.tableFlag)
+          } else {
+            this.$message({
+              message: res.message,
+              type: 'warning'
+            })
+          }
+        }, e => {
+        })
+      }
+    },
     treeClick (treeNode) {
       this.selectSarMenu = treeNode // 记录当前选中的二级菜单
       this.standCommonlySearch.menuId = treeNode.id
@@ -1666,6 +2049,10 @@ export default {
         this.exportModelFlag = true
       }
     },
+    // 获取拖拽行的id
+    dragRowClassName (row, index) {
+      return 'drag-row' + ' ' + 'id=' + row.id
+    },
     // 修改成表格样式后，选择项勾选改变
     standSelectChange (data) {
       this.selectedList = []
@@ -1703,13 +2090,13 @@ export default {
       this.changeInlandSubclassVal()
     },
     testItemsClick () {
-      if (this.testItemsModel) {
-        return false
-      }
+      // if (this.testItemsModel) {
+      //   return false
+      // }
       this.testItemsModel = true
-      $('#testItems').click()
-      this.selectedList2 = []
-      this.$refs.selection2.selectAll(false)
+      // $('#testItems').click()
+      // this.selectedList2 = []
+      // this.$refs.selection2.selectAll(false)
       this.testItemsForm.testItemName = ''
       this.getTestItemRow('')
     },
@@ -1766,12 +2153,22 @@ export default {
       }
     },
     handleAddFormatError (file) {
-      this.$message.error('文件' + file.name + '格式不正确，请上传pdf、doc、docx、ppt、pptx文件')
+      // this.$message.error('文件' + file.name + '格式不正确，请上传pdf、doc、docx、ppt、pptx文件')
+      this.$message({
+        showClose: true,
+        message: '文件' + file.name + '格式不正确，请上传pdf、doc、docx、ppt、pptx文件',
+        type: 'error'
+      })
     },
     // 导入文件大小超出范围
     handleSizeError (file) {
       this.spinShow = false
-      this.$message.error('文件' + file.name + '大小不超过200M')
+      // this.$message.error('文件' + file.name + '大小不超过200M')
+      this.$message({
+        showClose: true,
+        message: '文件' + file.name + '大小不超过200M',
+        type: 'error'
+      })
     },
     clickButtonToUpload (current) {
       this.currentFileList = current
@@ -1863,20 +2260,236 @@ export default {
     },
     // 表单清空
     resetForm () {
-      alert(0)
       this.modalshowflag = false
-      // this.modalItemaddShowflag = false
-      // this.menuModalFlag = false
+      this.modalItemaddShowflag = false
+      this.menuModalFlag = false
       this.sarStandardsInfoEO.orgName = ''
       this.sarStandardsInfoEO.standFile = ''
-      // this.standItemEO.orgName = ''
+      this.standItemEO.orgName = ''
       this.sarStandardsInfoEO.testItems = ''
       this.sarStandardsInfoEO.lawsExplainQuote = ''
-      // this.$refs.importFileAboutStand.clearFiles()
-      // this.$refs['sarStandardsInfoForm'].resetFields()
-      // this.$refs['sarStandardsItemForm'].resetFields()
-      // this.$refs['addMenuForm'].resetFields()
-      // $('.ivu-drawer-body').scrollTop(0)
+      this.$refs.importFileAboutStand.clearFiles()
+      this.$refs['sarStandardsInfoForm'].resetFields()
+      this.$refs['sarStandardsItemForm'].resetFields()
+      this.$refs['addMenuForm'].resetFields()
+      $('.ivu-drawer-body').scrollTop(0)
+    },
+    // 标准号验证
+    validateStandNumber (standinfo) {
+      return new Promise((resolve, reject) => {
+        let obj = JSON.parse(JSON.stringify(standinfo))
+        this.$http.post('lawss/sarStandardsInfo/validateStandNumber', obj, {
+          _this: this
+        }, res => {
+          if (res.ok) {
+            resolve(true)
+          } else {
+            /* this.$Modal.error({
+                        title: '提示消息',
+                        content: res.message
+                      }); */
+            resolve(false)
+          }
+        }, e => {
+          reject(e)
+        })
+      })
+    },
+    // 保存或修改标准
+    saveOrUpdateStands () {
+      this.isSubmit = true
+      this.$refs['sarStandardsInfoForm'].validate((valid) => {
+        if (valid) {
+          alert(0)
+          // 验证标准号是否唯一
+          this.validateStandNumber(this.sarStandardsInfoEO).then((flag) => {
+            if (flag) {
+              // 时间格式修改
+              let nowstandinfo = JSON.parse(JSON.stringify(this.sarStandardsInfoEO))
+              if (nowstandinfo.issueTime != null && nowstandinfo.issueTime !== '') {
+                nowstandinfo.issueTime = this.$dateFormat(this.sarStandardsInfoEO.issueTime, 'yyyy-MM-dd hh:mm:ss')
+              }
+              if (nowstandinfo.putTime != null && nowstandinfo.putTime !== '') {
+                nowstandinfo.putTime = this.$dateFormat(this.sarStandardsInfoEO.putTime, 'yyyy-MM-dd hh:mm:ss')
+              }
+              if (nowstandinfo.newcarPutTime != null && nowstandinfo.newcarPutTime !== '') {
+                nowstandinfo.newcarPutTime = this.$dateFormat(this.sarStandardsInfoEO.newcarPutTime, 'yyyy-MM-dd hh:mm:ss')
+              }
+              if (nowstandinfo.standExpirationTime != null && nowstandinfo.standExpirationTime !== '') {
+                nowstandinfo.standExpirationTime = this.$dateFormat(this.sarStandardsInfoEO.standExpirationTime, 'yyyy-MM-dd hh:mm:ss')
+              }
+              if (nowstandinfo.noticeCertPutTime != null && nowstandinfo.noticeCertPutTime !== '') {
+                nowstandinfo.noticeCertPutTime = this.$dateFormat(this.sarStandardsInfoEO.noticeCertPutTime, 'yyyy-MM-dd hh:mm:ss')
+              }
+              if (nowstandinfo.cccCertPutTime != null && nowstandinfo.cccCertPutTime !== '') {
+                nowstandinfo.cccCertPutTime = this.$dateFormat(this.sarStandardsInfoEO.cccCertPutTime, 'yyyy-MM-dd hh:mm:ss')
+              }
+              if (nowstandinfo.nationCertPutTime != null && nowstandinfo.nationCertPutTime !== '') {
+                nowstandinfo.nationCertPutTime = this.$dateFormat(this.sarStandardsInfoEO.nationCertPutTime, 'yyyy-MM-dd hh:mm:ss')
+              }
+              if (nowstandinfo.northCertPutTime != null && nowstandinfo.northCertPutTime !== '') {
+                nowstandinfo.northCertPutTime = this.$dateFormat(this.sarStandardsInfoEO.northCertPutTime, 'yyyy-MM-dd hh:mm:ss')
+              }
+              if (nowstandinfo.noticeProductPutTime != null && nowstandinfo.noticeProductPutTime !== '') {
+                nowstandinfo.noticeProductPutTime = this.$dateFormat(this.sarStandardsInfoEO.noticeProductPutTime, 'yyyy-MM-dd hh:mm:ss')
+              }
+              if (nowstandinfo.cccProductPutTime != null && nowstandinfo.cccProductPutTime !== '') {
+                nowstandinfo.cccProductPutTime = this.$dateFormat(this.sarStandardsInfoEO.cccProductPutTime, 'yyyy-MM-dd hh:mm:ss')
+              }
+              if (nowstandinfo.nationProductPutTime != null && nowstandinfo.nationProductPutTime !== '') {
+                nowstandinfo.nationProductPutTime = this.$dateFormat(this.sarStandardsInfoEO.nationProductPutTime, 'yyyy-MM-dd hh:mm:ss')
+              }
+              if (nowstandinfo.northProductPutTime != null && nowstandinfo.northProductPutTime !== '') {
+                nowstandinfo.northProductPutTime = this.$dateFormat(this.sarStandardsInfoEO.northProductPutTime, 'yyyy-MM-dd hh:mm:ss')
+              }
+
+              if (nowstandinfo.issueTextTime != null && nowstandinfo.issueTextTime !== '') {
+                nowstandinfo.issueTextTime = this.$dateFormat(this.sarStandardsInfoEO.issueTextTime, 'yyyy-MM-dd hh:mm:ss')
+              }
+              if (nowstandinfo.registerPutTime != null && nowstandinfo.registerPutTime !== '') {
+                nowstandinfo.registerPutTime = this.$dateFormat(this.sarStandardsInfoEO.registerPutTime, 'yyyy-MM-dd hh:mm:ss')
+              }
+              if (nowstandinfo.wtoPublicFileTime != null && nowstandinfo.wtoPublicFileTime !== '') {
+                nowstandinfo.wtoPublicFileTime = this.$dateFormat(this.sarStandardsInfoEO.wtoPublicFileTime, 'yyyy-MM-dd hh:mm:ss')
+              }
+              if (nowstandinfo.sentScreenFileTime != null && nowstandinfo.sentScreenFileTime !== '') {
+                nowstandinfo.sentScreenFileTime = this.$dateFormat(this.sarStandardsInfoEO.sentScreenFileTime, 'yyyy-MM-dd hh:mm:ss')
+              }
+              if (nowstandinfo.opinionFileTime != null && nowstandinfo.opinionFileTime !== '') {
+                nowstandinfo.opinionFileTime = this.$dateFormat(this.sarStandardsInfoEO.opinionFileTime, 'yyyy-MM-dd hh:mm:ss')
+              }
+              if (nowstandinfo.approvalFileTime != null && nowstandinfo.approvalFileTime !== '') {
+                nowstandinfo.approvalFileTime = this.$dateFormat(this.sarStandardsInfoEO.approvalFileTime, 'yyyy-MM-dd hh:mm:ss')
+              }
+
+              if (nowstandinfo.firstDraftFileTime != null && nowstandinfo.firstDraftFileTime !== '') {
+                nowstandinfo.firstDraftFileTime = this.$dateFormat(this.sarStandardsInfoEO.firstDraftFileTime, 'yyyy-MM-dd hh:mm:ss')
+              }
+              if (nowstandinfo.planCompletionTime != null && nowstandinfo.planCompletionTime !== '') {
+                nowstandinfo.planCompletionTime = this.$dateFormat(this.sarStandardsInfoEO.planCompletionTime, 'yyyy-MM-dd hh:mm:ss')
+              }
+              if (nowstandinfo.enterNextStageTime != null && nowstandinfo.enterNextStageTime !== '') {
+                nowstandinfo.enterNextStageTime = this.$dateFormat(this.sarStandardsInfoEO.enterNextStageTime, 'yyyy-MM-dd hh:mm:ss')
+              }
+              if (nowstandinfo.productPutTime != null && nowstandinfo.productPutTime !== '') {
+                nowstandinfo.productPutTime = this.$dateFormat(this.sarStandardsInfoEO.productPutTime, 'yyyy-MM-dd hh:mm:ss')
+              }
+              if (nowstandinfo.newproductPutTime != null && nowstandinfo.newproductPutTime !== '') {
+                nowstandinfo.newproductPutTime = this.$dateFormat(this.sarStandardsInfoEO.newproductPutTime, 'yyyy-MM-dd hh:mm:ss')
+              }
+              if (nowstandinfo.applyArctic != null && nowstandinfo.applyArctic instanceof Array) {
+                nowstandinfo.applyArctic = nowstandinfo.applyArctic.join(',') // 适用车型
+              }
+              if (nowstandinfo.emergyKind != null && (nowstandinfo.emergyKind instanceof Array)) {
+                nowstandinfo.emergyKind = nowstandinfo.emergyKind.join(',') // 能源种类
+              }
+              if (nowstandinfo.applyAuth != null && (nowstandinfo.applyAuth instanceof Array)) {
+                nowstandinfo.applyAuth = nowstandinfo.applyAuth.join(',') // 适用认证
+              }
+              if (nowstandinfo.category != null && (nowstandinfo.category instanceof Array)) {
+                nowstandinfo.category = nowstandinfo.category.join(',') // 所属类别
+              }
+              if (nowstandinfo.lawsExplainQuote != null && (nowstandinfo.lawsExplainQuote instanceof Array)) {
+                nowstandinfo.lawsExplainQuote = nowstandinfo.lawsExplainQuote.join(',')
+              }
+              if (nowstandinfo.testItems != null && (nowstandinfo.testItems instanceof Array)) {
+                nowstandinfo.testItems = nowstandinfo.testItems.join(',')
+              }
+              // if (nowstandinfo.replaceStandNum != null) {
+              //   nowstandinfo.replaceStandNum = nowstandinfo.replaceStandNum.replace(/，/ig, ',')
+              // }
+              // 代替标准号
+              if (nowstandinfo.replaceStandNum != null && (nowstandinfo.replaceStandNum instanceof Array)) {
+                nowstandinfo.replaceStandNum = nowstandinfo.replaceStandNum.join(',')
+              }
+              if (nowstandinfo.replacedStandNum != null) {
+                nowstandinfo.replacedStandNum = nowstandinfo.replacedStandNum.replace(/，/ig, ',')
+              }
+              // 内容摘要
+              if (nowstandinfo.synopsis != null && nowstandinfo.synopsis !== '') {
+                nowstandinfo.synopsis = nowstandinfo.synopsis.replace(/\r\n/g, '<br />')
+                nowstandinfo.synopsis = nowstandinfo.synopsis === '' ? '' : nowstandinfo.synopsis.replace(/\n/g, '<br />')
+              }
+              // // 代替标准号
+              // if (nowstandinfo.replaceStandNum != null && nowstandinfo.replaceStandNum !== '') {
+              //   nowstandinfo.replaceStandNum = nowstandinfo.replaceStandNum.replace(/\r\n/g, '<br />')
+              //   nowstandinfo.replaceStandNum = nowstandinfo.replaceStandNum === '' ? '' : nowstandinfo.replaceStandNum.replace(/\n/g, '<br />')
+              // }
+              // 被代替标准号
+              if (nowstandinfo.replacedStandNum != null && nowstandinfo.replacedStandNum !== '') {
+                nowstandinfo.replacedStandNum = nowstandinfo.replacedStandNum.replace(/\r\n/g, '<br />')
+                nowstandinfo.replacedStandNum = nowstandinfo.replacedStandNum === '' ? '' : nowstandinfo.replacedStandNum.replace(/\n/g, '<br />')
+              }
+              // 关键词
+              if (nowstandinfo.tags != null && nowstandinfo.tags !== '') {
+                nowstandinfo.tags = nowstandinfo.tags.replace(/\r\n/g, '<br />')
+                nowstandinfo.tags = nowstandinfo.tags === '' ? '' : nowstandinfo.tags.replace(/\n/g, '<br />')
+              }
+              // 备注
+              if (nowstandinfo.remark != null && nowstandinfo.remark !== '') {
+                nowstandinfo.remark = nowstandinfo.remark.replace(/\r\n/g, '<br />')
+                nowstandinfo.remark = nowstandinfo.remark === '' ? '' : nowstandinfo.remark.replace(/\n/g, '<br />')
+              }
+              nowstandinfo.certPutTimeList = [
+                {
+                  timeName: '公告新车型',
+                  putTime: nowstandinfo.noticeCertPutTime
+                },
+                {
+                  timeName: 'CCC新车型',
+                  putTime: nowstandinfo.cccCertPutTime
+                },
+                {
+                  timeName: '国环受理时间',
+                  putTime: nowstandinfo.nationCertPutTime
+                },
+                {
+                  timeName: '北环受理时间',
+                  putTime: nowstandinfo.northCertPutTime
+                }
+
+              ]
+              // addOrUPdateFlag 1:新增 2:修改
+              if (this.addOrUPdateFlag === 1) {
+                nowstandinfo.menuId = this.selectSarMenu.id // 新建过程中标准所属目录是当前目录
+                if (nowstandinfo.replaceStandNum != null && nowstandinfo.standNumber !== '') {
+                  nowstandinfo.upReplaceNumFlag = 1
+                }
+              } else {
+                if (nowstandinfo.replaceStandNum !== this.saveOldReplaceNum) {
+                  nowstandinfo.upReplaceNumFlag = 1
+                }
+                if (nowstandinfo.standNumber !== this.saveOldNum) {
+                  nowstandinfo.upNumFlag = 1
+                } else if (nowstandinfo.standSort !== this.saveOldSort) {
+                  nowstandinfo.upNumFlag = 1
+                } else if (nowstandinfo.standYear !== this.saveOldYear) {
+                  nowstandinfo.upNumFlag = 1
+                }
+              }
+              this.$http.postData(this.addOrUPdateFlag === 1 ? 'lawss/sarStandardsInfo/addarStandardsInfo' : 'lawss/sarStandardsInfo/updateSarStandardsInfo', nowstandinfo, {
+                _this: this
+              }, res => {
+                this.isSubmit = false
+                if (res.ok) {
+                  this.getDomesticStandardTable(this.tableFlag)
+                  this.resetForm()
+                }
+              }, e => {
+                this.isSubmit = false
+              })
+            } else {
+              this.isSubmit = false
+            }
+          }, e => {})
+        } else {
+          this.isSubmit = false
+          this.$message({
+            message: '请检查表单是否填写正确',
+            type: 'warning'
+          })
+        }
+      })
     },
     // 分页点击后方法
     pageChange (page) {
@@ -1978,7 +2591,419 @@ export default {
     },
     inputChange () {
       this.modalshowflag = true
+    },
+    /**
+       *@desc:代替标准号搜索
+       *@author: zhangRui
+       *@time: 2020/08/31 09:42:45
+       */
+    selectStands () {
+      // if (this.standNumFlag === 1) {
+      // this.$refs.selections.selectAll(false)
+      // }
+      this.sarStandardsInfoEO.replaceStandNum = ''
+      this.replaceStandNumModel = true
+      this.getReplaceStandNumRow('')
+    },
+    selectReplaceStandNumRowChange (row) {
+      this.replaceStandNumModelNum = row
+    },
+    selectLawsExplainQuoteRowChange (row) {
+      this.lawsExplainQuoteModelNum = row
+    },
+    // 试验项目
+    selectTestItemRowChange (row) {
+      this.testItemModelNum = row
+    },
+    selectTestItemRowSelect (selection, flag, row) {
+      let index = ''
+      if (row) {
+        this.selectedList2.map((item, rowIndex) => {
+          if (row.id === item.id) {
+            index = rowIndex
+          }
+        })
+      }
+      if (flag === 'select') {
+        this.selectedList2.push(row)
+        const newobj = {}
+        this.selectedList2 = this.selectedList2.reduce((preVal, curVal) => {
+                  newobj[curVal.id] ? '' : newobj[curVal.id] = preVal.push(curVal) // eslint-disable-line
+          return preVal
+        }, [])
+      }
+      if (flag === 'cancel') {
+        this.selectedList2.splice(index, 1)
+      }
+      if (flag === 'all') {
+        selection.map((item) => {
+          this.selectedList2.push(item)
+        })
+        const newobj = {}
+        this.selectedList2 = this.selectedList2.reduce((preVal, curVal) => {
+                  newobj[curVal.id] ? '' : newobj[curVal.id] = preVal.push(curVal) // eslint-disable-line
+          return preVal
+        }, [])
+      }
+      if (flag === 'allCancel') {
+        this.testItemTableList.map((item) => {
+          this.selectedList2.map((list, index) => {
+            if (item.id === list.id) {
+              this.selectedList2.splice(index, 1)
+            }
+          })
+        })
+      }
+    },
+    selectLawsExplainQuoteRowSelect (selection, flag, row) {
+      let index = ''
+      if (row) {
+        this.selectedList1.map((item, rowIndex) => {
+          if (row.id === item.id) {
+            index = rowIndex
+          }
+        })
+      }
+      if (flag === 'select') {
+        this.selectedList1.push(row)
+        const newobj = {}
+        this.selectedList1 = this.selectedList1.reduce((preVal, curVal) => {
+                  newobj[curVal.id] ? '' : newobj[curVal.id] = preVal.push(curVal) // eslint-disable-line
+          return preVal
+        }, [])
+      }
+      if (flag === 'cancel') {
+        this.selectedList1.splice(index, 1)
+      }
+      if (flag === 'all') {
+        selection.map((item) => {
+          this.selectedList1.push(item)
+        })
+        const newobj = {}
+        this.selectedList1 = this.selectedList1.reduce((preVal, curVal) => {
+                  newobj[curVal.id] ? '' : newobj[curVal.id] = preVal.push(curVal) // eslint-disable-line
+          return preVal
+        }, [])
+      }
+      if (flag === 'allCancel') {
+        this.lawsExplainQuoteRow.map((item) => {
+          this.selectedList1.map((list, index) => {
+            if (item.id === list.id) {
+              this.selectedList1.splice(index, 1)
+            }
+          })
+        })
+      }
+    },
+    // 代替标准号
+    getReplaceStandNumRow (page = 1, pageSize = this.$store.getters.userInfo.configContent) {
+      this.replaceStandNumForm.page = this.replacePage
+      this.replaceStandNumForm.pageSize = this.$store.getters.userInfo.configContent
+      if (page === '') {
+        this.replaceStandNumForm.page = 1
+        this.replaceStandNumForm.standNumber = ''
+      }
+      // this.replaceStandNumForm.quoteIdList = this.quoteIdList1.toString() === '' ? '' : this.quoteIdList1
+      if (this.sarStandardsInfoEO.replaceStandNum !== null && this.sarStandardsInfoEO.replaceStandNum !== '') {
+        this.replaceStandNumForm.quoteIdList = this.quoteIdList1.toString() === '' ? '' : this.quoteIdList1
+      } else {
+        this.quoteIdList1 = []
+        this.replaceStandNumForm.quoteIdList = ''
+      }
+      // if (this.sarStandardsInfoEO.replaceStandNumId !== null && this.sarStandardsInfoEO.replaceStandNumId !== '') {
+      //   this.replaceStandNumForm.quoteIdList = this.sarStandardsInfoEO.replaceStandNumId.toString()
+      //   console.log(this.replaceStandNumForm.quoteIdList)
+      // }
+      this.$http.get('lawss/sarStandardsInfo/getSarStandardsInfoPage', this.replaceStandNumForm, {
+        _this: this
+        // loading: 'lawsExplainQuoteFormLoading'
+      }, res => {
+        this.replaceStandNumRow = res.data.list
+        this.replaceTotal = res.data.count
+        if (this.selectedListRep.length !== 0) {
+          this.selectedListRep.map((list) => {
+            this.replaceStandNumRow.map((item) => {
+              if (list.id === item.id) {
+                item._checked = true
+              }
+            })
+          })
+        }
+      }, e => {
+      })
+    },
+    /**
+       *@desc:代替标准号
+       *@author: zhangRui
+       *@time: 2020/08/25 11:52:47
+       */
+    selectReplaceStandNumRowSelect (selection, flag, row) {
+      let index = ''
+      if (row) {
+        this.selectedListRep.map((item, rowIndex) => {
+          if (row.id === item.id) {
+            index = rowIndex
+          }
+        })
+      }
+      if (flag === 'select') {
+        this.selectedListRep.push(row)
+        const newobj = {}
+        this.selectedListRep = this.selectedListRep.reduce((preVal, curVal) => {
+                  newobj[curVal.id] ? '' : newobj[curVal.id] = preVal.push(curVal) // eslint-disable-line
+          return preVal
+        }, [])
+      }
+      if (flag === 'cancel') {
+        this.selectedListRep.splice(index, 1)
+      }
+      if (flag === 'all') {
+        selection.map((item) => {
+          this.selectedListRep.push(item)
+        })
+        const newobj = {}
+        this.selectedListRep = this.selectedListRep.reduce((preVal, curVal) => {
+                  newobj[curVal.id] ? '' : newobj[curVal.id] = preVal.push(curVal) // eslint-disable-line
+          return preVal
+        }, [])
+      }
+      if (flag === 'allCancel') {
+        this.replaceStandNumRow.map((item) => {
+          this.selectedListRep.map((list, index) => {
+            if (item.id === list.id) {
+              this.selectedListRep.splice(index, 1)
+            }
+          })
+        })
+      }
+    },
+    // 代替标准-取消
+    replaceStandNumModelCancel () {
+      alert(0)
+      this.replaceStandNumModel = false
+      this.$refs.selections.selectAll(false)
+      this.sarStandardsInfoEO.replaceStandNum = this.saveStandNum
+    },
+    // 代替标准确定
+    replaceStandNumModelBt () {
+      if (typeof this.sarStandardsInfoEO.replaceStandNum === 'string') {
+        this.sarStandardsInfoEO.replaceStandNum = this.sarStandardsInfoEO.replaceStandNum.split('')
+      }
+      if (this.sarStandardsInfoEO.replaceStandNum === null) {
+        this.sarStandardsInfoEO.replaceStandNum = []
+      }
+      if (this.selectedListRep.length === 0) {
+        return this.$message({
+          message: '请先选择数据',
+          type: 'warning'
+        })
+      }
+      if (this.selectedListRep.length + this.sarStandardsInfoEO.replaceStandNum.length > 20) {
+        return this.$message({
+          message: '法规解读标准引用最多选择20项',
+          type: 'warning'
+        })
+      }
+      const idArr = []
+      this.selectedListRep.map((item) => {
+        let texts = ''
+        if (item.standYear != null && item.standYear !== '') {
+          texts = item.standSortShow + ' ' + item.standNumber + '-' + item.standYear
+        } else {
+          texts = item.standSortShow + ' ' + item.standNumber
+        }
+        // if (this.sarStandardsInfoEO.replaceStandNumList === null) {
+        //   this.sarStandardsInfoEO.replaceStandNumList = []
+        // }
+        // console.log(this.sarStandardsInfoEO.replaceStandNum)
+        // this.sarStandardsInfoEO.replaceStandNumList.push({
+        //   label: texts,
+        //   value: item.id
+        // })
+        this.sarStandardsInfoEO.replaceStandNumId = item.id
+        idArr.push(this.sarStandardsInfoEO.replaceStandNumId)
+        this.sarStandardsInfoEO.replaceStandNum.push(texts)
+        this.sarStandardsInfoEO.replaceStandNum = [...new Set(this.sarStandardsInfoEO.replaceStandNum)]
+        this.replaceStandNumModel = false
+      })
+      this.quoteIdList1 = idArr.toString()
+      console.log('this.quoteIdList1', this.quoteIdList1)
+      // this.$refs.selections.selectAll(false)
+    },
+    lawsExplainQuoteModelBt () {
+      if (typeof this.sarStandardsInfoEO.lawsExplainQuote === 'string') {
+        this.sarStandardsInfoEO.lawsExplainQuote = this.sarStandardsInfoEO.lawsExplainQuote.split('')
+      }
+      if (this.sarStandardsInfoEO.lawsExplainQuote === null) {
+        this.sarStandardsInfoEO.lawsExplainQuote = []
+      }
+      if (this.selectedList1.length === 0) {
+        // return this.$Message.warning('请先选择数据')
+        return this.$message({
+          message: '请先选择数据',
+          type: 'warning'
+        })
+      }
+      if (this.selectedList1.length + this.sarStandardsInfoEO.lawsExplainQuote.length > 20) {
+        // return this.$Message.warning('法规解读标准引用最多选择20项')
+        return this.$message({
+          message: '法规解读标准引用最多选择20项',
+          type: 'warning'
+        })
+      }
+      this.selectedList1.map((item) => {
+        let texts = ''
+        if (item.standYear != null && item.standYear !== '') {
+          texts = item.standSortShow + ' ' + item.standNumber + '-' + item.standYear
+        } else {
+          texts = item.standSortShow + ' ' + item.standNumber
+        }
+        if (this.sarStandardsInfoEO.lawsExplainQuoteList === null) {
+          this.sarStandardsInfoEO.lawsExplainQuoteList = []
+        }
+        this.sarStandardsInfoEO.lawsExplainQuoteList.push({
+          label: texts,
+          value: item.id
+        })
+        // console.log('this.sarStandardsInfoEO.lawsExplainQuoteList', this.sarStandardsInfoEO.lawsExplainQuoteList)
+        this.sarStandardsInfoEO.lawsExplainQuote.push(item.id)
+        this.sarStandardsInfoEO.lawsExplainQuote = [...new Set(this.sarStandardsInfoEO.lawsExplainQuote)]
+        this.lawsExplainQuoteModel = false
+      })
+    },
+    canle () {
+      console.log('this.lawsExplainQuoteModel', this.lawsExplainQuoteModel)
+      this.lawsExplainQuoteModel = false
+    },
+    // 法规解读标准引用
+    lawsExplainQuoteClick () {
+      this.getLawsExplainQuoteRow('')
+      this.lawsExplainQuoteModel = true
+      if (this.lawsExplainQuoteModel) {
+        return false
+      }
+      this.lawsExplainQuoteModel = true
+      $('#lawsExplainQuote').click()
+      this.selectedList1 = []
+      // this.$refs.selection.selectAll(false)
+      this.testItemsForm.standNumber = ''
+    },
+    pageChangeLaws (page) {
+      this.page = page
+      this.getLawsExplainQuoteRow()
+    },
+    pageSizeChangeLaws (pageSize) {
+      this.rows = pageSize
+      this.getLawsExplainQuoteRow()
+    },
+    // 法规分页
+    pageChangeReplace (page) {
+      this.replacePage = page
+      this.getReplaceStandNumRow()
+    },
+    pageSizeChangeReplace (pageSize) {
+      this.replaceRows = pageSize
+      this.getReplaceStandNumRow()
+    },
+    // 试验项目分页
+    pageChangeItems (page) {
+      this.pageItems = page
+      this.getTestItemRow()
+    },
+    pageSizeChangeItems (pageSize) {
+      this.itemsRows = pageSize
+      this.getTestItemRow()
+    },
+    testItemsModellBt () {
+      if (this.selectedList2.length === 0) {
+        return this.$message({
+          message: '请先选择数据',
+          type: 'warning'
+        })
+      }
+      if (typeof this.sarStandardsInfoEO.testItems === 'string') {
+        this.sarStandardsInfoEO.testItems = this.sarStandardsInfoEO.testItems.split('')
+      }
+      if (this.sarStandardsInfoEO.testItems === null) {
+        this.sarStandardsInfoEO.testItems = []
+      }
+      if (this.selectedList2.length + this.sarStandardsInfoEO.testItems.length > 20) {
+        return this.$message({
+          message: '试验项目最多选择20项',
+          type: 'warning'
+        })
+      }
+      this.selectedList2.map((item) => {
+        if (this.sarStandardsInfoEO.testItemsList === null) {
+          this.sarStandardsInfoEO.testItemsList = []
+        }
+        this.sarStandardsInfoEO.testItemsList.push({
+          label: item.testItemName,
+          value: item.id
+        })
+
+        this.sarStandardsInfoEO.testItems.push(item.id)
+        this.sarStandardsInfoEO.testItems = [...new Set(this.sarStandardsInfoEO.testItems)]
+        this.testItemsModel = false
+      })
+    },
+    getLawsExplainQuoteRow (page = 1, pageSize = this.$store.getters.userInfo.configContent) {
+      this.lawsExplainQuoteForm.page = this.page
+      this.lawsExplainQuoteForm.pageSize = this.$store.getters.userInfo.configContent
+      if (page === '') {
+        this.lawsExplainQuoteForm.page = 1
+        this.lawsExplainQuoteForm.standNumber = ''
+      }
+      if (this.sarStandardsInfoEO.lawsExplainQuote !== null && this.sarStandardsInfoEO.lawsExplainQuote !== '') {
+        this.lawsExplainQuoteForm.quoteIdList = this.sarStandardsInfoEO.lawsExplainQuote.toString()
+      }
+      this.$http.get('lawss/sarStandardsInfo/getSarStandardsInfoPage', this.lawsExplainQuoteForm, {
+        _this: this,
+        loading: 'lawsExplainQuoteFormLoading'
+      }, res => {
+        this.lawsExplainQuoteRow = res.data.list
+        this.total = res.data.count
+        if (this.selectedList1.length !== 0) {
+          this.selectedList1.map((list) => {
+            this.lawsExplainQuoteRow.map((item) => {
+              if (list.id === item.id) {
+                item._checked = true
+              }
+            })
+          })
+        }
+      }, e => {
+      })
+    },
+    getTestItemRow (page = 1, pageSize = this.$store.getters.userInfo.configContent) {
+      this.testItemsForm.page = this.pageItems
+      this.testItemsForm.pageSize = this.$store.getters.userInfo.configContent
+      if (page === '') {
+        this.testItemsForm.page = 1
+        this.testItemsForm.testItemName = ''
+      }
+      if (this.sarStandardsInfoEO.testItems !== null && this.sarStandardsInfoEO.testItems !== '') {
+        this.testItemsForm.testIdList = this.sarStandardsInfoEO.testItems.toString()
+      }
+      this.$http.get('lawss/sarTestItem/page', this.testItemsForm, {
+        _this: this,
+        loading: 'testItemSearching'
+      }, res => {
+        this.testItemTableList = res.data.list
+        this.totalItems = res.data.count
+        if (this.selectedList2.length !== 0) {
+          this.selectedList2.map((list) => {
+            this.testItemTableList.map((item) => {
+              if (list.id === item.id) {
+                item._checked = true
+              }
+            })
+          })
+        }
+      }, e => {
+      })
     }
+
   },
   computed: {
     // 是否拥有拖拽权限
@@ -2117,7 +3142,7 @@ export default {
       .tree{
         left: -200px !important;
       }
-      .tree-content .tree-right{
+      .tree-right{
         width: calc(~'100% - 15px') !important;
       }
       .side-bar-collapse{
@@ -2125,8 +3150,17 @@ export default {
         color: #FFF;
       }
     }
+    .tree-closed {
+      width: 20px !important;
+    }
     .noBottom{
       margin-bottom: 0;
+    }
+    .el-popover{
+      height: 200px;
+    }
+    .tabpagination{
+      position: relative;
     }
   }
 </style>
