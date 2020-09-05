@@ -1050,11 +1050,12 @@ export default {
             }, res => {
               if (res.ok) {
                 this.searchUserPage()
-                this.clickUserList = ''
+                this.clickUserList = []
               }
             })
         }).catch(() => {
           this.$refs.selection.clearSelection()
+          this.clickUserList = []
         })
       } else {
         this.$message({
