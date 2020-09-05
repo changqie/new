@@ -166,7 +166,6 @@
 <style lang="less">
   .implement-warning {
     padding: 15px;
-    width: calc(~'100% - 10px');
     height: 100%;
     .standards-drawer-table {
       width: 100%;

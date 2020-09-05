@@ -952,7 +952,6 @@ export default {
   @import '~@/assets/styles/mixins';
   #user-manage{
     padding: 0.2rem 0.3rem;
-    width: calc(~'100% - 10px');
     height: 100%;
     background: #FFF;
     .table-tools-bar .tools-bar-wrapper .label-select-content {
