@@ -311,7 +311,7 @@ export default {
               _this: this
             }, res => {
               if (res.ok) {
-
+                this.closeModal()
               } else {
                 this.dialogState = true
               }
@@ -320,7 +320,11 @@ export default {
             this.$http.putData('sys/dictype', data, {
               _this: this
             }, res => {
-              this.closeModal()
+              if (res.ok) {
+                this.closeModal()
+              } else {
+                this.dialogState = true
+              }
             }, e => {
             })
           }
@@ -349,7 +353,7 @@ export default {
         })
       } else {
         (
-          this.$confirm('确认删除该这些数据?', '提示', {
+          this.$confirm('确认删除这些数据?', '提示', {
             confirmButtonText: '确定',
             cancelButtonText: '取消',
             type: 'warning'
@@ -385,7 +389,7 @@ export default {
       data.dicTypeEOId = row.id
       data.dicTypeCode = row.dicTypeCode
       if (data.id !== '' && data.dicTypeCode !== '') {
-        this.$confirm('确认删除该这些数据?', '提示', {
+        this.$confirm('确认删除该条数据?', '提示', {
           confirmButtonText: '确定',
           cancelButtonText: '取消',
           type: 'warning'
