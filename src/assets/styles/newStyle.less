@@ -156,8 +156,8 @@
   top: 1px;
   padding: 0 7px;
   width: 120px;
-  height: 32px;
-  line-height: 32px;
+  height: 40px;
+  line-height: 40px;
   font-size: 12px;
   border: 1px solid #DDD;
   border-top-left-radius: 4px;
@@ -170,7 +170,6 @@
   overflow: hidden;
 }
 .add-form-item .el-form-item__content {
-  line-height: 32px;
   position: relative;
   font-size: 14px;
   width: 224px;
@@ -179,8 +178,6 @@
     font-size: 12px;
     color: #515a6e;
     font-family: Helvetica, 'Hiragino Sans GB', 'Microsoft Yahei', '\5FAE\8F6F\96C5\9ED1', Arial, sans-serif !important;
-    height: 32px !important;
-    line-height: 32px !important;
     width: 224px;
   }
    //设置输入框高度
@@ -236,4 +233,12 @@ input[type="number"]{
 // 所属部门选项 样式
 .user-dept-popper{
   padding: 0;
+}
+.add-form-item{
+  /*margin-top -1px*/
+  .top1px{
+    .el-input__inner{
+      margin-top: -1px;
+    }
+  }
 }

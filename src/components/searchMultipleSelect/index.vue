@@ -7,12 +7,12 @@
     size="medium"
    >
     <div
-      class="ivu-select ivu-select-default"
+      class="search-input-box"
       :class="{ 'search-visible ivu-select-visible': visible }"
       @click="visibleToggle">
-      <div class="ivu-select-selection" :class="{ 'disabled': disabled }">
+      <div class="v-select-selection" :class="{ 'disabled': disabled }">
         <div>
-          <span class="ivu-select-placeholder" v-if="!selectedList.length">{{ placeholder }}</span>
+          <span class="v-select-placeholder" v-if="!selectedList.length">{{ placeholder }}</span>
           <el-tag
             v-for="val in selectedList"
             :key="val"
@@ -20,11 +20,11 @@
             :fade="false"
             @click.native="visibleToggle"
             @on-close="handleRemove(val)">{{ getLabel(val) }}</el-tag>
-          <i class="ivu-icon ivu-icon-ios-arrow-down ivu-select-arrow"></i>
+          <i class="el-icon-arrow-down"></i>
         </div>
       </div>
     </div>
-    <el-dropdownMenu slot="list">
+    <el-dropdownMenu slot="dropdown" class="search-select-el-dropdown-menu">
       <div class="search-input">
         <el-input
           v-model="searchKey"
@@ -37,7 +37,11 @@
           v-for="option in filterOptions"
           :class="[{'ivu-select-item-selected': isSelected(option.value), 'ivu-select-item-focus': focusItem === option.value}]"
           :name="option.value || option.id"
-          :key="option.value">{{ option.label || option.name }}</el-dropdownItem>
+          :key="option.value"
+          @click.native="handleOptionClick(option.value)"
+        >
+          {{ option.label || option.name }}
+        </el-dropdownItem>
       </div>
     </el-dropdownMenu>
   </el-dropdown>
@@ -77,6 +81,7 @@ export default {
        * @date: 2018/12/25 10:39:08
        */
     handleOptionClick (val) {
+      console.log(val)
       if (this.options !== '' && this.options !== null) {
         this.options.map((opt) => {
           // 用value去匹配label,输入框最终显示的是label
@@ -175,15 +180,6 @@ export default {
       if (!this.disabled) {
         this.selectedList.splice(this.selectedList.indexOf(val), 1)
       }
-    },
-
-    /**
-     * @description: 点击组件之外
-     * @author: chenxiaoxi
-     * @date: 2019/04/10 14:17:00
-     */
-    handleClickOutSide () {
-      this.visible = false
     }
   },
   components: {},
@@ -236,17 +232,6 @@ export default {
     selectedList (val) {
       if (val.length) {
         this.handleValue()
-        // this.$nextTick(() => {
-        //   let top = $('.search-multiple-select .ivu-select-dropdown').css('top')
-        //   if (top.indexOf('px') > -1) {
-        //     top = parseInt(top.substring(0, top.indexOf('p')))
-        //   }
-        //   if (top > 0) {
-        //     $('.search-multiple-select .ivu-select-dropdown').css('top', $('.ivu-dropdown-rel').height())
-        //   } else {
-        //     $('.search-multiple-select .ivu-select-dropdown').css('top', -$('.search-multiple-select .ivu-select-dropdown').height() - 20)
-        //   }
-        // })
       }
     }
   },
@@ -261,60 +246,7 @@ export default {
   @import '~@/assets/styles/mixins';
   @import '~@/assets/styles/style';
   .search-multiple-select{
-    width: 100%;
-    position: relative;
-    .search-input{
-      padding: 0 5px 5px 5px;
-      .ivu-input{
-        border-radius: 2px;
-      }
-    }
-    .ivu-input{
-      padding-right: 7px !important;
-      .un-select()
-    }
-    .search-options{
-      max-height: 200px;
-      overflow-x: hidden;
-      overflow-y: auto;
-    }
-    .input-color{
-      .ivu-input{
-        border: 1px solid #dcdee2 !important;
-      }
-    }
-    .ivu-select-dropdown{
-      max-width: none;
-      width: 100%;
-      border: 1px solid @baseColor;
-    }
-    .ivu-dropdown-item{
-      position: relative;
-      &.ivu-select-item-selected{
-        color: @baseColor;
-        &::after{
-          display: inline-block;
-          font-family: Ionicons;
-          speak: none;
-          font-style: normal;
-          font-weight: 400;
-          font-variant: normal;
-          text-transform: none;
-          text-rendering: auto;
-          line-height: 1;
-          -webkit-font-smoothing: antialiased;
-          -moz-osx-font-smoothing: grayscale;
-          vertical-align: middle;
-          font-size: 24px;
-          content: "\F171";
-          color: rgba(45,140,240,.9);
-          position: absolute;
-          top: 2px;
-          right: 8px;
-        }
-      }
-    }
-    .ivu-select-selection{
+    .v-select-selection{
       padding: 0 24px 0 4px;
       &.disabled{
         background-color: #f3f3f3;
@@ -325,21 +257,6 @@ export default {
           background-color: #f2f2f2;
           cursor: not-allowed;
         }
-        .ivu-select-arrow{
-          color: #CCC;
-        }
-      }
-      .ivu-select-placeholder{
-        display: block;
-        height: 30px;
-        line-height: 30px;
-        color: #c5c8ce;
-        font-size: 12px;
-        overflow: hidden;
-        text-overflow: ellipsis;
-        white-space: nowrap;
-        padding-left: 4px;
-        padding-right: 22px;
       }
       .ivu-tag{
         height: 24px;
