@@ -102,6 +102,7 @@
       :total="total"
       @pageChange="pageChange"
       @pageSizeChange="pageSizeChange"></pagination>
+      <loading :loading="loading">数据获取中</loading>
     <!--新增抽屉-->  
     <el-drawer
       :title="title"
@@ -197,6 +198,7 @@ export default {
       total: 0,
       page: 1,
       rows: 10,
+      loading: false,
       // 列表数据
       classData: [],
       // 抽屉打开
