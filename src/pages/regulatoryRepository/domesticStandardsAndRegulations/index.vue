@@ -150,13 +150,13 @@
           <el-button type="primary" size="mini" :loading="searching" @click="uploadImportModal(1)"
                      v-btn-permission="'nDZVPHAg4Y'">模板下载
           </el-button>
-<!--          <el-button type="primary" size="mini" :loading="searching" @click="addImportModal(1)"-->
-<!--                     v-btn-permission="'7Y7XX6PXNM'">导入-->
-<!--          </el-button>-->
-<!--          <el-button type="primary" size="mini" @click="configurationStandard" v-btn-permission="'4EN5WW694V'">配置标准-->
-<!--          </el-button>-->
-<!--          <el-button type="primary" size="mini" @click="deleteStandFromKind(2)" v-btn-permission="'DQSXS89BRN'">移除标准-->
-<!--          </el-button>-->
+          <el-button type="primary" size="mini" :loading="searching" @click="addImportModal(1)"
+                     v-btn-permission="'7Y7XX6PXNM'">导入
+          </el-button>
+          <el-button type="primary" size="mini" @click="configurationStandard" v-btn-permission="'4EN5WW694V'">配置标准
+          </el-button>
+          <el-button type="primary" size="mini" @click="deleteStandFromKind(2)" v-btn-permission="'DQSXS89BRN'">移除标准
+          </el-button>
         </div>
         <div class="table-wrapper">
           <el-table
@@ -1255,6 +1255,173 @@
           <el-button type="primary" @click="testItemsModellBt" size="mini">确定</el-button>
         </div>
       </el-dialog>
+      <!--                  导入模态窗                       -->
+      <el-dialog :visible.sync="importModalshowflag" title="导入文件" :z-index="1000" :footer-hide="true">
+        <el-upload
+          multiple
+          drag
+          :action="importExcelUrl"
+          ref="importfile"
+          name="file"
+          :max-size="204800"
+          :format="importFileFormat"
+          :on-format-error="handleFormatError"
+          :on-success="importFileSuccess"
+          :show-upload-list="showUploadlist">
+          <i class="el-icon-upload"></i>
+          <div class="el-upload__text">点击或拖拽上传文件</div>
+        </el-upload>
+      </el-dialog>
+      <!-- 配置标准 -->
+      <el-drawer title="配置标准" :mask-closable="false" :visible.sync="configStandFlag" :width="drawerWidth"  direction="rtl"
+              :styles="stylesConfigDrawer"  size="83%" class="domestic-standard-database-config">
+        <div class="demo-drawer__content">
+          <el-form :model="sarConfigStandSearch" :inline="true" class="label-input-form" style="margin-left: 10px">
+            <el-row>
+              <el-col :span="6">
+                <el-formItem label="标准名称" prop="standName" class="serch-form-item">
+                  <el-input v-model="sarConfigStandSearch.standName" @keyup.enter.native="searchConfiguraStand"
+                         placeholder="根据标准名称查找" clearable/>
+                </el-formItem>
+              </el-col>
+              <el-col :span="6">
+                <el-formItem label="标准号" prop="standNumber" class="serch-form-item">
+                  <el-input v-model="sarConfigStandSearch.standNumber" @keyup.enter.native="searchConfiguraStand"
+                         placeholder="根据标准号查找" clearable/>
+                </el-formItem>
+              </el-col>
+              <el-col :span="6">
+                <el-formItem label="标准类别" prop="standSort" class="serch-form-item">
+                  <el-select v-model="sarConfigStandSearch.standSort" placeholder="根据标准类别查找"
+                          @keyup.enter.native="searchConfiguraStand" clearable>
+                    <el-option v-for="opt in standSortConfigOptions" :value="opt.value === undefined ? '' :opt.value" :key="opt.value">{{ opt.label }}
+                    </el-option>
+                  </el-select>
+                </el-formItem>
+              </el-col>
+              <el-col :span="6">
+                <el-formItem label="所属专业领域" class="serch-form-item">
+                  <el-select v-model="sarConfigStandSearch.category" placeholder="根据所属专业领域查找"
+                          @keyup.enter.native="searchConfiguraStand" clearable>
+                    <el-option v-for="opt in categoryConfigOptions" :value="opt.value === undefined ? '' :opt.value" :key="opt.value">{{ opt.label }}
+                    </el-option>
+                  </el-select>
+                </el-formItem>
+              </el-col>
+            </el-row>
+            <el-row>
+              <el-col :span="6">
+                <el-formItem label="标准性质" prop="standNature" class="serch-form-item">
+                  <el-select v-model="sarConfigStandSearch.standNature" placeholder="根据标准性质查找"
+                          @keyup.enter.native="searchConfiguraStand" clearable>
+                    <el-option v-for="opt in standNatureOptions" :value="opt.value === undefined ? '' :opt.value" :key="opt.value">{{ opt.label }}
+                    </el-option>
+                  </el-select>
+                </el-formItem>
+              </el-col>
+              <el-col :span="6">
+                <el-formItem label="内容摘要" prop="synopsis" class="serch-form-item">
+                  <el-input v-model="sarConfigStandSearch.synopsis" placeholder="根据内容摘要查找"
+                         @keyup.enter.native="searchConfiguraStand" clearable/>
+                </el-formItem>
+              </el-col>
+              <el-col :span="6">
+                <el-formItem label="代替标准号" prop="replaceStandNum" class="serch-form-item">
+                  <el-input v-model="sarConfigStandSearch.replaceStandNum" placeholder="根据代替标准查找"
+                         @keyup.enter.native="searchConfiguraStand" clearable/>
+                </el-formItem>
+              </el-col>
+              <el-col :span="6">
+                <el-formItem label="适用车型" prop="applyArctic" class="serch-form-item">
+                  <el-select v-model="sarConfigStandSearch.applyArctic" placeholder="根据适用车型查找"
+                          @keyup.enter.native="searchConfiguraStand" clearable>
+                    <el-option v-for="opt in applyArcticOptions" :value="opt.value === undefined ? '' :opt.value" :key="opt.value">{{ opt.label }}
+                    </el-option>
+                  </el-select>
+                </el-formItem>
+              </el-col>
+            </el-row>
+            <el-row>
+              <el-col :span="6" :push="21">
+                <el-button
+                  icon="el-icon-search"
+                  type="primary"
+                  class="searchAngNewBtn"
+                  :loading="searching"
+                  @click="selectConfiguraStand"></el-button>
+                <el-button type="primary" size="small"  class="searchAngNewBtn" @click="clearAllSearch(3)">清空查询</el-button>
+              </el-col>
+            </el-row>
+          </el-form>
+          <el-divider style="margin:4px 0 10px 0"/>
+          <el-table
+            ref="selection"
+            :data="configStandList"
+            tooltip-effect="dark"
+            style="width: 100%;padding:0 10px 20px 10px"
+            border
+            :height="height"
+            :header-cell-style="{background: '#f8f8f9', color: '#515a6e'}"
+            @selection-change="selectConfigStandChange">
+            <el-table-column
+              type="selection"
+              width="55"
+              align="center">
+            </el-table-column>
+            <el-table-column
+              prop="standNumber"
+              label="标准号"
+              align="center"
+            >
+            </el-table-column>
+            <el-table-column
+              prop="standName"
+              label="标准名称"
+              width="200"
+              align="center">
+            </el-table-column>
+            <el-table-column
+              prop="issueTime"
+              label="发布日期"
+              width="200"
+              align="center">
+            </el-table-column>
+            <el-table-column
+              prop="putTime"
+              label="实施日期"
+              width="200"
+              align="center">
+            </el-table-column>
+            <el-table-column
+              prop="standNatureShow"
+              label="标准性质"
+              width="200"
+              align="center">
+            </el-table-column>
+            <el-table-column
+              prop="standStateShow"
+              label="标准状态"
+              width="200"
+              align="center">
+            </el-table-column>
+          </el-table>
+          <loading :loading="loading">加载中...</loading>
+          <div class="demo-drawer__footer">
+            <div style="float: left">
+            <pagination
+              class="tabpagination"
+              :page="configPage"
+              :total="configTotal"
+              @pageChange="configuraPageChange"
+              @pageSizeChange="configuraPageSizeChange"></pagination>
+            </div>
+            <div style="display: flex;direction: rtl;margin-right: 20px">
+              <el-button size="mini" type="primary" @click="saveConfigStand">提交</el-button>
+              <el-button size="mini" style="padding-left: 10px" @click="cancelConfigStand">取 消</el-button>
+            </div>
+          </div>
+        </div>
+      </el-drawer>
     </div>
     <Spin size="large" fix v-if="spinShow"></Spin>
   </div>
@@ -1267,6 +1434,7 @@ export default {
   },
   data () {
     return {
+      loading: false,
       spinShow: false,
       isCollapse: true,
       sideClose: false, // 边栏收展状态
@@ -1282,6 +1450,9 @@ export default {
       pageItems: 1,
       totalItems: 0,
       itemsRows: 10,
+      configPage: 1,
+      configTotal: 0,
+      configRows: 10,
       zNodesS: [], // 责任部门树结构
       zNodesSItem: [],
       searchInlandNodes: [], // 条目部门选择树形结构
@@ -1631,7 +1802,51 @@ export default {
       },
       // 提交状态
       isSubmit: false,
-      selectSarMenu: {} // 用来记录当前选中的二级菜单对象
+      selectSarMenu: {}, // 用来记录当前选中的二级菜单对象
+      importModalshowflag: false,
+      showUploadlist: true, // 导入过程中新增数据时，如果数据错误，不出现导入列表
+      importFileFormat: [],
+      importExcelUrl: '', // 导入EXCEL文档
+      modalStandItemflag: false, // 标准条目显示
+      importFailed: false,
+      importForm: {
+        content: ''
+      },
+      standItemSearch: {
+        standId: '',
+        responsibleUnit: '',
+        orgName: '',
+        validFlag: '0'
+      },
+      standItemList: [],
+      drawerWidth: 1400,
+      // 配置标准相关 开始
+      configStandFlag: false, // 控制配置标准表格是否显示
+      stylesConfigDrawer: {
+        overflow: 'auto',
+        position: 'static'
+      },
+      sarConfigStandSearch: {
+        page: 1,
+        pageSize: this.$store.getters.userInfo.configContent,
+        standType: 'INLAND',
+        validFlag: '0',
+        menuId: '',
+        country: '',
+        standNumber: '',
+        standName: '',
+        standState: '',
+        standNature: '',
+        issueTime: '',
+        applyArctic: '',
+        replaceStandNum: '',
+        // replaceStandNumCope: '',
+        replacedStandNum: ''
+      }, // 分页查询过程中用到的对象
+      configStandList: [],
+      height: 430,
+      configStandtotal: 0,
+      selectConfigStand: []
     }
   },
   props: {
@@ -1954,7 +2169,7 @@ export default {
         this.sarStandardsSearch.standNature = ''
         this.sarStandardsSearch.issueTime = ''
         this.sarStandardsSearch.applyArctic = ''
-        // this.sarStandardsSearch.replaceStandNum = ''
+        this.sarStandardsSearch.replaceStandNum = ''
         this.sarStandardsSearch.replacedStandNum = ''
         this.sarStandardsSearch.synopsis = ''
         this.sarStandardsSearch.category = ''
@@ -1978,7 +2193,7 @@ export default {
         this.sarConfigStandSearch.standNature = ''
         this.sarConfigStandSearch.synopsis = ''
         this.sarConfigStandSearch.applyArctic = ''
-        // this.sarConfigStandSearch.replaceStandNum = ''
+        this.sarConfigStandSearch.replaceStandNum = ''
         this.selectConfiguraStand()
       }
     },
@@ -2206,10 +2421,12 @@ export default {
     // 删除标准
     deleteStand (flag, itemid) {
       if (flag === 1) {
-        this.$Modal.confirm({
-          title: '提示',
-          content: '确认删除该条数据？',
-          onOk: () => {
+        (
+          this.$confirm('确认删除这些数据?', '提示', {
+            confirmButtonText: '确定',
+            cancelButtonText: '取消',
+            type: 'warning'
+          }).then(() => {
             this.$http.post('lawss/sarStandardsInfo/deleteSarStandards', {ids: itemid}, {
               _this: this
             }, res => {
@@ -2217,18 +2434,26 @@ export default {
               this.selectedList = []
             }, e => {
             })
-          },
-          onCancel: () => {
-          }
-        })
+          }).catch(() => {
+            // 取消删除，清空选择
+            this.$refs.multipleTable.clearSelection()
+          })
+        )
       } else {
         if (this.selectedList.length === 0) {
-          this.$Message.error('请先选择要删除的数据！')
+          this.$confirm('请选择一条数据进行删除?', '提示', {
+            showCancelButton: false,
+            confirmButtonText: '确定',
+            cancelButtonText: '取消',
+            type: 'warning'
+          })
         } else {
-          this.$Modal.confirm({
-            title: '提示',
-            content: '确认删除选中数据？',
-            onOk: () => {
+          (
+            this.$confirm('确认删除这些数据?', '提示', {
+              confirmButtonText: '确定',
+              cancelButtonText: '取消',
+              type: 'warning'
+            }).then(() => {
               this.$http.post('lawss/sarStandardsInfo/deleteSarStandards', {ids: this.selectedList.join(',')}, {
                 _this: this
               }, res => {
@@ -2236,10 +2461,11 @@ export default {
                 this.selectedList = []
               }, e => {
               })
-            },
-            onCancel: () => {
-            }
-          })
+            }).catch(() => {
+              // 取消删除，清空选择
+              this.$refs.multipleTable.clearSelection()
+            })
+          )
         }
       }
     },
@@ -2249,6 +2475,29 @@ export default {
         window.open('/api/att/attFile/uploadModalFile?fileName=国内外标准导入模板.zip')
       } else {
         window.open('/api/att/attFile/uploadModalFile?fileName=标准条目导入模板.xlsx')
+      }
+    },
+    // 点击导入标准
+    addImportModal (flag) {
+      // this.$refs.importfile.clearFiles()
+      if (flag === 1) {
+        let menuId = this.selectSarMenu.id
+        if (menuId == null || menuId === '') {
+          this.$message({
+            showClose: true,
+            message: '请选择标准导入的目录',
+            type: 'error'
+          })
+        } else {
+          this.importModalshowflag = true
+          this.showUploadlist = true
+          this.importFileFormat = ['zip']
+          this.importExcelUrl = '/api/lawss/sarStandardsInfo/importZipStandardsInfo?standType=INLAND&menuId=' + menuId
+        }
+      } else {
+        this.importModalshowflag = true
+        this.importFileFormat = ['xlsx']
+        this.importExcelUrl = '/api/lawss/sarStandItems/importSarStandItemsList?standId=' + this.standItemSearch.standId
       }
     },
     handleClose (done) {
@@ -2543,7 +2792,7 @@ export default {
         _this: this
       }, res => {
         this.configStandList = res.data.list
-        this.configStandtotal = res.data.count
+        this.configTotal = res.data.count
         this.selectConfigStand = []
       }, e => {
       })
@@ -2592,11 +2841,7 @@ export default {
     inputChange () {
       this.modalshowflag = true
     },
-    /**
-       *@desc:代替标准号搜索
-       *@author: zhangRui
-       *@time: 2020/08/31 09:42:45
-       */
+    // 代替标准号搜索
     selectStands () {
       // if (this.standNumFlag === 1) {
       // this.$refs.selections.selectAll(false)
@@ -3002,6 +3247,204 @@ export default {
         }
       }, e => {
       })
+    },
+    // 导入标准文件格式错误执行
+    handleFormatError (file) {
+      if (this.importFileFormat[0] === 'zip') {
+        this.spinShow = false
+        this.$message({
+          showClose: true,
+          message: '文件' + file.name + '格式不正确，请上传ZIP压缩文件',
+          type: 'error'
+        })
+      } else {
+        this.$message({
+          showClose: true,
+          message: '文件' + file.name + '格式不正确，请上传EXCEL文件',
+          type: 'error'
+        })
+      }
+    }, // 导入标准数据成功后执行
+    importFileSuccess (response, file) {
+      if (response.ok) {
+        this.showUploadlist = true
+        this.spinShow = false
+        this.importModalshowflag = false
+        this.$message({
+          showClose: true,
+          message: response.message,
+          type: 'success'
+        })
+        // 使用字条目是否展示模态框判断导入的文件是标准，还是条目modalStandItemflag
+        if (this.modalStandItemflag) {
+          this.selectSarStandItems(this.standItemSearch.standId)
+        } else {
+          this.getDomesticStandardTable(this.tableFlag)
+        }
+      } else {
+        this.showUploadlist = false
+        this.spinShow = false
+        this.importFailed = true
+        this.importForm.content = response.message
+      }
+    },
+    // 查看标准条目
+    selectSarStandItems (standid) {
+      this.modalStandItemflag = true
+      this.standItemSearch.standId = standid
+      this.$http.get('lawss/sarStandItems/getSarStandItemsList', this.standItemSearch, {
+        _this: this, loading: 'loading'
+      }, res => {
+        this.standItemList = res.data
+        // this.standitemTotal = res.data.count // 分页需要
+      }, e => {
+      })
+    },
+    // 点击配置标准弹出相应模态框
+    configurationStandard () {
+      const winWidth = window.screen.width
+      if (winWidth > 1920) {
+        this.drawerWidth = 1400
+      } else {
+        this.drawerWidth = winWidth - 200
+      }
+      let menuId = this.selectSarMenu.id
+      if (menuId == null || menuId === '') {
+        this.$message({
+          showClose: true,
+          message: '请选择要配置的目录',
+          type: 'error'
+        })
+      } else {
+        if (this.selectSarMenu.parentId == null || this.selectSarMenu.parentId === '') {
+          this.$message({
+            showClose: true,
+            message: '请选择二级及以下目录',
+            type: 'error'
+          })
+        } else {
+          this.configStandFlag = true
+          this.sarConfigStandSearch.menuId = 'nomenu'
+          this.sarConfigStandSearch.page = 1
+          this.sarConfigStandSearch.country = ''
+          this.sarConfigStandSearch.standNumber = ''
+          this.sarConfigStandSearch.standName = ''
+          this.sarConfigStandSearch.standState = ''
+          this.sarConfigStandSearch.standNature = ''
+          this.sarConfigStandSearch.issueTime = ''
+          this.sarConfigStandSearch.applyArctic = ''
+          this.sarConfigStandSearch.replaceStandNum = ''
+          this.sarConfigStandSearch.replacedStandNum = ''
+          this.selectConfiguraStand()
+        }
+      }
+    },
+    // 取消配置标准
+    cancelConfigStand () {
+      this.configStandFlag = false
+      this.selectConfigStand = []
+    },
+    // 表对应标准移除分类到
+    deleteStandFromKind (flag, item) {
+      let search = {}
+      // 取最外层目录id
+      search.menuId = this.parentNode.id
+      search.idlist = []
+      if (flag === 1) {
+        this.$confirm('确定移除该条标准?', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+          search.idlist.push(item)
+          this.$http.putData('lawss/sarStandMenu/removeStandInfo', search, {
+            _this: this
+          }, res => {
+            this.getDomesticStandardTable(this.tableFlag)
+          }, e => {
+          })
+        }).catch(() => {
+          // 取消删除，清空选择
+          this.$refs.selection.clearSelection()
+        })
+      } else {
+        if (this.selectedList.length === 0) {
+          this.$message.error('请先选择要移除的数据！')
+        } else {
+          this.$confirm('确认移除选中数据?', '提示', {
+            confirmButtonText: '确定',
+            cancelButtonText: '取消',
+            type: 'warning'
+          }).then(() => {
+            for (let i = 0; i < this.selectedList.length; i++) {
+              search.idlist.push(this.selectedList[i])
+            }
+            this.$http.postData('lawss/sarStandardsInfo/saveStandardsMenu', search, {
+              _this: this
+            }, res => {
+              // this.$Message.success('取消配置成功!')
+              this.$message({
+                showClose: true,
+                message: '取消配置成功！',
+                type: 'success'
+              })
+              this.getDomesticStandardTable(this.tableFlag)
+            }, e => {
+            })
+          }).catch(() => {
+            // 取消删除，清空选择
+            this.$refs.selection.clearSelection()
+          })
+        }
+      }
+    },
+    // 分页点击后方法
+    configuraPageChange (page) {
+      this.configPage = page
+      this.selectConfiguraStand()
+    },
+    // 分页每页显示数改变后方法
+    configuraPageSizeChange (pageSize) {
+      this.configRows = this.$store.getters.userInfo.configContent
+      this.selectConfiguraStand()
+      this.getDomesticStandardTable(this.tableFlag)
+      // 此处需要调用接口，修改个人配置
+    },
+    searchConfiguraStand () {
+      this.sarConfigStandSearch.page = 1
+      this.selectConfiguraStand()
+    },
+    selectConfigStandChange (alldata) {
+      this.selectConfigStand = []
+      for (let i = 0; i < alldata.length; i++) {
+        this.selectConfigStand.push(alldata[i].id)
+      }
+    },
+    // 提交配置搜索项
+    saveConfigStand () {
+      let search = {}
+      search.menuId = this.selectSarMenu.id
+      if (this.selectConfigStand.length === 0) {
+        this.$message({
+          showClose: true,
+          message: '请至少选择一条标准',
+          type: 'warning'
+        })
+      } else {
+        search.idlist = this.selectConfigStand
+        this.$http.postData('lawss/sarStandardsInfo/saveStandardsMenu', search, {
+          _this: this
+        }, res => {
+          this.configStandFlag = false
+          this.$message({
+            showClose: true,
+            message: '配置标准成功!',
+            type: 'success'
+          })
+          this.getDomesticStandardTable(this.tableFlag)
+        }, e => {
+        })
+      }
     }
 
   },
