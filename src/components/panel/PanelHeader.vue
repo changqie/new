@@ -1,10 +1,15 @@
 <template>
   <div class="panel-header">
     <ul class="tabs">
-      <li v-for="(item, index) in tabs"
-          :key="index"
-          :class="{ 'active border-right': active === item.name}"
-          @click="activated(item.name, item.title)">{{ item.title}}</li>
+      <li
+        v-for="(item, index) in tabs"
+        :key="index"
+        :class="{ 'active border-right': active === item.name}"
+        @click="activated(item.name, item.title)"
+        :title="item.title"
+      >
+        {{ item.title}}
+      </li>
     </ul>
   </div>
 </template>
@@ -35,6 +40,7 @@ export default {
 
 <style lang="less" scoped>
   @import '~@/assets/styles/style';
+  @import '~@/assets/styles/mixins';
   .panel-header{
     height: 0.9rem;
     padding: 0.1rem 0 0 0.8rem;
@@ -44,12 +50,14 @@ export default {
     .tabs{
       li{
         float: left;
+        padding: 0 20px;
+        max-width: 150px;
         height: 0.8rem;
         line-height: 0.8rem;
         text-align: center;
-        padding: 0 20px;
         cursor: pointer;
         user-select: none;
+        .ellipsis();
         &.active{
           background: @subContainerContentColor;
           border-top: 1px solid #CCCCCC;

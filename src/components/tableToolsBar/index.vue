@@ -122,10 +122,12 @@ export default {
           margin-right: 0.2rem;
         }
       }
-      .ivu-input-wrapper{
-        width: auto;
-        min-width: 150px;
-        margin-right: 0.1rem;
+      & > div:first-child{
+        & > span{
+          display: inline-block;
+          width: 700px;
+          .ellipsis();
+        }
       }
       .label-select-content{
         min-width: 150px;
@@ -135,9 +137,6 @@ export default {
         min-width: 150px;
         /*width: auto !important;*/
       }
-    }
-    .ivu-form-item{
-      margin-bottom: 0;
     }
   }
 </style>

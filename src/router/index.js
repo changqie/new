@@ -180,7 +180,7 @@ const routes = [
     },
     component: () => import('@/pages/config'),
     meta: {
-      title: '配置',
+      title: '配置管理',
       menuId: '95KGANGWCV'
     },
     children: [

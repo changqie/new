@@ -238,12 +238,13 @@ export default {
       height: 100%;
       border: 1px solid #DDD;
       border-radius: 5px;
+      overflow-x: auto;
       .substance{
         position: relative;
         width: 100%;
         height: calc(~'100% - 57px');
-        padding: 10px 5px;
-        font-size: 14px;
+        padding: 10px;
+        font-size: 16px;
         overflow-y: auto;
         & > div{
           .flex();

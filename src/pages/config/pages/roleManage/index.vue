@@ -46,7 +46,6 @@
         <el-button type="danger" size="mini" @click="roleBatchDelete" v-btn-permission="'3RTCZ6AJB9'">批量删除</el-button>
       </div>
       <loading :loading="roleDataLoading">数据处理中</loading>
-      <!--<Table :columns="roleColumns" :height="tableHeight" :data="roleList" border ref="selections" class="roleTable" @on-selection-change=" handleSelectone"></Table>-->
       <el-table
         border
         ref="selection"
@@ -158,8 +157,7 @@
     <el-dialog
       :visible.sync="jurisdictionModal"
       title="配置企标细类和资料中心"
-      :before-close="jurisdictionModalClose"
-      destroy-on-close
+      @close="jurisdictionModalClose"
     >
       <el-tabs v-model="jurisdictionTabs" @tab-click="jurisdictionTab">
         <el-tab-pane label="企标细类" name="jurisdictionOne">
