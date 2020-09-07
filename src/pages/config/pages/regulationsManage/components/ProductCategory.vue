@@ -134,6 +134,7 @@
                 :label-width="formLabelWidth"
                 class="add-form-item">
                 <el-input
+                  oninput="if(value.length>5)value=value.slice(0,5)"
                   type="number"
                   v-model.number="productModelAdd.showIndex"
                   @mousewheel.native.prevent
@@ -263,6 +264,7 @@ export default {
       this.standardForm.standName = ''
       this.standardForm.standCode = ''
       this.standardForm.describes = ''
+      this.page = 1
       this.selectClass()
     },
     // 分页加载列表
@@ -341,6 +343,9 @@ export default {
       this.productModelAdd.dicTypeName = ''
       this.productModelAdd.showIndex = ''
       this.productModelAdd.describes = ''
+      if (this.$refs['productModelAdd']) {
+        this.$refs['productModelAdd'].resetFields()
+      }
       this.dialogState = false
     },
     // 新增弹窗关闭
@@ -385,7 +390,7 @@ export default {
               _this: this
             }, res => {
               if (res.ok) {
-                this.selectClass()
+                this.resetSelect()
               }
             })
           }).catch(() => {
@@ -410,7 +415,7 @@ export default {
             _this: this
           }, res => {
             if (res.ok) {
-              this.selectClass()
+              this.resetSelect()
             } else {
             }
           }).catch(() => {

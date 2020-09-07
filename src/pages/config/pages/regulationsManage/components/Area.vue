@@ -135,6 +135,7 @@
                 class="add-form-item">
                 <el-input
                   type="number"
+                  oninput="if(value.length>5)value=value.slice(0,5)"
                   v-model.number="areaModelAdd.showIndex"
                   @mousewheel.native.prevent
                   autocomplete="off" clearable></el-input>
@@ -343,6 +344,9 @@ export default {
       this.areaModelAdd.dicTypeName = ''
       this.areaModelAdd.showIndex = ''
       this.areaModelAdd.describes = ''
+      if (this.$refs['areaModelAdd']) {
+        this.$refs['areaModelAdd'].resetFields()
+      }
       this.dialogState = false
     },
     // 新增弹窗关闭
@@ -387,7 +391,7 @@ export default {
               _this: this
             }, res => {
               if (res.ok) {
-                this.selectArea()
+                this.resetSelect()
               }
             })
           }).catch(() => {
@@ -412,7 +416,7 @@ export default {
             _this: this
           }, res => {
             if (res.ok) {
-              this.selectArea()
+              this.resetSelect()
             } else {
             }
           }).catch(() => {

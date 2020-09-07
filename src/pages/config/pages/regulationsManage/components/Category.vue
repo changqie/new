@@ -134,6 +134,7 @@
                 :label-width="formLabelWidth"
                 class="add-form-item">
                 <el-input
+                  oninput="if(value.length>5)value=value.slice(0,5)"
                   type="number"
                   v-model.number="classificationModelAdd.showIndex"
                   @mousewheel.native.prevent
@@ -344,6 +345,9 @@ export default {
       this.classificationModelAdd.dicTypeName = ''
       this.classificationModelAdd.showIndex = ''
       this.classificationModelAdd.describes = ''
+      if (this.$refs['classificationModelAdd']) {
+        this.$refs['classificationModelAdd'].resetFields()
+      }
       this.dialogState = false
     },
     // 新增弹窗关闭

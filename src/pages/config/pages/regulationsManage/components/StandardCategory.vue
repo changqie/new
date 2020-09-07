@@ -1,4 +1,4 @@
-<!-- 适用车型 -->
+<!-- 配置管理-适用车型 -->
 <template>
   <div class="standard-category v-class">
     <div class="search-area">
@@ -133,6 +133,7 @@
                 class="add-form-item">
                 <el-input
                   type="number"
+                  oninput="if(value.length>5)value=value.slice(0,5)"
                   v-model.number="categoryModelAdd.showIndex"
                   @mousewheel.native.prevent
                   autocomplete="off" clearable></el-input>
@@ -341,6 +342,9 @@ export default {
       this.categoryModelAdd.dicTypeName = ''
       this.categoryModelAdd.showIndex = ''
       this.categoryModelAdd.describes = ''
+      if (this.$refs['categoryModelAdd']) {
+        this.$refs['categoryModelAdd'].resetFields()
+      }
       this.dialogState = false
     },
     // 新增弹窗关闭
@@ -384,7 +388,7 @@ export default {
               _this: this
             }, res => {
               if (res.ok) {
-                this.selectCategory()
+                this.resetSelect()
               }
             })
           }).catch(() => {
@@ -409,7 +413,7 @@ export default {
             _this: this
           }, res => {
             if (res.ok) {
-              this.selectCategory()
+              this.resetSelect()
             } else {
             }
           }).catch(() => {

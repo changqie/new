@@ -135,6 +135,7 @@
                 class="add-form-item">
                 <el-input
                   type="number"
+                  oninput="if(value.length>5)value=value.slice(0,5)"
                   v-model.number="authenticationModelAdd.showIndex"
                   @mousewheel.native.prevent
                   autocomplete="off" clearable></el-input>
@@ -263,6 +264,7 @@ export default {
       this.standardForm.standName = ''
       this.standardForm.standCode = ''
       this.standardForm.describes = ''
+      this.page = 1
       this.selectAuthentication()
     },
     // 分页加载列表
@@ -344,6 +346,9 @@ export default {
       this.authenticationModelAdd.dicTypeName = ''
       this.authenticationModelAdd.showIndex = ''
       this.authenticationModelAdd.describes = ''
+      if (this.$refs['authenticationModelAdd']) {
+        this.$refs['authenticationModelAdd'].resetFields()
+      }
       this.dialogState = false
     },
     // 新增弹窗关闭
@@ -388,7 +393,7 @@ export default {
               _this: this
             }, res => {
               if (res.ok) {
-                this.selectAuthentication()
+                this.resetSelect()
               }
             })
           }).catch(() => {
@@ -413,7 +418,7 @@ export default {
             _this: this
           }, res => {
             if (res.ok) {
-              this.selectAuthentication()
+              this.resetSelect()
             } else {
             }
           }).catch(() => {

@@ -133,6 +133,7 @@
                 :label-width="formLabelWidth"
                 class="add-form-item">
                 <el-input
+                  oninput="if(value.length>5)value=value.slice(0,5)"
                   type="number"
                   v-model.number="regionModelAdd.showIndex"
                   @mousewheel.native.prevent
@@ -342,6 +343,9 @@ export default {
       this.regionModelAdd.dicTypeName = ''
       this.regionModelAdd.showIndex = ''
       this.regionModelAdd.describes = ''
+      if (this.$refs['regionModelAdd']) {
+        this.$refs['regionModelAdd'].resetFields()
+      }
       this.dialogState = false
     },
     // 新增弹窗关闭
@@ -386,7 +390,7 @@ export default {
               _this: this
             }, res => {
               if (res.ok) {
-                this.selectClass()
+                this.resetSelect()
               }
             })
           }).catch(() => {
@@ -411,7 +415,7 @@ export default {
             _this: this
           }, res => {
             if (res.ok) {
-              this.selectClass()
+              this.resetSelect()
             } else {
             }
           }).catch(() => {

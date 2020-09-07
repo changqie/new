@@ -156,9 +156,9 @@
       </div>
     </el-dialog>
     <el-dialog
-      :visible="jurisdictionModal"
+      :visible.sync="jurisdictionModal"
       title="配置企标细类和资料中心"
-      @close="jurisdictionModalClose"
+      :before-close="jurisdictionModalClose"
       destroy-on-close
     >
       <el-tabs v-model="jurisdictionTabs" @tab-click="jurisdictionTab">
@@ -681,7 +681,8 @@ export default {
     jurisdictionModalClose () {
       console.log('000000')
       this.jurisdictionModal = false
-      this.jurisdictionTabs = ''
+      console.log('fnffff')
+      // this.jurisdictionTabs = ''
       // this.jurisdictionTabs = false
       // if (!flag) {
       //   this.$refs.roleTree.clearSearch()
