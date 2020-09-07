@@ -103,7 +103,7 @@
       @pageChange="pageChange"
       @pageSizeChange="pageSizeChange"></pagination>
       <loading :loading="loading">数据获取中</loading>
-    <!--新增抽屉-->  
+    <!--新增抽屉-->
     <el-drawer
       :title="title"
       :visible.sync="dialogState"
@@ -111,7 +111,8 @@
       custom-class="demo-drawer"
       ref="drawer"
       size="50%"
-      :class = "classObject"
+      :class="classObject"
+      :before-close="handleClose"
       >
       <div class="demo-drawer__content" v-if="this.oprState === 1 || this.oprState === 2">
         <el-form :model="classModelAdd" ref="classModelAdd" :rules="classRules"  class="label-input-form">
@@ -134,6 +135,7 @@
                 class="add-form-item">
                 <el-input
                   type="number"
+                  oninput="if(value.length>5)value=value.slice(0,5)"
                   v-model.number="classModelAdd.showIndex"
                   @mousewheel.native.prevent
                   autocomplete="off" clearable></el-input>
@@ -152,8 +154,8 @@
           </el-row>
         </el-form>
         <div class="demo-drawer__footer">
-          <el-button size="mini" @click="closeModal('ruleForm')">取 消</el-button>
-          <el-button size="mini" type="primary" @click="saveClass('ruleForm')">提交</el-button>
+          <el-button size="mini" @click="closeModal('classModelAdd')">取 消</el-button>
+          <el-button size="mini" type="primary" @click="saveClass('classModelAdd')">提交</el-button>
         </div>
       </div>
       <div class="demo-drawer__content" v-else>
@@ -262,6 +264,7 @@ export default {
       this.standardForm.standName = ''
       this.standardForm.standCode = ''
       this.standardForm.describes = ''
+      this.page = 1
       this.selectClass()
     },
     // 分页加载列表
@@ -307,6 +310,7 @@ export default {
       this.$refs[formName].validate((valid) => {
         if (valid) {
           if (this.oprState === 1) {
+            this.classModelAdd.dicTypeCode = this.classModelAdd.dicTypeName
             this.$http.postData('sys/dictype/create', data, {
               _this: this
             }, res => {
@@ -333,6 +337,18 @@ export default {
           return false
         }
       })
+    },
+    // 查看弹窗关闭
+    handleClose () {
+      this.page = 1
+      this.selectClass()
+      this.classModelAdd.dicTypeName = ''
+      this.classModelAdd.showIndex = ''
+      this.classModelAdd.describes = ''
+      if (this.$refs['classModelAdd']) {
+        this.$refs['classModelAdd'].resetFields()
+      }
+      this.dialogState = false
     },
     // 新增弹窗关闭
     closeModal (formName) {
@@ -376,10 +392,10 @@ export default {
               _this: this
             }, res => {
               if (res.ok) {
-                this.selectClass()
+                this.resetSelect()
               }
             })
-        }).catch(() => {
+          }).catch(() => {
           // 取消删除，清空选择
             this.$refs.selection.clearSelection()
           })
@@ -401,18 +417,10 @@ export default {
             _this: this
           }, res => {
             if (res.ok) {
-              this.selectClass()
-              this.$message({
-                type: 'success',
-                message: '删除成功!'
-              })
+              this.resetSelect()
             } else {
             }
           }).catch(() => {
-          // this.$message({
-          //   type: 'info',
-          //   message: '已取消删除'
-          // });
           })
         })
       }
@@ -421,10 +429,6 @@ export default {
     handleSelectionChange (val) {
       this.selectNum = val
       console.log('this.selectNum', this.selectNum)
-    },
-    // 取消多选
-    clearSelection () {
-
     },
     pageChange (page) {
       this.page = page

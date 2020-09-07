@@ -103,7 +103,7 @@
       @pageChange="pageChange"
       @pageSizeChange="pageSizeChange"></pagination>
       <loading :loading="loading">数据获取中</loading>
-    <!--新增抽屉-->  
+    <!--新增抽屉-->
     <el-drawer
       :title="title"
       :visible.sync="dialogState"
@@ -111,7 +111,7 @@
       custom-class="demo-drawer"
       ref="drawer"
       size="50%"
-      :class = "classObject"
+      :before-close="handleClose"
       >
       <div class="demo-drawer__content" v-if="this.oprState === 1 || this.oprState === 2">
         <el-form :model="regionModelAdd" ref="regionModelAdd" :rules="regionRules"  class="label-input-form">
@@ -335,6 +335,15 @@ export default {
         }
       })
     },
+    // 查看弹窗关闭
+    handleClose () {
+      this.page = 1
+      this.selectClass()
+      this.regionModelAdd.dicTypeName = ''
+      this.regionModelAdd.showIndex = ''
+      this.regionModelAdd.describes = ''
+      this.dialogState = false
+    },
     // 新增弹窗关闭
     closeModal (formName) {
       this.page = 1
@@ -380,7 +389,7 @@ export default {
                 this.selectClass()
               }
             })
-        }).catch(() => {
+          }).catch(() => {
           // 取消删除，清空选择
             this.$refs.selection.clearSelection()
           })

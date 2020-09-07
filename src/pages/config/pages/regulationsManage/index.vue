@@ -21,6 +21,7 @@ import DegreeStandard from './components/DegreeStandard'
 import FileState from './components/FileState'
 import EnterpriseCategory from './components/EnterpriseCategory'
 import EnterpriseStandardCategory from './components/EnterpriseStandardCategory'
+import Area from './components/Area'
 export default {
   name: 'RegulatoryRepository',
   components: {
@@ -34,11 +35,12 @@ export default {
     DegreeStandard,
     FileState,
     EnterpriseCategory,
-    EnterpriseStandardCategory
+    EnterpriseStandardCategory,
+    Area
   },
   data () {
     return {
-            active: 'StandardClassification',
+      active: 'StandardClassification',
       tabsList: [ {
         title: '标准/文件性质',
         name: 'StandardClassification'
@@ -48,6 +50,10 @@ export default {
       }, {
         title: '国家/地区',
         name: 'NationalArea'
+      },
+      {
+        title: '区域',
+        name: 'Area'
       }, {
         // title: '产品类别',
         title: '适用车型',
