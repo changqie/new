@@ -880,6 +880,7 @@ export default {
     },
     // 关闭抽屉
     closeDrawer () {
+      this.showUserModal = false
       this.$nextTick(() => {
         // 清空新增和编辑的form表单内容
         for (let i in this.userVO) {
