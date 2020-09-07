@@ -40,8 +40,8 @@
         </el-option>
       </el-select>
       <div slot="footer">
-        <el-button type="text" size="large" @click="shareStandardModal=false">取消</el-button>
-        <el-button type="primary" size="large" @click="shareStandardBt">确定</el-button>
+        <el-button size="mini" @click="shareStandardModal=false">取消</el-button>
+        <el-button type="primary" size="mini" @click="shareStandardBt">确定</el-button>
       </div>
     </el-dialog>
     <el-drawer
@@ -60,8 +60,8 @@
         style="padding: 0 15px">
       </dept-tree>
       <div class="demo-drawer-footer">
-        <el-button style="margin-right: 8px" @click="cancelShareLaws">取消</el-button>
-        <el-button type="primary" @click="shareStandardBt">确定</el-button>
+        <el-button size="mini" @click="cancelShareLaws">取消</el-button>
+        <el-button type="primary" size="mini" @click="shareStandardBt">确定</el-button>
       </div>
     </el-drawer>
   </div>

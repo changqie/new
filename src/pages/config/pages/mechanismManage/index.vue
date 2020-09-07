@@ -26,10 +26,11 @@
       <!-- 节点新增、节点维护 -->
       <el-dialog
         :visible.sync="view.treeView"
-        @on-visible-change="treChange"
+        @close="treChange"
         :close-on-click-modal="false"
         width="360px"
         :title="treeTitle"
+        destroy-on-close
       >
         <div class="form-content">
           <el-form
@@ -494,8 +495,8 @@ export default {
       this.orgId = treeNode.id
     },
     treChange (type) {
+      // this.$refs['treeForm'].resetFields()
       if (!type) {
-        this.$refs['treeForm'].resetFields()
         for (let i in this.treeForm) {
           this.treeForm[i] = ''
         }
@@ -879,6 +880,8 @@ export default {
     closeModal () {
       this.visibleSetRole = false
       this.$refs['roleForm'].resetFields()
+      this.$refs.selection.clearSelection()
+      this.selectionList = []
     },
     // 保存模态
     saveModal () {

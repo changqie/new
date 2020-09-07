@@ -6,10 +6,10 @@
        <div class="back" title="返回" @click="back">
          <i class="el-icon-back"></i>
        </div>
-       <span style="font-size: 18px;font-weight: bold">{{moduleName}}</span>
+       <span style="font-size: 18px;font-weight: bold" :title="moduleName">{{moduleName}}</span>
      </div>
      <div slot="right">
-       <el-form :model="informationCenter" inline class="label-input-form">
+       <el-form :model="informationCenter" inline class="label-input-form" label-width="70px">
          <el-form-item label="搜索" prop="internationalName" class="serch-form-item">
            <el-input v-model="informationCenter.informationNotice" clearable placeholder="请输入搜索内容"/>
          </el-form-item>

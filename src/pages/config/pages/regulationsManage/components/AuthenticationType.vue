@@ -1,7 +1,7 @@
-<!-- 配置管理-适用车型 -->
+<!-- 适用认证 -->
 <template>
-  <div class="standard-category v-class">
-    <div class="search-area">
+  <div id="authentication-type" class="v-class">
+      <div class="search-area">
       <el-form :inline="true" :model="standardForm"  ref="ruleForm" class="label-input-form">
         <div class="search-area-item">
           <el-form-item label="选项" class="serch-form-item">
@@ -10,14 +10,14 @@
               placeholder="请输入选项"
               :maxlength="100"
               clearable
-              @keyup.enter.native="selectCategoryBtn"></el-input>
+              @keyup.enter.native="selectAuthenticationBtn"></el-input>
           </el-form-item>
           <el-form-item class="serch-form-item btn-box">
             <el-button
               icon="el-icon-search"
               type="primary"
               class="searchAngNewBtn"
-              @click="selectCategoryBtn"></el-button>
+              @click="selectAuthenticationBtn"></el-button>
           </el-form-item>
           <el-form-item class="serch-form-item btn-box">
             <el-button
@@ -32,7 +32,7 @@
             type="primary"
             class="searchAngNewBtn"
             @click="classAdd(1, null)"
-            v-btn-permission="'CXRPGWHNSF'"
+            v-btn-permission="'T33SNXMZE7'"
             >新增</el-button>
         </el-form-item>
         <el-form-item class="serch-form-item btn-box">
@@ -40,15 +40,16 @@
             type="danger"
             class="searchAngNewBtn"
             @click="classBatchDel"
-            v-btn-permission="'R24ALH4Q89'">删除</el-button>
+            v-btn-permission="'YMJC6LHRNM'">删除</el-button>
         </el-form-item>
         </div>
       </el-form>
     </div>
+    <!-- :reserve-selection="true" -->
     <div class="content">
       <el-table
         ref="selection"
-        :data="categoryData"
+        :data="authenticationData"
         tooltip-effect="dark"
         style="width: 100%"
         border
@@ -110,19 +111,20 @@
       custom-class="demo-drawer"
       ref="drawer"
       size="50%"
-      :class = "classObject"
+      :class="classObject"
       :before-close="handleClose"
       >
       <div class="demo-drawer__content" v-if="this.oprState === 1 || this.oprState === 2">
-        <el-form :model="categoryModelAdd" ref="categoryModelAdd" :rules="categoryModelAddRules"  class="label-input-form">
+        <el-form :model="authenticationModelAdd" ref="authenticationModelAdd" :rules="classRules"  class="label-input-form">
           <el-row>
             <el-col span="12">
               <el-form-item label="选项"
                 :label-width="formLabelWidth"
                 prop="dicTypeName"
+                :disabled = 'this.oprState === 2'
                 class="add-form-item">
                 <el-input
-                  v-model.trim="categoryModelAdd.dicTypeName"
+                  v-model.trim="authenticationModelAdd.dicTypeName"
                   autocomplete="off" clearable></el-input>
               </el-form-item>
             </el-col>
@@ -134,7 +136,7 @@
                 <el-input
                   type="number"
                   oninput="if(value.length>5)value=value.slice(0,5)"
-                  v-model.number="categoryModelAdd.showIndex"
+                  v-model.number="authenticationModelAdd.showIndex"
                   @mousewheel.native.prevent
                   autocomplete="off" clearable></el-input>
               </el-form-item>
@@ -145,32 +147,32 @@
                 :label-width="formLabelWidth"
                 class="add-form-item">
                 <el-input
-                  v-model.trim="categoryModelAdd.describes"
+                  v-model.trim="authenticationModelAdd.describes"
                   autocomplete="off" clearable></el-input>
               </el-form-item>
             </el-col>
           </el-row>
         </el-form>
         <div class="demo-drawer__footer">
-          <el-button size="mini" @click="closeModal('categoryModelAdd')">取 消</el-button>
-          <el-button size="mini" type="primary" @click="saveClass('categoryModelAdd')">提交</el-button>
+          <el-button size="mini" @click="closeModal('authenticationModelAdd')">取 消</el-button>
+          <el-button size="mini" type="primary" @click="saveAuthentication('authenticationModelAdd')">提交</el-button>
         </div>
       </div>
       <div class="demo-drawer__content" v-else>
         <div class="check-item-row">
           <div class="check-item-col1">
             <div class="check-item-label"> 选项：</div>
-            <div class="check-item-value">{{categoryModelAdd.dicTypeName}}</div>
+            <div class="check-item-value">{{authenticationModelAdd.dicTypeName}}</div>
           </div>
           <div class="check-item-col1">
             <div class="check-item-label">排序号：</div>
-            <div class="check-item-value">{{categoryModelAdd.showIndex}}</div>
+            <div class="check-item-value">{{authenticationModelAdd.showIndex}}</div>
           </div>
         </div>
         <div class="check-item-row">
           <div class="check-item-col2">
               <div class="check-item-label">描述：</div>
-              <div class="check-item-value">{{categoryModelAdd.describes}}</div>
+              <div class="check-item-value">{{authenticationModelAdd.describes}}</div>
           </div>
           <div class="check-item-col2">
             <div class="check-item-label"></div>
@@ -181,9 +183,10 @@
     </el-drawer>
   </div>
 </template>
+
 <script>
 export default {
-  name: 'StandardCategory',
+  name: 'AuthenticationType',
   data () {
     return {
       // 查询条件
@@ -200,27 +203,27 @@ export default {
       rows: 10,
       loading: false,
       // 列表数据
-      categoryData: [],
+      authenticationData: [],
       // 抽屉打开
       dialogState: false,
       // form-item label宽度
       formLabelWidth: '80px',
       // 新增弹窗数据
-      categoryModelAdd: {
-        // 模态框信息
+      authenticationModelAdd: {
+        // 数据信息
         dicTypeName: '',
         showIndex: '',
         // 数据编码
         dicTypeCode: '',
-        // 唯一辨识
-        dicId: 'JKSADFH564S',
         // 描述
-        describes: ''
+        describes: '',
+        // 唯一辨识
+        dicId: 'BNGHNMHJH'
       },
       // 弹窗标题
       title: '',
       //  表单验证
-      categoryModelAddRules: {
+      classRules: {
         dicTypeName: [
           {required: true, message: '选项不能为空', trigger: 'blur'},
           {type: 'string', max: 100, message: '最多输入100位', trigger: 'blur'}
@@ -246,12 +249,12 @@ export default {
   },
   methods: {
     // 条件查询
-    selectCategoryBtn () {
+    selectAuthenticationBtn () {
       this.standName1 = this.standardForm.standName
       this.describes1 = this.standardForm.describes
       this.standCode1 = this.standardForm.standCode
       this.page = 1
-      this.selectCategory()
+      this.selectAuthentication()
     },
     // 清空查询
     resetSelect (formName) {
@@ -261,24 +264,24 @@ export default {
       this.standardForm.standName = ''
       this.standardForm.standCode = ''
       this.standardForm.describes = ''
-      this.$refs[formName].resetFields()
-      this.selectCategory()
+      this.page = 1
+      this.selectAuthentication()
     },
     // 分页加载列表
-    selectCategory () {
+    selectAuthentication () {
       let DicTypeEOPage = {
         page: this.page,
         pageSize: this.$store.getters.userInfo.configContent,
         dicTypeName: this.standName1,
         dicTypeCode: this.standCode1,
         describes: this.describes1,
-        dicId: 'JKSADFH564S'
+        dicId: 'BNGHNMHJH'
       }
       this.$http.get('sys/dictype/page', DicTypeEOPage, {
         _this: this,
         loading: 'loading'
       }, res => {
-        this.categoryData = res.data.list
+        this.authenticationData = res.data.list
         this.total = res.data.count
       }, e => {
       })
@@ -292,24 +295,24 @@ export default {
         this.dialogState = true
       } else if (this.oprState === 2) {
         this.title = '编辑信息'
-        this.categoryModelAdd = row
+        this.authenticationModelAdd = row
         this.dialogState = true
       } else {
         this.title = '查看信息'
-        this.categoryModelAdd = row
+        this.authenticationModelAdd = row
         this.dialogState = true
       }
     },
     // 新增弹窗提交
-    saveClass (formName) {
-      let data = this.categoryModelAdd
-      console.log('data', data)
+    saveAuthentication (formName) {
+      let data = this.authenticationModelAdd
       this.$refs[formName].validate((valid) => {
         if (valid) {
           if (this.oprState === 1) {
-            this.categoryModelAdd.dicTypeCode = this.categoryModelAdd.dicTypeName
+            // this.authenticationModelAdd.dicTypeCode = this.authenticationModelAdd.dicTypeName
             this.$http.postData('sys/dictype/create', data, {
-              _this: this
+              _this: this,
+              loading: 'loading'
             }, res => {
               if (res.ok) {
                 this.closeModal()
@@ -319,7 +322,8 @@ export default {
             }, e => {})
           } else if (this.oprState === 2) {
             this.$http.putData('sys/dictype', data, {
-              _this: this
+              _this: this,
+              loading: 'loading'
             }, res => {
               if (res.ok) {
                 this.closeModal()
@@ -338,24 +342,24 @@ export default {
     // 查看弹窗关闭
     handleClose () {
       this.page = 1
-      this.selectCategory()
-      this.categoryModelAdd.dicTypeName = ''
-      this.categoryModelAdd.showIndex = ''
-      this.categoryModelAdd.describes = ''
-      if (this.$refs['categoryModelAdd']) {
-        this.$refs['categoryModelAdd'].resetFields()
+      this.selectAuthentication()
+      this.authenticationModelAdd.dicTypeName = ''
+      this.authenticationModelAdd.showIndex = ''
+      this.authenticationModelAdd.describes = ''
+      if (this.$refs['authenticationModelAdd']) {
+        this.$refs['authenticationModelAdd'].resetFields()
       }
       this.dialogState = false
     },
     // 新增弹窗关闭
     closeModal (formName) {
       this.page = 1
-      this.selectCategory()
-      this.categoryModelAdd.dicTypeName = ''
-      this.categoryModelAdd.showIndex = ''
-      this.categoryModelAdd.describes = ''
+      this.selectAuthentication()
+      this.authenticationModelAdd.dicTypeName = ''
+      this.authenticationModelAdd.showIndex = ''
+      this.authenticationModelAdd.describes = ''
+      this.$refs['authenticationModelAdd'].resetFields()
       this.dialogState = false
-      this.$refs['categoryModelAdd'].resetFields()
     },
     // 批量删除
     classBatchDel () {
@@ -384,6 +388,7 @@ export default {
             let data = {}
             data.ids = delIds
             data.dicTypeCodes = delTypeCodes
+            console.log('data', data)
             this.$http.delete('sys/dictype/deleteArr', data, {
               _this: this
             }, res => {
@@ -428,7 +433,6 @@ export default {
     // 多选
     handleSelectionChange (val) {
       this.selectNum = val
-      console.log('this.selectNum', this.selectNum)
     },
     // 取消多选
     clearSelection () {
@@ -436,15 +440,16 @@ export default {
     },
     pageChange (page) {
       this.page = page
-      this.selectCategory()
+      this.selectAuthentication()
     },
     pageSizeChange (pageSize) {
       this.rows = pageSize
-      this.selectCategory()
+      this.selectAuthentication()
     }
+
   },
   mounted () {
-    this.selectCategory()
+    this.selectAuthentication()
   },
   computed: {
     classObject () {
@@ -455,9 +460,10 @@ export default {
   }
 }
 </script>
-<style lang="less">
+
+<style lang="less" scoped>
   @import 'animate.css';
-  .standard-category {
+  #authentication-type{
     position: relative;
     height: 100%;
     padding: 15px;

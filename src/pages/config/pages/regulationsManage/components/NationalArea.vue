@@ -103,7 +103,7 @@
       @pageChange="pageChange"
       @pageSizeChange="pageSizeChange"></pagination>
       <loading :loading="loading">数据获取中</loading>
-    <!--新增抽屉-->  
+    <!--新增抽屉-->
     <el-drawer
       :title="title"
       :visible.sync="dialogState"
@@ -111,7 +111,7 @@
       custom-class="demo-drawer"
       ref="drawer"
       size="50%"
-      :class = "classObject"
+      :before-close="handleClose"
       >
       <div class="demo-drawer__content" v-if="this.oprState === 1 || this.oprState === 2">
         <el-form :model="regionModelAdd" ref="regionModelAdd" :rules="regionRules"  class="label-input-form">
@@ -133,6 +133,7 @@
                 :label-width="formLabelWidth"
                 class="add-form-item">
                 <el-input
+                  oninput="if(value.length>5)value=value.slice(0,5)"
                   type="number"
                   v-model.number="regionModelAdd.showIndex"
                   @mousewheel.native.prevent
@@ -335,6 +336,18 @@ export default {
         }
       })
     },
+    // 查看弹窗关闭
+    handleClose () {
+      this.page = 1
+      this.selectClass()
+      this.regionModelAdd.dicTypeName = ''
+      this.regionModelAdd.showIndex = ''
+      this.regionModelAdd.describes = ''
+      if (this.$refs['regionModelAdd']) {
+        this.$refs['regionModelAdd'].resetFields()
+      }
+      this.dialogState = false
+    },
     // 新增弹窗关闭
     closeModal (formName) {
       this.page = 1
@@ -377,10 +390,10 @@ export default {
               _this: this
             }, res => {
               if (res.ok) {
-                this.selectClass()
+                this.resetSelect()
               }
             })
-        }).catch(() => {
+          }).catch(() => {
           // 取消删除，清空选择
             this.$refs.selection.clearSelection()
           })
@@ -402,7 +415,7 @@ export default {
             _this: this
           }, res => {
             if (res.ok) {
-              this.selectClass()
+              this.resetSelect()
             } else {
             }
           }).catch(() => {

@@ -1,6 +1,6 @@
-<!-- 配置管理-适用车型 -->
+<!--企业标准类别-->
 <template>
-  <div class="standard-category v-class">
+  <div class="enterprise-standard-category v-class">
     <div class="search-area">
       <el-form :inline="true" :model="standardForm"  ref="ruleForm" class="label-input-form">
         <div class="search-area-item">
@@ -45,6 +45,7 @@
         </div>
       </el-form>
     </div>
+    <!-- :reserve-selection="true" -->
     <div class="content">
       <el-table
         ref="selection"
@@ -110,16 +111,17 @@
       custom-class="demo-drawer"
       ref="drawer"
       size="50%"
-      :class = "classObject"
+      :class="classObject"
       :before-close="handleClose"
       >
       <div class="demo-drawer__content" v-if="this.oprState === 1 || this.oprState === 2">
-        <el-form :model="categoryModelAdd" ref="categoryModelAdd" :rules="categoryModelAddRules"  class="label-input-form">
+        <el-form :model="categoryModelAdd" ref="categoryModelAdd" :rules="classRules"  class="label-input-form">
           <el-row>
             <el-col span="12">
               <el-form-item label="选项"
                 :label-width="formLabelWidth"
                 prop="dicTypeName"
+                :disabled = 'this.oprState === 2'
                 class="add-form-item">
                 <el-input
                   v-model.trim="categoryModelAdd.dicTypeName"
@@ -153,7 +155,7 @@
         </el-form>
         <div class="demo-drawer__footer">
           <el-button size="mini" @click="closeModal('categoryModelAdd')">取 消</el-button>
-          <el-button size="mini" type="primary" @click="saveClass('categoryModelAdd')">提交</el-button>
+          <el-button size="mini" type="primary" @click="saveCategory('categoryModelAdd')">提交</el-button>
         </div>
       </div>
       <div class="demo-drawer__content" v-else>
@@ -181,9 +183,10 @@
     </el-drawer>
   </div>
 </template>
+
 <script>
 export default {
-  name: 'StandardCategory',
+  name: 'EnterpriseStandardCategory',
   data () {
     return {
       // 查询条件
@@ -207,20 +210,20 @@ export default {
       formLabelWidth: '80px',
       // 新增弹窗数据
       categoryModelAdd: {
-        // 模态框信息
+        // 数据信息
         dicTypeName: '',
         showIndex: '',
         // 数据编码
         dicTypeCode: '',
-        // 唯一辨识
-        dicId: 'JKSADFH564S',
         // 描述
-        describes: ''
+        describes: '',
+        // 唯一辨识
+        dicId: 'NGETEMDJDI'
       },
       // 弹窗标题
       title: '',
       //  表单验证
-      categoryModelAddRules: {
+      classRules: {
         dicTypeName: [
           {required: true, message: '选项不能为空', trigger: 'blur'},
           {type: 'string', max: 100, message: '最多输入100位', trigger: 'blur'}
@@ -261,7 +264,7 @@ export default {
       this.standardForm.standName = ''
       this.standardForm.standCode = ''
       this.standardForm.describes = ''
-      this.$refs[formName].resetFields()
+      this.page = 1
       this.selectCategory()
     },
     // 分页加载列表
@@ -272,7 +275,7 @@ export default {
         dicTypeName: this.standName1,
         dicTypeCode: this.standCode1,
         describes: this.describes1,
-        dicId: 'JKSADFH564S'
+        dicId: 'NGETEMDJDI'
       }
       this.$http.get('sys/dictype/page', DicTypeEOPage, {
         _this: this,
@@ -301,7 +304,7 @@ export default {
       }
     },
     // 新增弹窗提交
-    saveClass (formName) {
+    saveCategory (formName) {
       let data = this.categoryModelAdd
       console.log('data', data)
       this.$refs[formName].validate((valid) => {
@@ -354,8 +357,8 @@ export default {
       this.categoryModelAdd.dicTypeName = ''
       this.categoryModelAdd.showIndex = ''
       this.categoryModelAdd.describes = ''
-      this.dialogState = false
       this.$refs['categoryModelAdd'].resetFields()
+      this.dialogState = false
     },
     // 批量删除
     classBatchDel () {
@@ -384,6 +387,7 @@ export default {
             let data = {}
             data.ids = delIds
             data.dicTypeCodes = delTypeCodes
+            console.log('data', data)
             this.$http.delete('sys/dictype/deleteArr', data, {
               _this: this
             }, res => {
@@ -417,10 +421,6 @@ export default {
             } else {
             }
           }).catch(() => {
-          // this.$message({
-          //   type: 'info',
-          //   message: '已取消删除'
-          // });
           })
         })
       }
@@ -430,10 +430,6 @@ export default {
       this.selectNum = val
       console.log('this.selectNum', this.selectNum)
     },
-    // 取消多选
-    clearSelection () {
-
-    },
     pageChange (page) {
       this.page = page
       this.selectCategory()
@@ -442,6 +438,7 @@ export default {
       this.rows = pageSize
       this.selectCategory()
     }
+
   },
   mounted () {
     this.selectCategory()
@@ -455,9 +452,10 @@ export default {
   }
 }
 </script>
-<style lang="less">
+
+<style lang="less" scoped>
   @import 'animate.css';
-  .standard-category {
+  .enterprise-standard-category{
     position: relative;
     height: 100%;
     padding: 15px;

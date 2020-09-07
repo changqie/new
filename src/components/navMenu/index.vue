@@ -161,7 +161,24 @@ export default {
   },
   created () {
     // 获取当前页的path，赋值没左侧菜单，并展开
-    this.defaultActive = this.$route.path
+    console.log(this.$route.meta.parentPath)
+    if (this.$route.meta.parentPath) {
+      this.defaultActive = this.$route.meta.parentPath
+    } else {
+      this.defaultActive = this.$route.path
+    }
+  },
+  watch: {
+    // 监听路由 重新渲染面包屑
+    $route () {
+      // 获取当前页的path，赋值没左侧菜单，并展开
+      console.log(this.$route.meta.parentPath)
+      if (this.$route.meta.parentPath) {
+        this.defaultActive = this.$route.meta.parentPath
+      } else {
+        this.defaultActive = this.$route.path
+      }
+    }
   }
 }
 </script>
