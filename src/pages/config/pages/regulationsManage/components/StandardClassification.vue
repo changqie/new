@@ -32,7 +32,7 @@
             type="primary"
             class="searchAngNewBtn"
             @click="classAdd(1, null)"
-            v-btn-permission="'CXRPGWHNSF'"
+            v-btn-permission="'SDXRQ8LV6K'"
             >新增</el-button>
         </el-form-item>
         <el-form-item class="serch-form-item btn-box">
@@ -40,7 +40,7 @@
             type="danger"
             class="searchAngNewBtn"
             @click="classBatchDel"
-            v-btn-permission="'R24ALH4Q89'">删除</el-button>
+            v-btn-permission="'ATBANPLHCM'">删除</el-button>
         </el-form-item>
         </div>
       </el-form>
@@ -49,7 +49,7 @@
     <div class="content">
       <el-table
         ref="selection"
-        :data="categoryData"
+        :data="classData"
         tooltip-effect="dark"
         style="width: 100%"
         border
@@ -120,6 +120,7 @@
               <el-form-item label="选项"
                 :label-width="formLabelWidth"
                 prop="dicTypeName"
+                :disabled = 'this.oprState === 2'
                 class="add-form-item">
                 <el-input
                   v-model.trim="classModelAdd.dicTypeName"
@@ -200,7 +201,7 @@ export default {
       rows: 10,
       loading: false,
       // 列表数据
-      categoryData: [],
+      classData: [],
       // 抽屉打开
       dialogState: false,
       // form-item label宽度
@@ -251,7 +252,7 @@ export default {
       this.describes1 = this.standardForm.describes
       this.standCode1 = this.standardForm.standCode
       this.page = 1
-      this.selectCategory()
+      this.selectClass()
     },
     // 清空查询
     resetSelect (formName) {
@@ -261,11 +262,10 @@ export default {
       this.standardForm.standName = ''
       this.standardForm.standCode = ''
       this.standardForm.describes = ''
-      this.$refs[formName].resetFields()
-      this.selectCategory()
+      this.selectClass()
     },
     // 分页加载列表
-    selectCategory () {
+    selectClass () {
       let DicTypeEOPage = {
         page: this.page,
         pageSize: this.$store.getters.userInfo.configContent,
@@ -336,10 +336,12 @@ export default {
     },
     // 新增弹窗关闭
     closeModal (formName) {
-      this.selectCategory()
+      this.page = 1
+      this.selectClass()
       this.classModelAdd.dicTypeName = ''
       this.classModelAdd.showIndex = ''
       this.classModelAdd.describes = ''
+      this.$refs['classModelAdd'].resetFields()
       this.dialogState = false
     },
     // 批量删除
@@ -369,11 +371,12 @@ export default {
             let data = {}
             data.ids = delIds
             data.dicTypeCodes = delTypeCodes
+            console.log('data', data)
             this.$http.delete('sys/dictype/deleteArr', data, {
               _this: this
             }, res => {
               if (res.ok) {
-                this.selectCategory()
+                this.selectClass()
               }
             })
         }).catch(() => {
@@ -398,7 +401,11 @@ export default {
             _this: this
           }, res => {
             if (res.ok) {
-              this.selectCategory()
+              this.selectClass()
+              this.$message({
+                type: 'success',
+                message: '删除成功!'
+              })
             } else {
             }
           }).catch(() => {
@@ -412,7 +419,6 @@ export default {
     },
     // 多选
     handleSelectionChange (val) {
-      this.val = val
       this.selectNum = val
       console.log('this.selectNum', this.selectNum)
     },
@@ -422,16 +428,16 @@ export default {
     },
     pageChange (page) {
       this.page = page
-      this.selectCategory()
+      this.selectClass()
     },
     pageSizeChange (pageSize) {
       this.rows = pageSize
-      this.selectCategory()
+      this.selectClass()
     }
 
   },
   mounted () {
-    this.selectCategory()
+    this.selectClass()
   },
   computed: {
     classObject () {
