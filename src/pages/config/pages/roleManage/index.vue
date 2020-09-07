@@ -679,17 +679,9 @@ export default {
     },
     // 权限对话框关闭
     jurisdictionModalClose () {
-      console.log('000000')
       this.jurisdictionModal = false
-      console.log('fnffff')
-      // this.jurisdictionTabs = ''
-      // this.jurisdictionTabs = false
-      // if (!flag) {
-      //   this.$refs.roleTree.clearSearch()
-      //   this.jurisdictionTabs = 'jurisdictionOne'
-      // } else {
-      //   this.jurisdictionTabs = 'jurisdictionOne'
-      // }
+      this.jurisdictionTabs = 'jurisdictionOne'
+      this.$refs.roleTree.clearSearch()
     },
     // 权限对话框提交
     jurisdictionModalOk () {
