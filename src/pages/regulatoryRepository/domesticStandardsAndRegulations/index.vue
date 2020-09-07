@@ -232,7 +232,10 @@
                     更多
                   </el-button>
                   <el-dropdown-menu slot="dropdown">
-                    <el-dropdown-item :command="beforeHandleCommand(scope.row, '收藏')">收藏</el-dropdown-item>
+<!--                    <div v-if="this.collectBtn === false">-->
+<!--                      <el-dropdown-item :command="beforeHandleCommand(scope.row, '收藏')">收藏</el-dropdown-item>-->
+<!--                      <el-dropdown-item :command="beforeHandleCommand(scope.row, '取消收藏')">取消收藏</el-dropdown-item>-->
+                    <el-dropdown-item :command="beforeHandleCommand(scope.row, collect)">{{collect}}</el-dropdown-item>
                     <el-dropdown-item :command="beforeHandleCommand(scope.row, '分享')">分享</el-dropdown-item>
                     <el-dropdown-item :command="beforeHandleCommand(scope.row, '移除标准')">移除标准</el-dropdown-item>
                     <el-dropdown-item :command="beforeHandleCommand(scope.row, '删除')">删除</el-dropdown-item>
@@ -1480,6 +1483,25 @@
              @on-cancel="deleteMenuModal = false">
         <p>该节点下有记录，是否删除？</p>
       </el-dialog>
+      <!--   分享           -->
+      <el-drawer title="分享标准" :visible.sync="drawerModal" width="300" :styles="drawerModalstyles">
+        <div class="demo-drawer__content" style="height: 90%">
+        <dept-tree treeDivId="drawerModalTree"
+                   ref="drawerModalTree"
+                   @treeClick="selcetTree"
+                   allDept
+                   showUser
+                   :editable="false"
+                   style="padding: 0 15px">
+        </dept-tree>
+        <div class="demo-drawer__footer" style="direction: rtl">
+          <el-divider></el-divider>
+          <el-button style="margin-right: 8px" type="primary" size="mini" @click="shareStandardBt">确定</el-button>
+          <el-button style="margin-right: 8px" size="mini" @click="treeCancel">取消</el-button>
+        </div>
+        </div>
+      </el-drawer>
+
     </div>
     <Spin size="large" fix v-if="spinShow"></Spin>
   </div>
@@ -1917,6 +1939,17 @@ export default {
       drawerWidth: 1400,
       // 配置标准相关 开始
       configStandFlag: false, // 控制配置标准表格是否显示
+      drawerModal: false, // 分享
+      drawerModalstyles: {
+        height: 'calc(100% - 55px)',
+        overflow: 'auto',
+        paddingBottom: '53px',
+        position: 'static'
+      },
+      // start 分享相关的
+      shareStandardModal: false,
+      shareStandardSelect: [],
+      resPk: '', // 分享，消息推送过程中记录要推送的标准
       stylesConfigDrawer: {
         overflow: 'auto',
         position: 'static'
@@ -1941,7 +1974,9 @@ export default {
       configStandList: [],
       height: 430,
       configStandtotal: 0,
-      selectConfigStand: []
+      selectConfigStand: [],
+      collectBtn: false,
+      collect: '收藏'
     }
   },
   props: {
@@ -1954,13 +1989,28 @@ export default {
       // 可以相对应的进行操作
       console.log('command', command)
       let item = command.index
+      this.collectBtn = command.index.collectBtn
+      // 收藏、取消收藏---判断
+      if (command.index.collectBtn === false) {
+        this.collect = '收藏'
+      } else {
+        this.collect = '取消收藏'
+      }
+      console.log('让我来康康', this.collectBtn)
       switch (command.row) {
         case '收藏':
           console.log(item) // 收藏
+          console.log('collectBtn', command.index.collectBtn) // 收藏-状态
           this.collectStandard(item)
+          // this.collectBtn = true
           break
         case '分享':
           console.log(item) // 分享 NO
+          this.drawerModal = true
+          this.$nextTick(() => {
+            this.$refs.drawerModalTree.clearSearch()
+          })
+          this.resPk = JSON.parse(JSON.stringify(item))
           break
         case '移除标准':
           this.deleteStandFromKind(1, item.id)
@@ -1970,6 +2020,12 @@ export default {
           break
         case '流程':
           console.log(item) // 流程 NO
+          break
+        case '取消收藏':
+          console.log(item) // 收藏
+          console.log('collectBtn', command.index.collectBtn, '取消收藏') // 收藏-状态
+          this.cancelCollectStandard(item)
+          // this.collectBtn = false
           break
       }
     },
@@ -1995,9 +2051,39 @@ export default {
         item.collectBtn = !item.collectBtn
         item.cancelCollectBtn = !item.cancelCollectBtn
         item.collectId = res.data.id
+        if (item.collectBtn === false) {
+          this.collect = '收藏'
+        } else {
+          this.collect = '取消收藏'
+        }
       }, e => {
         item.isSubmit = false
       })
+      // this.collect = '取消收藏'
+    },
+    // 取消收藏法规
+    cancelCollectStandard (item) {
+      this.spinShow = true
+      item.isSubmit = true
+      this.$http.put('person/personCollect/updateByUserId', {
+        id: item.collectId
+      }, {
+        _this: this
+      }, res => {
+        this.spinShow = false
+        item.isSubmit = false
+        item.collectBtn = !item.collectBtn
+        item.cancelCollectBtn = !item.cancelCollectBtn
+        item.collectId = ''
+        if (item.collectBtn === false) {
+          this.collect = '收藏'
+        } else {
+          this.collect = '取消收藏'
+        }
+      }, e => {
+        item.isSubmit = false
+      })
+      // this.collect = '收藏'
     },
     // 查看标准属性
     selectStandardPro (item, state) {
@@ -2460,6 +2546,47 @@ export default {
       //   onCancel: () => {
       //   }
       // })
+    },
+    // 树点击
+    selcetTree (treeId, treeNode) {
+      this.shareStandardSelect = treeNode.id
+    },
+    // 取消
+    treeCancel () {
+      this.drawerModal = false
+      this.$refs.drawerModalTree.treeReload()
+    },
+    // 消息推送
+    shareStandardBt () {
+      if (this.shareStandardSelect.length === 0) {
+        this.$message({
+          message: '请选择要分享的人！',
+          type: 'warning'
+        })
+      } else {
+        this.personShareEO.resType = 'INLAND_STAND'
+        if (this.resPk.standYear != null && this.resPk.standYear !== '') {
+          this.personShareEO.resTitle = this.resPk.standName + '  ( 编号 :' + this.resPk.standSort + ' ' + this.resPk.standNumber + '-' + this.resPk.standYear + ' )'
+        } else {
+          this.personShareEO.resTitle = this.resPk.standName + '  ( 编号 :' + this.resPk.standSort + ' ' + this.resPk.standNumber + ' )'
+        }
+        this.personShareEO.resId = this.resPk.id
+        this.personShareEO.recipientId = this.shareStandardSelect
+        this.$http.post('/person/personShare/savePersonShare', this.personShareEO, {
+          _this: this
+        }, res => {
+          this.$message({
+            message: '标准分享成功！',
+            type: 'success'
+          })
+          this.shareStandardModal = false
+          this.drawerModal = false
+          this.shareStandardSelect = []
+          this.$refs.drawerModalTree.treeReload()
+        }, e => {
+          this.$message.error('标准分享失败!')
+        })
+      }
     },
     // 导出选中的标准  此处因为复选框没有设置好，所以先设置导出所有数据
     exportStandard (type) {
@@ -3750,6 +3877,8 @@ export default {
     window.onresize = () => {
       this.tableHeight = $('.table-wrapper').height()
     }
+    this.beforeHandleCommand()
+    this.handleCommand()
   }
 }
 </script>
