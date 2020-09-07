@@ -74,6 +74,7 @@ export default {
       display: flex;
       .sub-container{
         flex: 1;
+        overflow-x: auto;
         .container-box{
           position: relative;
           height: calc(~'100vh - 50px');

@@ -1,4 +1,4 @@
-<!-- 机构管理 -->
+<!-- 配置管理 - 机构管理 -->
 <template>
   <div id="mechanism-manage" class="v-class">
     <!--<loading :loading="treeModalLoading">正在保存...</loading>-->
@@ -23,33 +23,33 @@
         @treeRightClick="(treeId, treeNode) => treeRightClick(treeId, treeNode)"
         @treeRemove="(treeId, treeNode) => handleBeforeRemove(treeId, treeNode)"
       ></laws-tree>
+      <!-- 节点新增、节点维护 -->
       <el-dialog
         :visible.sync="view.treeView"
-        custom-class="mechanism-tree-modal"
         @on-visible-change="treChange"
         :close-on-click-modal="false"
+        width="360px"
+        :title="treeTitle"
       >
-        <p slot="header">
-          {{treeTitle}}
-        </p>
         <div class="form-content">
           <el-form
             ref="treeForm"
             :model="treeForm"
             :rules="treeFormRules"
             class="label-input-form"
-            :label-width="100"
+            label-width="80px"
+            inline
           >
-            <el-form-item label="所属上级" prop="pNodeName">
-              <el-input v-model="treeForm.pNodeName" disabled />
+            <el-form-item label="所属上级" prop="pNodeName" class="add-form-item">
+              <el-input v-model="treeForm.pNodeName" disabled class="top1px" />
             </el-form-item>
-            <el-form-item label="部门名称" prop="orgName">
+            <el-form-item label="部门名称" prop="orgName" class="add-form-item">
               <el-input v-model="treeForm.orgName" placeholder="请输入部门名称" clearable />
             </el-form-item>
-            <el-form-item label="部门简称" prop="shotName">
-              <el-input v-model="treeForm.shotName" placeholder="请输入部门简称" clearable />
+            <el-form-item label="部门简称" prop="shotName" class="add-form-item">
+              <el-input v-model="treeForm.shotName" placeholder="请输入部门简称" clearable class="top1px" />
             </el-form-item>
-            <el-form-item label="部门类型" prop="orgType">
+            <el-form-item label="部门类型" prop="orgType" class="add-form-item">
               <search-select v-model="treeForm.orgType" :options="[{
                 label: '室',
                 value: 'ROOM'
@@ -61,18 +61,26 @@
                 value: 'DEPART'
               }]" placeholder="请选择部门类型" />
             </el-form-item>
-            <el-form-item label="部门简介" prop="remarks">
-              <el-input v-model="treeForm.remarks" :maxlength="100" show-word-limit type="textarea" :autosize="{minRows: 1,maxRows: 5}" placeholder="请输入部门描述" clearable />
+            <el-form-item label="部门简介" prop="remarks" class="add-form-item">
+              <el-input
+                v-model="treeForm.remarks"
+                :maxlength="100"
+                type="textarea"
+                :autosize="{minRows: 1,maxRows: 5}"
+                placeholder="请输入部门描述"
+                class="top1px"
+                clearable />
             </el-form-item>
           </el-form>
         </div>
         <div slot="footer">
-          <Button @click="treeCancel">取消</Button>
-          <Button type="primary" @click="treeOk">确认</Button>
+          <el-button size="mini" @click="treeCancel">取消</el-button>
+          <el-button type="primary" size="mini" @click="treeOk">确认</el-button>
         </div>
       </el-dialog>
     </div>
     <div class="mechanism-manage-right">
+      <!-- 查询条件 -->
       <el-form
         ref="mechanismSearch"
         :model="mechanismSearch"
@@ -107,21 +115,18 @@
             class="searchAngNewBtn"
             @click="resetSearch">清空查询</el-button>
         </el-form-item>
-        <!--<Button type="error" @click="delUserList" class="rt show-lg" :class="{ 'btn-show': sideClose }">批量删除</Button>-->
-        <!--<Button type="primary" @click="setRole" class="rt show-lg" :class="{ 'btn-show': sideClose }" style="margin-right: 2px">设置角色</Button>-->
         <el-divider class="el-divider-marginTop"></el-divider>
       </el-form>
 
       <div class="content">
         <div class="action-bar syncUser">
-          <el-button type="primary" size="mini" title="设置角色" @click="setRole" v-btn-permission="'ZANUB2C82A'">设置角色</el-button>
+          <el-button type="primary" size="mini" title="设置角色" @click="setRole">设置角色</el-button>
           <el-button type="danger" size="mini" title="批量删除" @click="delUserList" v-btn-permission="'MABV68Z6DY'" v-if="deptEmpData.length">批量删除</el-button>
         </div>
         <el-table
           border
           ref="selection"
           :height="tableHeight"
-          :columns="deptEmpColumns"
           :data="deptEmpData"
           tooltip-effect="dark"
           style="width: 100%;"
@@ -253,93 +258,102 @@
     <el-dialog
       :visible.sync="visibleSetRole"
       title="设置角色"
-      @on-ok="saveRoleSetting"
-      @on-cancel="cancelRoleSetting"
-      @on-visible-change="treeChange"
+      @close="closeModal"
       :loading="roleSaveLoading"
-      class="role-setting-form">
+      width="400px"
+    >
       <div style="padding: 0.2rem">
-        <Form ref="roleForm" :model="roleForm" :rules="roleRules" class="label-input-form" :label-width="100">
-          <FormItem label="角色" prop="roleIdList">
-            <Select v-model="roleForm.roleIdList" multiple style="width: 300px">
-              <Option v-for="item in roleList" :value="item.value" :key="item.value">{{ item.label }}</Option>
-            </Select>
-            <!--<search-select v-model="roleForm.roleId" placeholder="请选择角色" :options="roleList" />-->
-          </FormItem>
-        </Form>
+        <el-form
+          ref="roleForm"
+          :model="roleForm"
+          :rules="roleRules"
+          class="label-input-form"
+          label-width="100px"
+          inline
+        >
+          <el-form-item label="角色" prop="roleIdList" class="add-form-item">
+            <el-select v-model="roleForm.roleIdList" multiple>
+              <el-option v-for="item in roleList" :value="item.value" :label="item.label" :key="item.value"></el-option>
+            </el-select>
+          </el-form-item>
+        </el-form>
       </div>
       <div slot="footer">
-        <Button @click="closeModal">取消</Button>
-        <Button type="primary" @click="saveModal">确认</Button>
+        <el-button size="mini" @click="closeModal">取消</el-button>
+        <el-button type="primary" size="mini" @click="saveModal">确认</el-button>
       </div>
     </el-dialog>
 
     <!-- 查看 -->
-    <el-drawer title="用户信息" :mask-closable="false" :visible.sync="view.showUserDrawer" width="750" :styles="styles" class="drawer-bg">
-      <div class="check-item-row">
-        <div class="check-item-col">
-          <div class="check-item-label">机构类型：</div>
-          <div class="check-item-value" :title="userInfo.txets || '--'">{{ userInfo.txets || '--' }}</div>
-        </div>
-        <div class="check-item-col">
-          <div class="check-item-label"> 人员姓名：</div>
-          <div class="check-item-value" :title="userInfo.uname">
-            {{ userInfo.uname }}</div>
-        </div>
-      </div>
-      <div class="check-item-row">
-        <div class="check-item-col">
-          <div class="check-item-label"> 系统账号：</div>
-          <div class="check-item-value" :title="userInfo.account">
-            {{ userInfo.account }}</div>
-        </div>
-        <div class="check-item-col">
-          <div class="check-item-label"> 人员编号：</div>
-          <div class="check-item-value" :title="userInfo.workNum|| '--'">
-            {{ userInfo.workNum || '--'}}</div>
-        </div>
-      </div>
-      <div class="check-item-row">
-        <div class="check-item-col">
-          <div class="check-item-label">角&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;色：</div>
-          <div class="check-item-value" :title="userInfo.roleNameList || '暂无'">{{ userInfo.roleNameList || '暂无' }}</div>
-        </div>
-        <div class="check-item-col">
-          <div class="check-item-label">所属部门：</div>
-          <div class="check-item-value" :title="userInfo.orgName">{{ userInfo.orgName || '暂无' }}</div>
-        </div>
-      </div>
-      <div class="check-item-row">
-        <div class="check-item-col">
-          <div class="check-item-label">电子邮箱：</div>
-          <div class="check-item-value" :title="userInfo.email || '--' ">{{ userInfo.email || '--' }}</div>
-        </div>
-        <div class="check-item-col">
-          <div class="check-item-label">办公电话：</div>
-          <div class="check-item-value" :title=" userInfo.officePhone || '--' ">{{ userInfo.officePhone || '--' }}</div>
-        </div>
-      </div>
-      <div class="check-item-row">
-        <div class="check-item-col">
-          <div class="check-item-label"> 手机号码：</div>
-          <div class="check-item-value" :title="userInfo.mobilePhone || '--' ">{{ userInfo.mobilePhone || '--' }}</div>
-        </div>
-        <!-- <div class="check-item-col">
-          <div class="check-item-label">传&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;真：</div>
-          <div class="check-item-value" :title="userInfo.faxAddress || '&#45;&#45;'">{{ userInfo.faxAddress || '&#45;&#45;' }}</div>
-        </div>
-      </div>
-      <div class="check-item-row">
-        <div class="check-item-col">
-          <div class="check-item-label">通讯地址：</div>
-          <div class="check-item-value" :title="userInfo.address || '&#45;&#45;'">
-            {{ userInfo.address || '&#45;&#45;' }}
+    <el-drawer
+      title="用户信息"
+      :wrapperClosable="false"
+      :visible.sync="view.showUserDrawer"
+      :destroy-on-close="true"
+      size="750px"
+      class="demo-drawer check-draw"
+    >
+      <div class="demo-drawer__content">
+        <div class="check-item-row">
+          <div class="check-item-col1">
+            <div class="check-item-label">机构类型：</div>
+            <div class="check-item-value">{{ userInfo.txets || '--' }}</div>
           </div>
-        </div> -->
-        <div class="check-item-col">
-          <div class="check-item-label">状&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;态：</div>
-          <div class="check-item-value" :title="userInfo.disableFlag === 0 ? '正常' : '禁用' ">
-            {{ userInfo.disableFlag === 0 ? '正常' : '禁用' }}
+          <div class="check-item-col1">
+            <div class="check-item-label"> 人员姓名：</div>
+            <div class="check-item-value">{{ userInfo.uname }}</div>
+          </div>
+        </div>
+        <div class="check-item-row">
+          <div class="check-item-col2">
+            <div class="check-item-label"> 系统账号：</div>
+            <div class="check-item-value">{{ userInfo.account }}</div>
+          </div>
+          <div class="check-item-col2">
+            <div class="check-item-label"> 人员编号：</div>
+            <div class="check-item-value">{{ userInfo.workNum || '--'}}</div>
+          </div>
+        </div>
+        <div class="check-item-row">
+          <div class="check-item-col1">
+            <div class="check-item-label">角&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;色：</div>
+            <div class="check-item-value">{{ userInfo.roleNameList || '暂无' }}</div>
+          </div>
+          <div class="check-item-col1">
+            <div class="check-item-label">所属部门：</div>
+            <div class="check-item-value">{{ userInfo.orgName || '暂无' }}</div>
+          </div>
+        </div>
+        <div class="check-item-row">
+          <div class="check-item-col2">
+            <div class="check-item-label">电子邮箱：</div>
+            <div class="check-item-value">{{ userInfo.email || '--' }}</div>
+          </div>
+          <div class="check-item-col2">
+            <div class="check-item-label">办公电话：</div>
+            <div class="check-item-value">{{ userInfo.officePhone || '--' }}</div>
+          </div>
+        </div>
+        <div class="check-item-row">
+          <div class="check-item-col1">
+            <div class="check-item-label"> 手机号码：</div>
+            <div class="check-item-value">{{ userInfo.mobilePhone || '--' }}</div>
+          </div>
+          <!-- <div class="check-item-col">
+            <div class="check-item-label">传&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;真：</div>
+            <div class="check-item-value" :title="userInfo.faxAddress || '&#45;&#45;'">{{ userInfo.faxAddress || '&#45;&#45;' }}</div>
+          </div>
+        </div>
+        <div class="check-item-row">
+          <div class="check-item-col">
+            <div class="check-item-label">通讯地址：</div>
+            <div class="check-item-value" :title="userInfo.address || '&#45;&#45;'">
+              {{ userInfo.address || '&#45;&#45;' }}
+            </div>
+          </div> -->
+          <div class="check-item-col1">
+            <div class="check-item-label">状&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;态：</div>
+            <div class="check-item-value">{{ userInfo.disableFlag === 0 ? '正常' : '禁用' }}</div>
           </div>
         </div>
       </div>
@@ -438,277 +452,6 @@ export default {
           {type: 'string', required: true, message: '部门类型不能为空', trigger: 'change'}
         ]
       },
-      deptEmpColumns: [
-        {
-          type: 'selection',
-          width: 60,
-          align: 'center',
-          fixed: 'left'
-        },
-        {
-          title: '组织机构类型',
-          key: 'orgName',
-          width: 150,
-          align: 'center',
-          render: (h, params) => {
-            let txets = ''
-            switch (params.row.orgType) {
-              case 'ROOM' :
-                txets = '室级'
-                break
-              case 'DEPART' :
-                txets = '部级'
-                break
-              case 'FAMILY' :
-                txets = '科级'
-                break
-              default :
-                break
-            }
-            return h('div', {
-              class: {
-                'text-overflow-hidden': true
-              },
-              attrs: {
-                title: txets
-              }
-            }, txets)
-          }
-        },
-        {
-          title: '人员姓名',
-          key: 'uname',
-          width: 120,
-          align: 'center',
-          render: (h, params) => {
-            return h('div', {
-              class: {
-                'text-overflow-hidden': true
-              },
-              attrs: {
-                title: params.row.uname
-              }
-            }, params.row.uname)
-          }
-        },
-        {
-          title: '系统账号',
-          key: 'account',
-          width: 120,
-          align: 'center',
-          render: (h, params) => {
-            return h('div', {
-              class: {
-                'text-overflow-hidden': true
-              },
-              attrs: {
-                title: params.row.account
-              }
-            }, params.row.account)
-          }
-        },
-        {
-          title: '人员编号',
-          key: 'workNum',
-          align: 'center',
-          width: 100,
-          render: (h, params) => {
-            return h('div', {
-              class: {
-                'text-overflow-hidden': true
-              },
-              attrs: {
-                title: params.row.workNum
-              }
-            }, params.row.workNum)
-          }
-        },
-        {
-          title: '角色',
-          key: 'roleNameList',
-          width: 100,
-          align: 'center',
-          render: (h, params) => {
-            let roleNameList = ''
-            roleNameList = params.row.roleNameList.join(',')
-            return h('div', {
-              attrs: {
-                title: roleNameList
-              }
-            }, roleNameList)
-          }
-        },
-        {
-          title: '所属部门',
-          key: 'orgName',
-          width: 140,
-          align: 'center',
-          render: (h, params) => {
-            return h('div', {
-              class: {
-                'text-overflow-hidden': true
-              },
-              attrs: {
-                title: params.row.orgName
-              }
-            }, params.row.orgName)
-          }
-        },
-        {
-          title: '电子邮件',
-          key: 'email',
-          width: 130,
-          align: 'center',
-          render: (h, params) => {
-            return h('div', {
-              class: {
-                'text-overflow-hidden': true
-              },
-              attrs: {
-                title: params.row.email
-              }
-            }, params.row.email)
-          }
-        },
-        {
-          title: '办公电话',
-          key: 'officePhone',
-          width: 100,
-          align: 'center',
-          render: (h, params) => {
-            return h('div', {
-              class: {
-                'text-overflow-hidden': true
-              },
-              attrs: {
-                title: params.row.officePhone
-              }
-            }, params.row.officePhone)
-          }
-        },
-        {
-          title: '手机号码',
-          key: 'mobilePhone',
-          width: 100,
-          align: 'center',
-          render: (h, params) => {
-            return h('div', {
-              class: {
-                'text-overflow-hidden': true
-              },
-              attrs: {
-                title: params.row.mobilePhone
-              }
-            }, params.row.mobilePhone)
-          }
-        },
-        {
-          title: '传真',
-          key: 'faxAddress',
-          width: 100,
-          align: 'center'
-        },
-        {
-          title: '通讯地址',
-          key: 'address',
-          width: 150,
-          align: 'center',
-          render: (h, params) => {
-            return h('div', {
-              class: {
-                'text-overflow-hidden': true
-              },
-              attrs: {
-                title: params.row.address
-              }
-            }, params.row.address)
-          }
-        },
-        {
-          title: '状态',
-          key: 'disableFlag',
-          width: 150,
-          align: 'center',
-          render: (h, params) => {
-            if (params.row.disableFlag === 0) {
-              return h('Tag', {
-                props: {
-                  type: 'dot',
-                  color: 'primary'
-                }
-              }, '正常')
-            } else {
-              return h('Tag', {
-                props: {
-                  type: 'dot'
-                }
-              }, '禁用')
-            }
-          }
-        },
-        {
-          title: '修改时间',
-          key: 'modifyTime',
-          width: 150,
-          align: 'center',
-          render: (h, params) => {
-            let texts = params.row.modifyTime !== null ? params.row.modifyTime.split(' ')[0] : ''
-            return h('div', {
-              props: {}
-            }, texts)
-          }
-        },
-        {
-          title: '操作',
-          key: 'Action',
-          width: 150,
-          align: 'center',
-          fixed: 'right',
-          render: (h, params) => {
-            return h('div', [
-              h('Button', {
-                props: {
-                  type: 'primary',
-                  size: 'small'
-                },
-                style: {
-                  marginRight: '5px'
-                },
-                on: {
-                  click: () => {
-                    this.showUsersInfo(params.row)
-                  }
-                }
-              }, '查看'),
-              h('Button', {
-                props: {
-                  type: 'error',
-                  size: 'small'
-                },
-                on: {
-                  click: () => {
-                    this.$Modal.confirm({
-                      title: '提示',
-                      content: `您确认要删除 <span style="color: #E4393C">${params.row.uname}</span> 的组织关系吗？`,
-                      loading: true,
-                      onOk: () => {
-                        this.delUser(params.row.usid)
-                      },
-                      onCancel: () => {}
-                    })
-                  }
-                },
-                directives: [
-                  {
-                    name: 'btn-permission',
-                    value: 'MABV68Z6DY'
-                  }
-                ]
-              }, '删除')
-            ])
-          }
-        }
-      ],
       deptEmpData: [], // 组织下的员工列表
       loading: false,
       syncInfo: '无',
@@ -722,12 +465,6 @@ export default {
       selectionList: [],
       treeReady: false,
       roleList: [], // 角色列表
-      styles: {
-        height: 'calc(100% - 55px)',
-        overflow: 'auto',
-        paddingBottom: '53px',
-        position: 'static'
-      },
       userInfo: '', // 用户信息
       openNodes: [], // 展开的节点
       currentNode: '', // 当前节点
@@ -765,7 +502,8 @@ export default {
         this.orgNew = ''
       }
     },
-    showUsersInfo (row) {
+    // 点击table表格查看按钮事件
+    showUsersInfo (index, row) {
       this.view.showUserDrawer = true
       this.userInfo = JSON.parse(JSON.stringify(row))
       switch (this.userInfo.orgType) {
@@ -882,12 +620,6 @@ export default {
       this.treeFormReset()
       this.view.treeView = false
     },
-    // 对话框显示状态发生变化时
-    treeChange (type) {
-      if (!type) {
-        this.$refs['roleForm'].resetFields()
-      }
-    },
     /**
        * @description: 组织结构表单重置
        * @author: chenxiaoxi
@@ -979,26 +711,38 @@ export default {
        * @author: chenxiaoxi
        * @date: 2018-09-29 14:39:42
        */
-    delUser (id) {
+    delUser (index, row) {
       if (this.orgId === '') {
-        this.$Message.warning('用户未关联组织机构')
-        this.$Modal.remove()
+        this.$message.warning('用户未关联组织机构')
       } else if (this.orgId === 'noDepartment') {
-        this.$Message.warning('未分配人员不可删除用户与组织机构的关系')
-        this.$Modal.remove()
+        this.$message.warning('未分配人员不可删除用户与组织机构的关系')
       } else {
-        this.$http.delete('sys/org/deleteList/' + id, {}, {
-          _this: this
-        }, res => {
-          this.$Modal.remove()
-          if (res.ok) {
-            if (!this.unassigned) {
-              this.findByOrg()
-            } else {
-              this.findUnassigned()
+        const h = this.$createElement
+        this.$msgbox({
+          title: '消息',
+          message: h('p', null, [
+            h('span', null, '您确认要删除 '),
+            h('i', { style: 'color: #E4393C' }, row.uname),
+            h('span', null, '的组织关系吗？')
+          ]),
+          showCancelButton: true,
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+          this.$http.delete('sys/org/deleteList/' + row.usid, {}, {
+            _this: this
+          }, res => {
+            if (res.ok) {
+              if (!this.unassigned) {
+                this.findByOrg()
+              } else {
+                this.findUnassigned()
+              }
             }
-          }
-        }, e => {})
+          })
+        }).catch(() => {
+        })
       }
     },
     /**
@@ -1008,17 +752,28 @@ export default {
        */
     delUserList () {
       if (this.selectionList.length === 0) {
-        this.$Message.warning('请选选择您要删除组织的用户')
+        this.$message.warning('请选择您要删除组织的用户')
       } else {
-        this.$Modal.confirm({
-          title: '提示',
-          content: '您确认要删除选中用户的组织关系吗？',
-          loading: true,
-          onOk: () => {
-            let ids = this.selectionList.join(',')
-            this.delUser(ids)
-          },
-          onCancel: () => {}
+        this.$confirm('您确认要删除选中用户的组织关系吗?', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+          let ids = this.selectionList.join(',')
+          this.$http.delete('sys/org/deleteList/' + ids, {}, {
+            _this: this
+          }, res => {
+            if (res.ok) {
+              if (!this.unassigned) {
+                this.findByOrg()
+              } else {
+                this.findUnassigned()
+              }
+            }
+          })
+        }).catch(() => {
+          this.$refs.selection.clearSelection()
+          this.selectionList = []
         })
       }
     },
@@ -1067,21 +822,6 @@ export default {
       })
       this.openNodes = openNodes
     },
-
-    /**
-       * @description: 下拉菜单点击回调
-       * @author: chenxiaoxi
-       * @date: 2018/11/11 11:25:57
-       */
-    handleDropClick (name) {
-      // 设置角色
-      if (name === 'setRole') {
-        this.setRole()
-      } else {
-        // 批量删除
-        this.delUserList()
-      }
-    },
     /**
        * @description: 角色配置
        * @author: chenxiaoxi
@@ -1089,53 +829,17 @@ export default {
        */
     setRole () {
       if (this.selectionList.length === 0) {
-        this.$Message.warning('请至少选择一个用户进行配置')
+        this.$message.warning('请至少选择一个用户进行配置')
       } else {
         this.visibleSetRole = true
       }
-    },
-
-    /**
-       * @description: 角色保存
-       * @author: chenxiaoxi
-       * @date: 2018/11/11 11:41:24
-       */
-    saveRoleSetting () {
-      this.$refs['roleForm'].validate((valid) => {
-        if (valid) {
-          let configUser = {
-            usid: this.selectionList.join(','),
-            // roleId: this.roleForm.roleId,
-            orgId: this.orgId,
-            roleIdList: this.roleForm.roleIdList
-          }
-          this.$http.postData('sys/user/saveUserRole', configUser, {
-            _this: this,
-            loading: 'roleSaveLoading'
-          }, res => {
-            if (res.ok) {
-              this.visibleSetRole = false
-              this.findByOrg()
-            }
-          }, e => {})
-        }
-      })
-    },
-
-    /**
-       * @description: 角色配置取消
-       * @author: chenxiaoxi
-       * @date: 2018/11/11 11:41:41
-       */
-    cancelRoleSetting () {
-      this.$refs['roleForm'].resetFields()
     },
     // 同步SSO组织机构数据
     syncOrg () {
       this.$http.get('sys/org/syncOrgInfo', {}, {
         _this: this, loading: 'loading'
       }, res => {
-        this.$Message.success(res.message)
+        this.$message.success(res.message)
       })
     },
     getLastSyncTime () {
@@ -1233,28 +937,33 @@ export default {
        * @date: 2018-09-25 14:05:25
        */
     handleBeforeRemove (treeId, treeNode) {
-      this.$Modal.confirm({
+      const h = this.$createElement
+      this.$msgbox({
         title: '提示',
-        content: '您确认要删除机构' + ' <span style="color: #E4393C">' + treeNode.name + '</span> 吗?',
-        onOk: () => {
-          this.treeFlag = 2
-          // _this.setOpenNodes()
-          this.$http.delete('sys/org', {
-            id: treeNode.id
-          }, {
-            _this: this,
-            loading: 'treeLoading'
-          }, res => {
-            this.treeFlag = 1
-            this.getTree().then(() => {
-              setTimeout(() => {
-                this.findByOrg(this.orgObject.pId)
-                this.$refs.mechanismManage.selectOneNode(this.orgObject.pId)
-              })
+        message: h('p', null, [
+          h('span', null, '您确认要删除机构 '),
+          h('i', { style: 'color: #E4393C' }, treeNode.name),
+          h('span', null, '吗？')
+        ]),
+        showCancelButton: true,
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        this.$http.delete('sys/org', {
+          id: treeNode.id
+        }, {
+          _this: this,
+          loading: 'treeLoading'
+        }, res => {
+          this.getTree().then(() => {
+            setTimeout(() => {
+              this.findByOrg(this.orgObject.pId)
+              this.$refs.mechanismManage.selectOneNode(this.orgObject.pId)
             })
-          }, e => {})
-        },
-        onCancel: () => {}
+          })
+        })
+      }).catch(() => {
       })
     },
 
@@ -1313,7 +1022,7 @@ export default {
   },
   mounted () {
     let _this = this
-    this.findByOrgBtn()
+    // this.findByOrgBtn()
     this.queryRoleList()
     this.$nextTick(() => {
       let tableHeight = $('.content').css('height')
@@ -1368,115 +1077,11 @@ export default {
           }
         }
       }
-      .ivu-table-overflowX{
-        overflow-x: auto;
-      }
-      .pagination{
-        .ivu-divider{
-          margin-bottom: 0;
-        }
-      }
-      .syncInfo{
-        padding-bottom: 0.2rem;
-        .flex();
-        flex: 1;
-        align-items: center;
-      }
-    }
-    .ivu-tree-children{
-      .ivu-tree-arrow{
-        margin-right: 5px;
-      }
-    }
-    .content .btn-group{
-      margin-bottom: 0.5rem;
-    }
-    .ivu-divider-horizontal{
-      margin: 8px 0;
-    }
-    .ivu-table-body{
-      overflow-x: auto;
-    }
-    .ivu-table-tip{
-      width: 100%;
-      height: calc(~'100% - 41px');
-      table{
-        display: block;
-        tbody,tr,td{
-          display: block;
-          width: 100% !important;
-          height: 100%;
-        }
-        td{
-          .flex();
-          justify-content: center;
-          align-items: center;
-        }
-      }
     }
     .hasNoData{
       background: #FFF;
       .no-data-icon{
         width: 85px;
-      }
-    }
-    .ivu-table-fixed,
-    .ivu-table-fixed-right{
-      height: 100%;
-      .ivu-table-fixed-body{
-        height: calc(~'100% - 41px');
-      }
-    }
-    .ivu-select-item{
-      max-width: 200px;
-      .ellipsis();
-    }
-    .demo-drawer-footer{
-      width: 100%;
-      position: absolute;
-      bottom: 0;
-      left: 0;
-      border-top: 1px solid #e8e8e8;
-      padding: 10px 16px;
-      text-align: right;
-      background: #fff;
-    }
-    .btn-show{
-      display: inline-block !important;
-    }
-    .btn-hide{
-      display: none !important;
-    }
-    .ivu-tag{
-      cursor: default;
-    }
-  }
-  .role-setting-form{
-    .ivu-modal-body{
-      overflow-y: inherit;
-    }
-  }
-  .demo-drawer-profile{
-    font-size: 14px;
-  }
-  .demo-drawer-profile .ivu-col{
-    margin-bottom: 12px;
-  }
-  .user-info-text{
-    color: #A59D9D;
-  }
-  .mechanism-tree-modal{
-    .ivu-modal{
-      width: 350px !important;
-      .form-content{
-        width: 300px;
-        margin: 0 auto;
-        .ivu-form-item{
-          .flex();
-          .ivu-form-item-content{
-            flex: 1;
-          }
-        }
       }
     }
   }

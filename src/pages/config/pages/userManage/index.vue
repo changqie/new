@@ -952,7 +952,6 @@ export default {
   @import '~@/assets/styles/mixins';
   #user-manage{
     padding: 0.2rem 0.3rem;
-    width: calc(~'100% - 10px');
     height: 100%;
     background: #FFF;
     .table-tools-bar .tools-bar-wrapper .label-select-content {
@@ -971,16 +970,6 @@ export default {
     }
     .disappear{
       display: none;
-    }
-    .demo-drawer-footer{
-      width: 100%;
-      position: absolute;
-      bottom: 0;
-      left: 0;
-      border-top: 1px solid #e8e8e8;
-      padding: 10px 16px;
-      text-align: right;
-      background: #fff;
     }
   }
   .roleSee{
