@@ -752,7 +752,7 @@ export default {
        */
     delUserList () {
       if (this.selectionList.length === 0) {
-        this.$message.warning('请选选择您要删除组织的用户')
+        this.$message.warning('请选择您要删除组织的用户')
       } else {
         this.$confirm('您确认要删除选中用户的组织关系吗?', '提示', {
           confirmButtonText: '确定',
