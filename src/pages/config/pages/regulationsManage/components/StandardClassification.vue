@@ -32,7 +32,7 @@
             type="primary"
             class="searchAngNewBtn"
             @click="classAdd(1, null)"
-            v-btn-permission="'CXRPGWHNSF'"
+            v-btn-permission="'SDXRQ8LV6K'"
             >新增</el-button>
         </el-form-item>
         <el-form-item class="serch-form-item btn-box">
@@ -40,7 +40,7 @@
             type="danger"
             class="searchAngNewBtn"
             @click="classBatchDel"
-            v-btn-permission="'R24ALH4Q89'">删除</el-button>
+            v-btn-permission="'ATBANPLHCM'">删除</el-button>
         </el-form-item>
         </div>
       </el-form>
@@ -49,7 +49,7 @@
     <div class="content">
       <el-table
         ref="selection"
-        :data="categoryData"
+        :data="classData"
         tooltip-effect="dark"
         style="width: 100%"
         border
@@ -103,7 +103,7 @@
       @pageChange="pageChange"
       @pageSizeChange="pageSizeChange"></pagination>
       <loading :loading="loading">数据获取中</loading>
-    <!--新增抽屉-->  
+    <!--新增抽屉-->
     <el-drawer
       :title="title"
       :visible.sync="dialogState"
@@ -111,7 +111,8 @@
       custom-class="demo-drawer"
       ref="drawer"
       size="50%"
-      :class = "classObject"
+      :class="classObject"
+      :before-close="handleClose"
       >
       <div class="demo-drawer__content" v-if="this.oprState === 1 || this.oprState === 2">
         <el-form :model="classModelAdd" ref="classModelAdd" :rules="classRules"  class="label-input-form">
@@ -120,6 +121,7 @@
               <el-form-item label="选项"
                 :label-width="formLabelWidth"
                 prop="dicTypeName"
+                :disabled = 'this.oprState === 2'
                 class="add-form-item">
                 <el-input
                   v-model.trim="classModelAdd.dicTypeName"
@@ -133,6 +135,7 @@
                 class="add-form-item">
                 <el-input
                   type="number"
+                  oninput="if(value.length>5)value=value.slice(0,5)"
                   v-model.number="classModelAdd.showIndex"
                   @mousewheel.native.prevent
                   autocomplete="off" clearable></el-input>
@@ -151,8 +154,8 @@
           </el-row>
         </el-form>
         <div class="demo-drawer__footer">
-          <el-button size="mini" @click="closeModal('ruleForm')">取 消</el-button>
-          <el-button size="mini" type="primary" @click="saveClass('ruleForm')">提交</el-button>
+          <el-button size="mini" @click="closeModal('classModelAdd')">取 消</el-button>
+          <el-button size="mini" type="primary" @click="saveClass('classModelAdd')">提交</el-button>
         </div>
       </div>
       <div class="demo-drawer__content" v-else>
@@ -200,7 +203,7 @@ export default {
       rows: 10,
       loading: false,
       // 列表数据
-      categoryData: [],
+      classData: [],
       // 抽屉打开
       dialogState: false,
       // form-item label宽度
@@ -251,7 +254,7 @@ export default {
       this.describes1 = this.standardForm.describes
       this.standCode1 = this.standardForm.standCode
       this.page = 1
-      this.selectCategory()
+      this.selectClass()
     },
     // 清空查询
     resetSelect (formName) {
@@ -261,11 +264,11 @@ export default {
       this.standardForm.standName = ''
       this.standardForm.standCode = ''
       this.standardForm.describes = ''
-      this.$refs[formName].resetFields()
-      this.selectCategory()
+      this.page = 1
+      this.selectClass()
     },
     // 分页加载列表
-    selectCategory () {
+    selectClass () {
       let DicTypeEOPage = {
         page: this.page,
         pageSize: this.$store.getters.userInfo.configContent,
@@ -307,6 +310,7 @@ export default {
       this.$refs[formName].validate((valid) => {
         if (valid) {
           if (this.oprState === 1) {
+            this.classModelAdd.dicTypeCode = this.classModelAdd.dicTypeName
             this.$http.postData('sys/dictype/create', data, {
               _this: this
             }, res => {
@@ -334,12 +338,26 @@ export default {
         }
       })
     },
-    // 新增弹窗关闭
-    closeModal (formName) {
-      this.selectCategory()
+    // 查看弹窗关闭
+    handleClose () {
+      this.page = 1
+      this.selectClass()
       this.classModelAdd.dicTypeName = ''
       this.classModelAdd.showIndex = ''
       this.classModelAdd.describes = ''
+      if (this.$refs['classModelAdd']) {
+        this.$refs['classModelAdd'].resetFields()
+      }
+      this.dialogState = false
+    },
+    // 新增弹窗关闭
+    closeModal (formName) {
+      this.page = 1
+      this.selectClass()
+      this.classModelAdd.dicTypeName = ''
+      this.classModelAdd.showIndex = ''
+      this.classModelAdd.describes = ''
+      this.$refs['classModelAdd'].resetFields()
       this.dialogState = false
     },
     // 批量删除
@@ -369,14 +387,15 @@ export default {
             let data = {}
             data.ids = delIds
             data.dicTypeCodes = delTypeCodes
+            console.log('data', data)
             this.$http.delete('sys/dictype/deleteArr', data, {
               _this: this
             }, res => {
               if (res.ok) {
-                this.selectCategory()
+                this.resetSelect()
               }
             })
-        }).catch(() => {
+          }).catch(() => {
           // 取消删除，清空选择
             this.$refs.selection.clearSelection()
           })
@@ -398,40 +417,31 @@ export default {
             _this: this
           }, res => {
             if (res.ok) {
-              this.selectCategory()
+              this.resetSelect()
             } else {
             }
           }).catch(() => {
-          // this.$message({
-          //   type: 'info',
-          //   message: '已取消删除'
-          // });
           })
         })
       }
     },
     // 多选
     handleSelectionChange (val) {
-      this.val = val
       this.selectNum = val
       console.log('this.selectNum', this.selectNum)
     },
-    // 取消多选
-    clearSelection () {
-
-    },
     pageChange (page) {
       this.page = page
-      this.selectCategory()
+      this.selectClass()
     },
     pageSizeChange (pageSize) {
       this.rows = pageSize
-      this.selectCategory()
+      this.selectClass()
     }
 
   },
   mounted () {
-    this.selectCategory()
+    this.selectClass()
   },
   computed: {
     classObject () {

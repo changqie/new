@@ -227,16 +227,16 @@
 <!--                  size="mini"-->
 <!--                  type="primary"-->
 <!--                  @click="handleDelete(scope.$index, scope.row)">更多</el-button>-->
-                <el-dropdown trigger="click">
+                <el-dropdown trigger="click" @command="handleCommand">
                   <el-button type="primary" class="opera-btn" style="margin-left: 10px" size="mini">
                     更多
                   </el-button>
                   <el-dropdown-menu slot="dropdown">
-                    <el-dropdown-item>收藏</el-dropdown-item>
-                    <el-dropdown-item>分享</el-dropdown-item>
-                    <el-dropdown-item>移除标准</el-dropdown-item>
-                    <el-dropdown-item>删除</el-dropdown-item>
-                    <el-dropdown-item>流程</el-dropdown-item>
+                    <el-dropdown-item :command="beforeHandleCommand(scope.row, '收藏')">收藏</el-dropdown-item>
+                    <el-dropdown-item :command="beforeHandleCommand(scope.row, '分享')">分享</el-dropdown-item>
+                    <el-dropdown-item :command="beforeHandleCommand(scope.row, '移除标准')">移除标准</el-dropdown-item>
+                    <el-dropdown-item :command="beforeHandleCommand(scope.row, '删除')">删除</el-dropdown-item>
+                    <el-dropdown-item :command="beforeHandleCommand(scope.row, '流程')">流程</el-dropdown-item>
                   </el-dropdown-menu>
                 </el-dropdown>
               </template>
@@ -267,7 +267,6 @@
         ref="drawer"
         size="55%"
       >
-<!--        :before-close="handleClose"-->
         <!-- 新增样式 -->
         <div class="demo-drawer__content">
         <div class="el-drawer-form">
@@ -275,12 +274,21 @@
                 class="label-input-form">
             <el-row>
               <el-col :span="12">
-                <el-form-item label="国家/地区" prop="country" label-width="130px" class="add-form-item">
+                <el-form-item label="区域" prop="region" label-width="130px" class="add-form-item">
+                  <el-select v-model="sarStandardsInfoEO.region" disabled>
+                    <el-option v-for="opt in regionOptions" :value="opt.value === undefined ? '' :opt.value" :key="opt.value">{{ opt.label }}</el-option>
+                  </el-select>
+                </el-form-item>
+              </el-col>
+              <el-col :span="12">
+                <el-form-item label="国家" prop="country" label-width="130px" class="add-form-item">
                   <el-select v-model="sarStandardsInfoEO.country" disabled>
                     <el-option v-for="opt in countryOptions" :value="opt.value === undefined ? '' :opt.value" :key="opt.value">{{ opt.label }}</el-option>
                   </el-select>
                 </el-form-item>
               </el-col>
+            </el-row>
+            <el-row>
               <el-col :span="12">
                 <el-form-item label="标准性质" prop="standNature" label-width="130px" class="add-form-item">
                   <el-select v-model="sarStandardsInfoEO.standNature" :disabled="formdisableflag" placeholder="请选择标准性质"
@@ -290,32 +298,32 @@
                   </el-select>
                 </el-form-item>
               </el-col>
-            </el-row>
-            <el-row>
               <el-col :span="12">
                 <el-form-item label="标准状态" prop="standState" label-width="130px" class="add-form-item">
                   <el-select v-model="sarStandardsInfoEO.standState" :disabled="formdisableflag" placeholder="请选择标准状态"
-                          clearable>
+                             clearable>
                     <el-option v-for="opt in standStateOptions" :key="opt.value" :value="opt.value === undefined ? '' :opt.value">{{ opt.label }}
                     </el-option>
                   </el-select>
                 </el-form-item>
               </el-col>
+            </el-row>
+            <el-row>
               <el-col :span="12">
                 <el-form-item label="标准失效日期" prop="standExpirationTime" label-width="130px" class="add-form-item">
                   <el-date-picker v-model="sarStandardsInfoEO.standExpirationTime" :editable="false"
                               :disabled="formdisableflag" placeholder="请选择标准失效日期"></el-date-picker>
                 </el-form-item>
               </el-col>
-            </el-row>
-            <el-row>
               <el-col :span="12">
                 <el-form-item label="内容摘要" prop="synopsis" label-width="130px" class="add-form-item">
                   <el-input v-model="sarStandardsInfoEO.synopsis" :maxlength="500" show-word-limit type="textarea"
-                         :autosize="{minRows: 1,maxRows: 4}" :disabled="formdisableflag" placeholder="请输入内容摘要"
-                         clearable></el-input>
+                            :autosize="{minRows: 1,maxRows: 4}" :disabled="formdisableflag" placeholder="请输入内容摘要"
+                            clearable></el-input>
                 </el-form-item>
               </el-col>
+            </el-row>
+            <el-row>
               <el-col :span="12">
                 <el-form-item label="标准发布文本获得时间（印刷版）" title="标准发布文本获得时间（印刷版）" label-width="130px" prop="issueTextTime"
                               class="add-form-item">
@@ -323,27 +331,25 @@
                               placeholder="请选择标准发布文本获得时间（印刷版）"></el-date-picker>
                 </el-form-item>
               </el-col>
-            </el-row>
-            <el-row>
               <el-col :span="12">
                 <el-form-item label="标准修订立项号" prop="revisionProjectNo" label-width="130px" class="add-form-item">
                   <el-input v-model="sarStandardsInfoEO.revisionProjectNo" :maxlength="200" :disabled="formdisableflag"
-                         placeholder="请输入标准修订立项号" clearable></el-input>
+                            placeholder="请输入标准修订立项号" clearable></el-input>
                 </el-form-item>
               </el-col>
+            </el-row>
+            <el-row>
               <el-col :span="12">
                 <el-form-item label="法规种类" prop="standAttribute" label-width="130px" class="add-form-item">
                   <search-select
                     v-model="sarStandardsInfoEO.standAttribute" :options="standAttributeList" placeholder="请选择法规种类"/>
                 </el-form-item>
               </el-col>
-            </el-row>
-            <el-row>
               <el-col :span="12">
                 <el-form-item label="标准文本" prop="standFileList" label-width="130px" class="add-form-item">
                   <el-input v-model="sarStandardsInfoEO.standFile" v-show="false"></el-input>
                   <el-button size="small" @click="clickButtonToUpload('standFileList')" icon="ios-cloud-upload-outline"
-                          :disabled="formdisableflag" class="form-upload-btn">
+                             :disabled="formdisableflag" class="form-upload-btn">
                     {{ (sarStandardsInfoEO.standFile === 'null' || sarStandardsInfoEO.standFile === '' ||
                     sarStandardsInfoEO.standFile == null) ? '点击上传' : '查看已上传的文件' }}
                   </el-button>
@@ -501,8 +507,13 @@
                   </el-select>
                 </el-form-item>
               </el-col>
+              <el-col :span="12">
+                <el-form-item label="发布部门" prop="issueUnit" label-width="130px" class="add-form-item">
+                  <el-input v-model="sarStandardsInfoEO.issueUnit" :disabled="formdisableflag" placeholder="请输入发布部门"
+                            clearable></el-input>
+                </el-form-item>
+              </el-col>
             </el-row>
-
 <!--            -&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45; 代替和采标关系 -&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;-->
             <el-divider content-position="left">代替和采标关系</el-divider>
             <el-row>
@@ -516,7 +527,7 @@
               </el-col>
             </el-row>
             <el-row>
-              <el-col :span="24">
+              <el-col :span="12">
                 <el-form-item label="被代替标准号" prop="replacedStandNum" label-width="130px"
                               class="add-form-item">
                   <el-input v-model="sarStandardsInfoEO.replacedStandNum" :maxlength="100" show-word-limit
@@ -524,14 +535,14 @@
                          placeholder="请输入被代替标准号" clearable></el-input>
                 </el-form-item>
               </el-col>
-            </el-row>
-            <el-row>
               <el-col :span="12">
                 <el-form-item label="采用国际标准号" prop="interStandNum" label-width="130px" class="add-form-item">
                   <el-input v-model="sarStandardsInfoEO.interStandNum" :disabled="formdisableflag" placeholder="请输入采用国际标准号"
-                         clearable></el-input>
+                            clearable></el-input>
                 </el-form-item>
               </el-col>
+            </el-row>
+            <el-row>
               <el-col :span="12">
                 <el-form-item label="采标程度" prop="adoptExtent" label-width="130px" class="add-form-item">
                   <el-select v-model="sarStandardsInfoEO.adoptExtent" :disabled="formdisableflag" placeholder="请选择采标程度"
@@ -545,7 +556,7 @@
 <!--            &lt;!&ndash;-&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45; 适用范围 -&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&ndash;&gt;-->
             <el-divider content-position="left">适用范围</el-divider>
             <el-row>
-              <el-col :span="24">
+              <el-col :span="12">
                 <el-form-item label="适用车型" prop="applyArctic" label-width="130px" class="add-form-item">
 <!--                  <search-multiple-select v-model="sarStandardsInfoEO.applyArctic" :disabled="formdisableflag"-->
 <!--                                          placeholder="请选择适用车型" :options="applyArcticOptions">-->
@@ -560,15 +571,13 @@
                   </el-select>
                 </el-form-item>
               </el-col>
-            </el-row>
-            <el-row>
-              <el-col :span="24">
+              <el-col :span="12">
                 <el-form-item label="能源种类" prop="emergyKind" label-width="130px" class="add-form-item">
-<!--                  <search-multiple-select v-model="sarStandardsInfoEO.emergyKind" multiple :disabled="formdisableflag"-->
-<!--                                          placeholder="请选择能源种类" :options="emergyKindOptions">-->
-                    <!--<el-option v-for="opt in emergyKindOptions" :value="opt.value" :key="opt.value">{{ opt.label }}-->
-                    <!--</el-option>-->
-<!--                  </search-multiple-select>-->
+                  <!--                  <search-multiple-select v-model="sarStandardsInfoEO.emergyKind" multiple :disabled="formdisableflag"-->
+                  <!--                                          placeholder="请选择能源种类" :options="emergyKindOptions">-->
+                  <!--<el-option v-for="opt in emergyKindOptions" :value="opt.value" :key="opt.value">{{ opt.label }}-->
+                  <!--</el-option>-->
+                  <!--                  </search-multiple-select>-->
                   <el-select v-model="sarStandardsInfoEO.emergyKind" multiple placeholder="请选择能源种类" :filterable="true">
                     <el-option
                       v-for="opt in emergyKindOptions"
@@ -832,7 +841,7 @@
               </el-col>
             </el-row>
             <el-row>
-              <el-col :span="24">
+              <el-col :span="12">
                 <el-form-item label="法规解读标准引用" prop="lawsExplainQuote" label-width="130px"
                               class="add-form-item">
                   <el-select v-model="sarStandardsInfoEO.lawsExplainQuote" multiple class="new-multiple-select"
@@ -844,18 +853,18 @@
                   <el-input v-show="false" id="lawsExplainQuote"></el-input>
                 </el-form-item>
               </el-col>
-            </el-row>
-            <el-row>
               <el-col :span="12">
                 <el-form-item label="法规解读文件" prop="lawsExplainFile" label-width="130px" class="add-form-item">
                   <el-input v-model="sarStandardsInfoEO.lawsExplainFile" v-show="false"></el-input>
                   <el-button size="small" @click="clickButtonToUpload('lawsExplainFileList')" icon="ios-cloud-upload-outline"
-                          :disabled="formdisableflag" class="form-upload-btn">
+                             :disabled="formdisableflag" class="form-upload-btn">
                     {{ (sarStandardsInfoEO.lawsExplainFile === 'null' || sarStandardsInfoEO.lawsExplainFile === '' ||
                     sarStandardsInfoEO.lawsExplainFile == null) ? '点击上传' : '查看已上传的文件' }}
                   </el-button>
                 </el-form-item>
               </el-col>
+            </el-row>
+            <el-row>
               <el-col :span="12">
                 <el-form-item label="是否结题" prop="isQuestion" label-width="130px" class="add-form-item">
                   <el-select v-model="sarStandardsInfoEO.isQuestion" clearable>
@@ -863,14 +872,14 @@
                   </el-select>
                 </el-form-item>
               </el-col>
-            </el-row>
-            <el-row>
               <el-col :span="12">
                 <el-form-item label="结题时间" prop="finalizeTime" label-width="130px" class="add-form-item">
                   <el-datePicker v-model="sarStandardsInfoEO.finalizeTime" :editable="false"
-                              :disabled="formdisableflag" placeholder="请选择结题时间"></el-datePicker>
+                                 :disabled="formdisableflag" placeholder="请选择结题时间"></el-datePicker>
                 </el-form-item>
               </el-col>
+            </el-row>
+            <el-row>
               <el-col :span="12">
                 <el-form-item label="结题附件" prop="finalizeFile" label-width="130px" class="add-form-item">
                   <el-button size="small" @click="clickButtonToUpload('finalizeFileList')" icon="ios-cloud-upload-outline"
@@ -881,8 +890,6 @@
                   </el-button>
                 </el-form-item>
               </el-col>
-            </el-row>
-            <el-row>
               <el-col :span="12">
                 <!--<el-form-item label="责任部门" prop="responsibleUnit" class="add-form-item">-->
                 <!--<el-input v-model="sarStandardsInfoEO.responsibleUnit" :disabled="formdisableflag"></el-input>-->
@@ -913,17 +920,29 @@
               </el-col>
             </el-row>
             <el-row>
-              <el-col :span="24">
+              <el-col :span="12">
                 <el-form-item label="所属专业领域" prop="category" label-width="130px" class="add-form-item">
-<!--                  <search-multiple-select-->
-<!--                    v-if="modalshowflag"-->
-<!--                    v-model="sarStandardsInfoEO.category"-->
-<!--                    :options="categoryOptions"-->
-<!--                    :disabled="formdisableflag"-->
-<!--                    placeholder="请选择所属专业领域"/>-->
+                  <!--                  <search-multiple-select-->
+                  <!--                    v-if="modalshowflag"-->
+                  <!--                    v-model="sarStandardsInfoEO.category"-->
+                  <!--                    :options="categoryOptions"-->
+                  <!--                    :disabled="formdisableflag"-->
+                  <!--                    placeholder="请选择所属专业领域"/>-->
                   <el-select v-model="sarStandardsInfoEO.category" multiple placeholder="请选择所属专业领域" :filterable="true">
                     <el-option
                       v-for="opt in categoryOptions"
+                      :key="opt.value"
+                      :label="opt.label"
+                      :value="opt.value">
+                    </el-option>
+                  </el-select>
+                </el-form-item>
+              </el-col>
+              <el-col :span="12">
+                <el-form-item label="总成分类" prop="assemClass" label-width="130px" class="add-form-item">
+                  <el-select v-model="sarStandardsInfoEO.assemClass" multiple placeholder="请选择总成分类" :filterable="true">
+                    <el-option
+                      v-for="opt in assemClassOptions"
                       :key="opt.value"
                       :label="opt.label"
                       :value="opt.value">
@@ -1437,6 +1456,30 @@
           </div>
         </div>
       </el-drawer>
+      <!--                树---新增二级菜单模态窗                 -->
+      <el-dialog :visible.sync="menuModalFlag" width="400px" :title="menuModalTitle">
+        <el-form ref="addMenuForm" :model="sarMenu" :rules="sarMenuRules" class="label-input-form">
+          <el-formItem label="名称" prop="menuName"  class="add-form-item" label-width="130px">
+            <el-input v-model="sarMenu.menuName" placeholder="请输入名称" style="width: 6rem"></el-input>
+          </el-formItem>
+          <el-formItem label="序号" prop="displaySeq"  class="add-form-item"  label-width="130px">
+            <el-input v-model.number="sarMenu.displaySeq" placeholder="只允许输入正整数" maxlength="2"
+                   style="width: 6rem"></el-input>
+          </el-formItem>
+          <el-formItem label="备注" prop="remarks"  class="add-form-item"  label-width="130px">
+            <el-input v-model="sarMenu.remarks" placeholder="请输入备注信息" style="width: 6rem"></el-input>
+          </el-formItem>
+        </el-form>
+        <div slot="footer">
+          <el-button size="mini" @click="resetTreeDialog">取消</el-button>
+          <el-button type="primary" size="mini" @click="newMenu">确定</el-button>
+        </div>
+      </el-dialog>
+      <!--   树----删除   -->
+      <el-dialog title="确认删除" width="300px"  :visible.sync="deleteMenuModal" @on-ok="sureDeleteSarMenu"
+             @on-cancel="deleteMenuModal = false">
+        <p>该节点下有记录，是否删除？</p>
+      </el-dialog>
     </div>
     <Spin size="large" fix v-if="spinShow"></Spin>
   </div>
@@ -1449,6 +1492,12 @@ export default {
   },
   data () {
     return {
+      // 收藏标准
+      personCollect: {
+        collectResId: '',
+        collectTitle: '',
+        collectType: ''
+      },
       loading: false,
       spinShow: false,
       isCollapse: true,
@@ -1485,6 +1534,7 @@ export default {
       tableHeight: 0,
       tableFlag: '',
       countryOptions: [],
+      regionOptions: [], // 区域
       standSortOptions: [], // 标准类别下拉框
       standSortConfigOptions: [], // 标准类别下拉框
       applyArcticOptions: [], // 适用车型下拉框
@@ -1495,6 +1545,7 @@ export default {
       applyAuthOptions: [], // 适用认证下拉框
       categoryOptions: [], // 所属类别下拉框
       categoryConfigOptions: [], // 所属类别下拉框
+      assemClassOptions: [], // 总成分类下拉框
       standAttributeList: [],
       sarStandardsSearch: {
         page: 1,
@@ -1528,6 +1579,9 @@ export default {
       // ztree 拖拽标志
       dragFlag: false,
       sarStandardsInfoEO: {
+        region: '东亚',
+        issueUnit: '', // 发布部门
+        assemClass: '',
         id: '',
         standType: 'INLAND', // 标准分类
         country: 'CN',
@@ -1672,7 +1726,18 @@ export default {
         remarks: '',
         orgName: ''
       }, // 标准条目新增过程中用到对象
+      menuModalTitle: '',
       menuModalFlag: false,
+      deleteMenuModal: false,
+      sarMenu: {
+        id: '',
+        parentId: '',
+        menuName: '',
+        sorDivide: 'INLAND_STAND',
+        displaySeq: 0,
+        parentIds: '',
+        remarks: ''
+      }, // 二级菜单对象，主要用于新增和修改
       testItemsModel: false,
       formdisableflag: false, // 查看标准不可编辑
       modalshowtitle: '新增国内标准',
@@ -1680,6 +1745,21 @@ export default {
       itemAddOrUPdateFlag: 1, // 新增：1， 修改：2
       menuAddOrUpdateFlag: 1, // 新增：1， 修改：2
       standNumFlag: 1, // 新增：1， 修改：2
+      sarMenuRules: {
+        menuName: [
+          {required: true, message: '目录名称不能为空', trigger: 'blur'},
+          {type: 'string', max: 100, message: '目录名称不能超过100个字符', trigger: 'blur'}
+          // {type: 'string', validator: this.verify.checkSpecialCharacter2, trigger: 'blur'}
+        ],
+        displaySeq: [
+          {type: 'number', required: true, message: '序号不能为空且为正整数', trigger: 'blur'},
+          {type: 'string', validator: this.verify.validStandNumInCompile2, trigger: 'blur'}
+        ],
+        remarks: [
+          {type: 'string', max: 100, message: '备注不能超过100个字符', trigger: 'blur'}
+          // {validator: this.verify.checkSpecialCharacter2, trigger: 'blur'}
+        ]
+      },
       sarStandardsInfoRules: {
         standSort: [
           {required: true, message: '标准类别不能为空', trigger: 'change'}
@@ -1869,8 +1949,60 @@ export default {
   watch: {
   },
   methods: {
+    // 更多
+    handleCommand (command) {
+      // 可以相对应的进行操作
+      console.log('command', command)
+      let item = command.index
+      switch (command.row) {
+        case '收藏':
+          console.log(item) // 收藏
+          this.collectStandard(item)
+          break
+        case '分享':
+          console.log(item) // 分享 NO
+          break
+        case '移除标准':
+          this.deleteStandFromKind(1, item.id)
+          break
+        case '删除':
+          this.deleteStand(1, item.id)
+          break
+        case '流程':
+          console.log(item) // 流程 NO
+          break
+      }
+    },
+    beforeHandleCommand (index, row, command) {
+      console.log('command', command)
+      return { index, row, command }
+    },
+    collectStandard (item) {
+      this.spinShow = true
+      item.isSubmit = true
+      this.personCollect.collectResId = item.id
+      if (item.standYear != null && item.standYear !== '') {
+        this.personCollect.collectTitle = item.standName + '  ( 编号:' + item.standSort + ' ' + item.standNumber + '-' + item.standYear + ' )'
+      } else {
+        this.personCollect.collectTitle = item.standName + '  ( 编号:' + item.standSort + ' ' + item.standNumber + ' )'
+      }
+      this.personCollect.collectType = 'INLAND_STAND'
+      this.$http.postData('person/personCollect', this.personCollect, {
+        _this: this
+      }, res => {
+        this.spinShow = false
+        item.isSubmit = false
+        item.collectBtn = !item.collectBtn
+        item.cancelCollectBtn = !item.cancelCollectBtn
+        item.collectId = res.data.id
+      }, e => {
+        item.isSubmit = false
+      })
+    },
     // 查看标准属性
     selectStandardPro (item, state) {
+      this.addOrUPdateFlag = 2
+      console.log('selectItem', item)
       this.modalshowtitle = '编辑国内标准'
       this.modalshowflag = true
       // console.log('item', item)
@@ -1931,6 +2063,10 @@ export default {
       if (this.sarStandardsInfoEO.category != null && !(this.sarStandardsInfoEO.category instanceof Array)) {
         a = item.category.split(',')
         this.sarStandardsInfoEO.category = a // 所属类别
+      }
+      if (this.sarStandardsInfoEO.assemClass != null && !(this.sarStandardsInfoEO.assemClass instanceof Array)) {
+        a = item.assemClass.split(',')
+        this.sarStandardsInfoEO.assemClass = a // 总成分类
       }
       if (this.sarStandardsInfoEO.issueTime != null && this.sarStandardsInfoEO.issueTime !== '') {
         this.sarStandardsInfoEO.issueTime = this.sarStandardsInfoEO.issueTime.replace(new RegExp(/-/gm), '/')
@@ -2126,32 +2262,6 @@ export default {
         })
       }
     },
-    // 拖拽事件
-    drag (treeNode, dragId) {
-      if (treeNode !== null) {
-        let search = {
-          menuId: treeNode.id,
-          idlist: this.selectedList.length ? this.selectedList : dragId
-        }
-        this.$http.postData('lawss/sarStandardsInfo/saveStandardsMenu', search, {
-          _this: this
-        }, res => {
-          if (res.ok) {
-            this.$message({
-              message: '操作成功',
-              type: 'success'
-            })
-            this.getDomesticStandardTable(this.tableFlag)
-          } else {
-            this.$message({
-              message: res.message,
-              type: 'warning'
-            })
-          }
-        }, e => {
-        })
-      }
-    },
     treeClick (treeNode) {
       this.selectSarMenu = treeNode // 记录当前选中的二级菜单
       this.standCommonlySearch.menuId = treeNode.id
@@ -2176,7 +2286,7 @@ export default {
     clearAllSearch (flag) {
       if (flag === 'sarStandardsSearch') {
         // 标准搜索
-        // this.sarStandardsSearch.country = ''
+        this.sarStandardsSearch.country = ''
         this.sarStandardsSearch.standSort = ''
         this.sarStandardsSearch.standNumber = ''
         this.sarStandardsSearch.standName = ''
@@ -2226,6 +2336,42 @@ export default {
       return this.sideClose ? 'el-icon-arrow-left' : 'el-icon-arrow-right'
       // return 'el-icon-arrow-left'
     },
+    resetTreeDialog () {
+      this.menuModalFlag = false
+      this.$refs['addMenuForm'].resetFields()
+    },
+    // 点击二级菜单新增模态框中的保存
+    newMenu () {
+      this.$refs['addMenuForm'].validate((valid) => {
+        if (valid) {
+          if (this.menuAddOrUpdateFlag === 1) {
+            this.sarMenu.parentId = this.selectSarMenu.id
+            if (this.selectSarMenu.parentIds != null) {
+              this.sarMenu.parentIds = this.selectSarMenu.parentIds + ',' + this.selectSarMenu.id
+            } else {
+              this.sarMenu.parentIds = this.selectSarMenu.id
+            }
+            this.$http.post('lawss/sarMenu/addSarMenu', this.sarMenu, {
+              _this: this, loading: 'loading'
+            }, res => {
+              this.selectMenu() // 新增成功后，更新二级菜单
+              this.menuModalFlag = false
+            }, e => {
+            })
+          } else {
+            this.$http.post('lawss/sarMenu/updateSarMenu', this.sarMenu, {
+              _this: this, loading: 'loading'
+            }, res => {
+              this.selectMenu() // 修改成功后，更新二级菜单
+              this.selectSarMenu = res.data
+              this.menuModalFlag = false
+            }, e => {
+            })
+          }
+        } else {
+        }
+      })
+    },
     // 查询二级菜单
     selectMenu () {
       this.$http.get('lawss/sarMenu/selectMenuByRole', {sorDivide: 'INLAND_STAND'}, {
@@ -2260,6 +2406,61 @@ export default {
       }, e => {
       })
     },
+    // 树-删除
+    sureDeleteSarMenu () {
+      this.$confirm('是否删除?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        this.$http.post('lawss/sarMenu/deleteMenuAndChildren', this.selectSarMenu, {
+          _this: this, loading: 'loading'
+        }, res => {
+          this.selectMenu() // 删除成功后，更新二级菜单
+          // 获取下一个节点
+          let currentNode = this.$refs.domesticTree.getNextNode()
+          let nodeId = ''
+          // 如果这个节点为null, 本次删除了最后一个节点
+          if (currentNode === null) {
+            // 选中根节点
+            this.$refs.domesticTree.selectRootNode()
+          } else {
+            nodeId = currentNode.id
+          }
+          this.getDomesticStandardTable(nodeId)
+        }, e => {
+        })
+      }).catch(() => {
+        // 取消删除，清空选择
+        // this.$refs.selections.clearSelection()
+      })
+
+      // this.$Modal.confirm({
+      //   title: '提示',
+      //   content: '<p>是否删除?</p>',
+      //   onOk: () => {
+      //     this.$http.post('lawss/sarMenu/deleteMenuAndChildren', this.selectSarMenu, {
+      //       _this: this, loading: 'loading'
+      //     }, res => {
+      //       this.selectMenu() // 删除成功后，更新二级菜单
+      //       // 获取下一个节点
+      //       let currentNode = this.$refs.domesticTree.getNextNode()
+      //       let nodeId = ''
+      //       // 如果这个节点为null, 本次删除了最后一个节点
+      //       if (currentNode === null) {
+      //         // 选中根节点
+      //         this.$refs.domesticTree.selectRootNode()
+      //       } else {
+      //         nodeId = currentNode.id
+      //       }
+      //       this.getDomesticStandardTable(nodeId)
+      //     }, e => {
+      //     })
+      //   },
+      //   onCancel: () => {
+      //   }
+      // })
+    },
     // 导出选中的标准  此处因为复选框没有设置好，所以先设置导出所有数据
     exportStandard (type) {
       // 区别是选择导出还是全部导出
@@ -2282,6 +2483,32 @@ export default {
     // 获取拖拽行的id
     dragRowClassName (row, index) {
       return 'drag-row' + ' ' + 'id=' + row.id
+    },
+    // 拖拽事件
+    drag (treeNode, dragId) {
+      if (treeNode !== null) {
+        let search = {
+          menuId: treeNode.id,
+          idlist: this.selectedList.length ? this.selectedList : dragId
+        }
+        this.$http.postData('lawss/sarStandardsInfo/saveStandardsMenu', search, {
+          _this: this
+        }, res => {
+          if (res.ok) {
+            this.$message({
+              message: '操作成功',
+              type: 'success'
+            })
+            this.getDomesticStandardTable(this.tableFlag)
+          } else {
+            this.$message({
+              message: res.message,
+              type: 'warning'
+            })
+          }
+        }, e => {
+        })
+      }
     },
     // 修改成表格样式后，选择项勾选改变
     standSelectChange (data) {
@@ -2318,6 +2545,7 @@ export default {
       this.standNumFlag = 1
       this.getOrgTreeSource()
       this.changeInlandSubclassVal()
+      this.$refs['sarStandardsInfoForm'].resetFields()
     },
     testItemsClick () {
       // if (this.testItemsModel) {
@@ -2532,7 +2760,7 @@ export default {
       this.standItemEO.orgName = ''
       this.sarStandardsInfoEO.testItems = ''
       this.sarStandardsInfoEO.lawsExplainQuote = ''
-      this.$refs.importFileAboutStand.clearFiles()
+      // this.$refs.importFileAboutStand.clearFiles()
       this.$refs['sarStandardsInfoForm'].resetFields()
       this.$refs['sarStandardsItemForm'].resetFields()
       this.$refs['addMenuForm'].resetFields()
@@ -2653,6 +2881,9 @@ export default {
               if (nowstandinfo.category != null && (nowstandinfo.category instanceof Array)) {
                 nowstandinfo.category = nowstandinfo.category.join(',') // 所属类别
               }
+              if (nowstandinfo.assemClass != null && (nowstandinfo.assemClass instanceof Array)) {
+                nowstandinfo.assemClass = nowstandinfo.assemClass.join(',') // 总成分类
+              }
               if (nowstandinfo.lawsExplainQuote != null && (nowstandinfo.lawsExplainQuote instanceof Array)) {
                 nowstandinfo.lawsExplainQuote = nowstandinfo.lawsExplainQuote.join(',')
               }
@@ -2719,7 +2950,19 @@ export default {
                 if (nowstandinfo.replaceStandNum != null && nowstandinfo.standNumber !== '') {
                   nowstandinfo.upReplaceNumFlag = 1
                 }
+                this.$http.postData('lawss/sarStandardsInfo/addarStandardsInfo', nowstandinfo, {
+                  _this: this
+                }, res => {
+                  this.isSubmit = false
+                  if (res.ok) {
+                    this.getDomesticStandardTable(this.tableFlag)
+                    this.resetForm()
+                  }
+                }, e => {
+                  this.isSubmit = false
+                })
               } else {
+                this.addOrUPdateFlag = 2
                 if (nowstandinfo.replaceStandNum !== this.saveOldReplaceNum) {
                   nowstandinfo.upReplaceNumFlag = 1
                 }
@@ -2731,7 +2974,7 @@ export default {
                   nowstandinfo.upNumFlag = 1
                 }
               }
-              this.$http.postData(this.addOrUPdateFlag === 1 ? 'lawss/sarStandardsInfo/addarStandardsInfo' : 'lawss/sarStandardsInfo/updateSarStandardsInfo', nowstandinfo, {
+              this.$http.postData('lawss/sarStandardsInfo/updateSarStandardsInfo', nowstandinfo, {
                 _this: this
               }, res => {
                 this.isSubmit = false
@@ -3485,6 +3728,7 @@ export default {
       _this: this
     }, res => {
       this.countryOptions = res.data.COUNTRY
+      this.regionOptions = res.data.REGION // 区域
       this.standSortOptions = res.data.STANDCLASSIFY
       this.applyArcticOptions = res.data.PRODUCTTYPE // 根据需求文档，产品类别对应标准属性中的“适用车型”
       this.standStateOptions = res.data.STANDSTATE
@@ -3492,7 +3736,8 @@ export default {
       this.adoptExtentOptions = res.data.DEGREESTANDARD
       this.emergyKindOptions = res.data.ENERGYTYPES
       this.applyAuthOptions = res.data.PROVETYPE // 适用认证下拉框
-      this.categoryOptions = res.data.CATEGORY
+      this.categoryOptions = res.data.CATEGORY // 能源种类
+      this.assemClassOptions = res.data.ASSEMCLASSIFY // 总成分类
       this.categoryConfigOptions = res.data.CATEGORY
       this.standAttributeList = res.data.RULETYPE
     }, e => {
